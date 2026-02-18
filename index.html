@@ -70,6 +70,39 @@
       border-color: var(--accent); box-shadow: 0 0 8px rgba(0,212,255,.3); }
     @media(max-width:768px) { .lang-bar { display: none; } }
 
+    /* MOBILE LANG PICKER */
+    #mlang-fab {
+      display: none; position: fixed; bottom: 5.5rem; right: 1.5rem; z-index: 8100;
+      width: 2.6rem; height: 2.6rem; border-radius: 50%;
+      background: rgba(0,0,0,.85); border: 1px solid rgba(0,212,255,.4);
+      color: #fff; font-size: 1.1rem; cursor: pointer;
+      box-shadow: 0 4px 20px rgba(0,212,255,.3); transition: transform .2s;
+    }
+    #mlang-fab:hover { transform: scale(1.1); }
+    #mlang-panel {
+      display: none; position: fixed; bottom: 9rem; right: 1rem; z-index: 8101;
+      background: rgba(2,4,12,.95); border: 1px solid rgba(0,212,255,.25);
+      border-radius: 14px; padding: .75rem; backdrop-filter: blur(16px);
+      box-shadow: 0 8px 40px rgba(0,0,0,.6);
+    }
+    #mlang-panel.open { display: block; }
+    #mlang-panel .ml-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: .4rem; margin-bottom: .5rem;
+    }
+    #mlang-panel .ml-btn {
+      background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.2);
+      border-radius: 6px; padding: .35rem .5rem; font-size: .75rem; font-weight: 700;
+      color: rgba(255,255,255,.9); cursor: pointer; text-align: center; transition: all .2s;
+    }
+    #mlang-panel .ml-btn:hover, #mlang-panel .ml-btn.ml-active {
+      background: rgba(0,212,255,.2); border-color: var(--accent); color: var(--accent);
+    }
+    #mlang-panel .ml-label {
+      font-size: .6rem; color: rgba(0,212,255,.6); text-align: center;
+      letter-spacing: .06em; text-transform: uppercase; margin-top: .25rem;
+    }
+    @media(max-width:768px) { #mlang-fab { display: flex; align-items: center; justify-content: center; } }
+
     /* NAV */
     nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200;
       display: flex; align-items: center; justify-content: space-between;
@@ -1417,6 +1450,64 @@
 
   send.addEventListener('click', askAI);
   input.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); askAI(); } });
+})();
+</script>
+
+<!-- MOBILE LANGUAGE PICKER -->
+<button id="mlang-fab" title="Change language / भाषा बदलें">🌐</button>
+<div id="mlang-panel">
+  <div class="ml-grid">
+    <button class="ml-btn" data-lang="en">EN</button>
+    <button class="ml-btn" data-lang="hi">हिं</button>
+    <button class="ml-btn" data-lang="ta">தமி</button>
+    <button class="ml-btn" data-lang="te">తె</button>
+    <button class="ml-btn" data-lang="kn">ಕನ್ನ</button>
+    <button class="ml-btn" data-lang="mr">मर</button>
+    <button class="ml-btn" data-lang="bn">বাং</button>
+    <button class="ml-btn" data-lang="gu">ગુજ</button>
+    <button class="ml-btn" data-lang="pa">ਪੰਜ</button>
+    <button class="ml-btn" data-lang="ml">മല</button>
+    <button class="ml-btn" data-lang="ur">اردو</button>
+    <button class="ml-btn" data-lang="or">ଓଡ଼</button>
+  </div>
+  <div class="ml-label">🤖 AI Full-Page Translate</div>
+</div>
+<script>
+(function() {
+  const fab   = document.getElementById('mlang-fab');
+  const panel = document.getElementById('mlang-panel');
+  fab.addEventListener('click', e => { e.stopPropagation(); panel.classList.toggle('open'); });
+  document.addEventListener('click', () => panel.classList.remove('open'));
+
+  // Mirror the desktop lang-btn clicks — select language and trigger AI translate
+  panel.querySelectorAll('.ml-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      const lang = btn.dataset.lang;
+      // Sync active state on mobile buttons
+      panel.querySelectorAll('.ml-btn').forEach(b => b.classList.toggle('ml-active', b === btn));
+      // Sync active state on desktop nav buttons
+      document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('lang-active', b.dataset.lang === lang));
+      // Update globe icon to show active language
+      fab.textContent = lang === 'en' ? '🌐' : btn.textContent;
+      panel.classList.remove('open');
+      // Trigger same translate flow as desktop lang buttons
+      // (applyLang, aiTranslatePage, restoreOriginals are globals from i18n.js)
+      aiLang = null; // reset so cache re-applies after applyLang resets i18n elements
+      applyLang(lang);
+      if (lang !== 'en') aiTranslatePage(lang);
+      else restoreOriginals();
+    });
+  });
+
+  // Keep mobile active state in sync with desktop
+  document.querySelectorAll('.lang-btn:not(.ai-translate-btn)').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const lang = btn.dataset.lang;
+      panel.querySelectorAll('.ml-btn').forEach(b => b.classList.toggle('ml-active', b.dataset.lang === lang));
+      fab.textContent = lang === 'en' ? '🌐' : btn.textContent;
+    });
+  });
 })();
 </script>
 </body>
