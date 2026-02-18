@@ -70,28 +70,29 @@
       border-color: var(--accent); box-shadow: 0 0 8px rgba(0,212,255,.3); }
     @media(max-width:768px) { .lang-bar { display: none; } }
 
-    /* MOBILE LANG PICKER */
+    /* LANGUAGE PICKER FAB — always visible, bottom-left (⚓ chat is bottom-right) */
     #mlang-fab {
-      display: none; position: fixed; bottom: 5.5rem; right: 1.5rem; z-index: 8100;
-      width: 2.6rem; height: 2.6rem; border-radius: 50%;
-      background: rgba(0,0,0,.85); border: 1px solid rgba(0,212,255,.4);
-      color: #fff; font-size: 1.1rem; cursor: pointer;
-      box-shadow: 0 4px 20px rgba(0,212,255,.3); transition: transform .2s;
+      position: fixed; bottom: 1.5rem; left: 1.5rem; z-index: 8100;
+      width: 2.8rem; height: 2.8rem; border-radius: 50%;
+      background: rgba(0,0,0,.88); border: 1px solid rgba(0,212,255,.45);
+      color: #fff; font-size: 1.15rem; cursor: pointer; display: flex;
+      align-items: center; justify-content: center;
+      box-shadow: 0 4px 24px rgba(0,212,255,.35); transition: transform .2s, box-shadow .2s;
     }
-    #mlang-fab:hover { transform: scale(1.1); }
+    #mlang-fab:hover { transform: scale(1.1); box-shadow: 0 6px 32px rgba(0,212,255,.55); }
     #mlang-panel {
-      display: none; position: fixed; bottom: 9rem; right: 1rem; z-index: 8101;
-      background: rgba(2,4,12,.95); border: 1px solid rgba(0,212,255,.25);
-      border-radius: 14px; padding: .75rem; backdrop-filter: blur(16px);
-      box-shadow: 0 8px 40px rgba(0,0,0,.6);
+      display: none; position: fixed; bottom: 5rem; left: 1rem; z-index: 8101;
+      background: rgba(2,4,12,.96); border: 1px solid rgba(0,212,255,.28);
+      border-radius: 14px; padding: .85rem; backdrop-filter: blur(18px);
+      box-shadow: 0 8px 40px rgba(0,0,0,.65);
     }
     #mlang-panel.open { display: block; }
     #mlang-panel .ml-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: .4rem; margin-bottom: .5rem;
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: .45rem; margin-bottom: .5rem;
     }
     #mlang-panel .ml-btn {
       background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.2);
-      border-radius: 6px; padding: .35rem .5rem; font-size: .75rem; font-weight: 700;
+      border-radius: 6px; padding: .4rem .5rem; font-size: .75rem; font-weight: 700;
       color: rgba(255,255,255,.9); cursor: pointer; text-align: center; transition: all .2s;
     }
     #mlang-panel .ml-btn:hover, #mlang-panel .ml-btn.ml-active {
@@ -99,9 +100,8 @@
     }
     #mlang-panel .ml-label {
       font-size: .6rem; color: rgba(0,212,255,.6); text-align: center;
-      letter-spacing: .06em; text-transform: uppercase; margin-top: .25rem;
+      letter-spacing: .06em; text-transform: uppercase; margin-top: .3rem;
     }
-    @media(max-width:768px) { #mlang-fab { display: flex; align-items: center; justify-content: center; } }
 
     /* NAV */
     nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200;
