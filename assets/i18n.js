@@ -239,20 +239,18 @@ function applyLang(lang) {
 // Auto-triggers on any non-English language selection — no button click needed.
 // Endpoint: ankr.in/ai/translate/batch → @ankr/ai-translate → Sarvam/IndicTrans2/AI-Router
 const AI_TRANSLATE_ENDPOINT = '/ai/translate/batch';
-const AI_BATCH_SIZE = 50;
+const AI_BATCH_SIZE = 25; // smaller batches = faster first paint + less timeout risk
 
-// All translatable content — [id^="i18n-"] covers hero H1, CTAs, footer (works for
-// ALL languages including those without static dictionary entries).
-// Excludes code/package .tag, nav buttons, brand names, numeric stats (.ti-n).
+// All translatable content. Excludes code/package .tag, numeric stats (.ti-n, .sm-v).
 const AI_TRANSLATE_SELECTORS = [
-  '[id^="i18n-"]',
-  '.hero-p', '.sec-h', '.sec-tag', '.sec-p',
-  '.vc-h', '.vc-p',
-  '.sc-desc', '.sc-tagline', '.sc-cat',
-  '.svc-name', '.svc-desc',
-  '.bc-sub', '.bc-tag',
-  '.ti-l',
-  '.pr-name', '.pr-note',
+  '[id^="i18n-"]',         // hero H1, CTAs, section heads, footer (all languages)
+  '.vc-h', '.vc-p',        // 9 vertical cards
+  '.sc-desc', '.sc-tagline', '.sc-cat',  // 12 product cards
+  '.svc-name', '.svc-desc',// 42 service list items
+  '.sm-k',                 // metric labels: "AIS positions", "Regulations live"
+  '.bc-sub', '.bc-tag',    // big cards
+  '.ti-l',                 // ticker labels: "Packages", "Live Services"
+  '.pr-name', '.pr-note',  // partner rows
 ].join(',');
 
 const aiCache  = {};   // lang → string[]
@@ -264,8 +262,12 @@ function getTranslatableEls() {
     .filter(el => !el.closest('[data-no-translate]') && el.textContent.trim().length > 1);
 }
 
-function saveOriginals(els) {
-  els.forEach(el => { if (!el.dataset.orig) el.dataset.orig = el.textContent.trim(); });
+// ⚠️ Must be called on page load (English state) before applyLang() changes anything.
+// Saves English originals so AI translate always sends English → target, not target → target.
+function snapshotEnglishOriginals() {
+  getTranslatableEls().forEach(el => {
+    if (!el.dataset.orig) el.dataset.orig = el.textContent.trim();
+  });
 }
 
 function restoreOriginals() {
@@ -276,26 +278,31 @@ function restoreOriginals() {
 }
 
 async function fetchBatch(texts, to) {
-  const res = await fetch(AI_TRANSLATE_ENDPOINT, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ texts, from: 'en', to, domain: 'general' }),
-  });
-  if (!res.ok) throw new Error('HTTP ' + res.status);
-  const data = await res.json();
-  return (data.results || []).map(r => r.translated || '');
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 30000); // 30s timeout per batch
+  try {
+    const res = await fetch(AI_TRANSLATE_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ texts, from: 'en', to, domain: 'general' }),
+      signal: ctrl.signal,
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    return (data.results || []).map(r => r.translated || '');
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 async function aiTranslatePage(lang) {
   if (lang === 'en') { restoreOriginals(); return; }
-  if (aiLang === lang) return;   // already applied
-  if (aiActive) return;          // busy
+  if (aiActive) return;  // busy with another translation
 
   const els = getTranslatableEls();
   if (!els.length) return;
-  saveOriginals(els);
 
-  // Serve from cache instantly
+  // Serve from cache (re-apply even if aiLang === lang, since applyLang may have reset some)
   if (aiCache[lang]) {
     els.forEach((el, i) => { if (aiCache[lang][i]) el.textContent = aiCache[lang][i]; });
     aiLang = lang;
@@ -305,16 +312,17 @@ async function aiTranslatePage(lang) {
   }
 
   aiActive = true;
+  aiLang = null;
   setAiBtn('⏳', true);
-  const texts  = els.map(el => el.dataset.orig || el.textContent.trim());
-  const all    = [];
+  // Always use data-orig (English) as source — never the already-translated display text
+  const texts = els.map(el => el.dataset.orig || el.textContent.trim());
+  const all   = [];
 
   try {
     for (let i = 0; i < texts.length; i += AI_BATCH_SIZE) {
       const chunk  = texts.slice(i, i + AI_BATCH_SIZE);
       const result = await fetchBatch(chunk, lang);
       all.push(...result);
-      // Apply each chunk as it arrives
       result.forEach((t, j) => { if (t && els[i + j]) els[i + j].textContent = t; });
       const pct = Math.round((i + chunk.length) / texts.length * 100);
       setAiBtn(pct < 100 ? `⏳${pct}%` : '✓', true);
@@ -325,10 +333,21 @@ async function aiTranslatePage(lang) {
     setAiBtn('✓', true);
   } catch (e) {
     console.warn('AI translate failed:', e);
-    setAiBtn('🤖', false);
+    setAiBtn('⚠️', false);
+    showToast('Translation failed — check console for details');
   } finally {
     aiActive = false;
   }
+}
+
+function showToast(msg) {
+  const t = document.createElement('div');
+  t.textContent = msg;
+  t.style.cssText = 'position:fixed;bottom:1rem;left:50%;transform:translateX(-50%);' +
+    'background:#1a1a2e;border:1px solid rgba(255,100,100,.4);color:#ff8080;' +
+    'font-size:.75rem;padding:.5rem 1rem;border-radius:8px;z-index:9999;pointer-events:none;';
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 5000);
 }
 
 function setAiBadge(show) {
@@ -360,6 +379,10 @@ function setAiBtn(text, active) {
 (function init() {
   const saved = localStorage.getItem('ankr-lang') || 'en';
   document.addEventListener('DOMContentLoaded', () => {
+    // ⚠️ Snapshot English originals FIRST — before applyLang() changes any text.
+    // This ensures AI translate always sends English → target, never target → target.
+    snapshotEnglishOriginals();
+
     applyLang(saved);
     // Auto-translate on startup if non-English saved
     if (saved !== 'en') aiTranslatePage(saved);
@@ -367,8 +390,8 @@ function setAiBtn(text, active) {
     document.querySelectorAll('.lang-btn:not(.ai-translate-btn)').forEach(btn => {
       btn.addEventListener('click', () => {
         const lang = btn.dataset.lang;
+        aiLang = null; // reset so cache re-applies after applyLang() resets i18n elements
         applyLang(lang);
-        // Always auto-trigger AI translate for non-English
         if (lang !== 'en') {
           aiTranslatePage(lang);
         } else {
