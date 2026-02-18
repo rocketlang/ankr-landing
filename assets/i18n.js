@@ -229,15 +229,15 @@ function applyLang(lang) {
   localStorage.setItem('ankr-lang', lang);
 }
 
-// ─── AI Full-Page Translate ───────────────────────────────────────────────────
-const AI_TRANSLATE_ENDPOINT = 'https://ankrlabs.org/api/ai/chat/completions';
+// ─── AI Full-Page Translate (powered by @ankr/ai-translate) ─────────────────
+// Endpoint: ankr.in/ai/translate/batch → @ankr/ai-translate → Sarvam/IndicTrans/AI-Router
+const AI_TRANSLATE_ENDPOINT = '/ai/translate/batch';
 const AI_TRANSLATE_SELECTORS = '.sc-desc,.vc-p,.bc-sub,.svc-desc,.hero-p,.sec-p';
 const aiTranslateCache = {};
 let aiTranslating = false;
 
 async function aiTranslatePage(lang) {
   if (lang === 'en') return resetAiTranslation();
-  const langName = {hi:'Hindi',ta:'Tamil',te:'Telugu',kn:'Kannada',mr:'Marathi'}[lang] || lang;
   const cacheKey = lang;
 
   if (aiTranslateCache[cacheKey]) {
@@ -251,43 +251,21 @@ async function aiTranslatePage(lang) {
 
   // Collect elements and their text
   const els = Array.from(document.querySelectorAll(AI_TRANSLATE_SELECTORS));
-  const texts = els.map((el, i) => `${i}|||${el.textContent.trim()}`).join('\n');
+  const texts = els.map(el => el.textContent.trim());
 
   try {
+    // Uses @ankr/ai-translate package via /ai/translate/batch endpoint
     const res = await fetch(AI_TRANSLATE_ENDPOINT, {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({
-        model: 'auto',
-        messages: [{
-          role: 'user',
-          content: `Translate the following text segments to ${langName}.
-Each line is in format: INDEX|||TEXT
-Return ONLY the translations in the same format: INDEX|||TRANSLATED_TEXT
-Keep all numbers, brand names (ANKR, Mari8X, CarbonX, etc.), and technical terms unchanged.
-Do not add explanations.
-
-${texts}`
-        }],
-        max_tokens: 3000,
-        temperature: 0.1
-      })
+      body: JSON.stringify({ texts, from: 'en', to: lang, domain: 'general' })
     });
 
     const data = await res.json();
-    const raw = data?.choices?.[0]?.message?.content || '';
-    const translations = {};
-    raw.split('\n').forEach(line => {
-      const sep = line.indexOf('|||');
-      if (sep > -1) {
-        const idx = parseInt(line.slice(0, sep).trim());
-        const translated = line.slice(sep + 3).trim();
-        if (!isNaN(idx) && translated) translations[idx] = translated;
-      }
-    });
+    const translated = (data.results || []).map(r => r.translated);
 
     // Build map: element → translated text
-    const result = els.map((el, i) => ({el, text: translations[i] || null}));
+    const result = els.map((el, i) => ({el, text: translated[i] || null}));
     aiTranslateCache[cacheKey] = result;
     applyAiTranslation(result);
   } catch(e) {
