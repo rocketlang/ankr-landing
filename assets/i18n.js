@@ -229,90 +229,156 @@ function applyLang(lang) {
   localStorage.setItem('ankr-lang', lang);
 }
 
-// ─── AI Full-Page Translate (powered by @ankr/ai-translate) ─────────────────
-// Endpoint: ankr.in/ai/translate/batch → @ankr/ai-translate → Sarvam/IndicTrans/AI-Router
+// ─── AI Full-Page Translate (powered by @ankr/ai-translate) ──────────────────
+// Auto-triggers on any non-English language selection — no button click needed.
+// Endpoint: ankr.in/ai/translate/batch → @ankr/ai-translate → Sarvam/IndicTrans2/AI-Router
 const AI_TRANSLATE_ENDPOINT = '/ai/translate/batch';
-const AI_TRANSLATE_SELECTORS = '.sc-desc,.vc-p,.bc-sub,.svc-desc,.hero-p,.sec-p';
-const aiTranslateCache = {};
-let aiTranslating = false;
+const AI_BATCH_SIZE = 50;
+
+// All translatable content — excludes code/package .tag, nav buttons, brand names,
+// numeric stats (.ti-n), and empty elements (.glow)
+const AI_TRANSLATE_SELECTORS = [
+  '.hero-p', '.sec-h', '.sec-tag', '.sec-p',
+  '.vc-h', '.vc-p',
+  '.sc-desc', '.sc-tagline', '.sc-cat',
+  '.svc-name', '.svc-desc',
+  '.bc-sub', '.bc-tag',
+  '.ti-l',
+  '.pr-name', '.pr-note',
+].join(',');
+
+const aiCache  = {};   // lang → string[]
+let aiActive   = false;
+let aiLang     = null;
+
+function getTranslatableEls() {
+  return Array.from(document.querySelectorAll(AI_TRANSLATE_SELECTORS))
+    .filter(el => !el.closest('[data-no-translate]') && el.textContent.trim().length > 1);
+}
+
+function saveOriginals(els) {
+  els.forEach(el => { if (!el.dataset.orig) el.dataset.orig = el.textContent.trim(); });
+}
+
+function restoreOriginals() {
+  document.querySelectorAll('[data-orig]').forEach(el => { el.textContent = el.dataset.orig; });
+  aiLang = null;
+  setAiBadge(false);
+  setAiBtn('🤖', false);
+}
+
+async function fetchBatch(texts, to) {
+  const res = await fetch(AI_TRANSLATE_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ texts, from: 'en', to, domain: 'general' }),
+  });
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  const data = await res.json();
+  return (data.results || []).map(r => r.translated || '');
+}
 
 async function aiTranslatePage(lang) {
-  if (lang === 'en') return resetAiTranslation();
-  const cacheKey = lang;
+  if (lang === 'en') { restoreOriginals(); return; }
+  if (aiLang === lang) return;   // already applied
+  if (aiActive) return;          // busy
 
-  if (aiTranslateCache[cacheKey]) {
-    applyAiTranslation(aiTranslateCache[cacheKey]);
+  const els = getTranslatableEls();
+  if (!els.length) return;
+  saveOriginals(els);
+
+  // Serve from cache instantly
+  if (aiCache[lang]) {
+    els.forEach((el, i) => { if (aiCache[lang][i]) el.textContent = aiCache[lang][i]; });
+    aiLang = lang;
+    setAiBadge(true);
+    setAiBtn('✓', true);
     return;
   }
 
-  const btn = document.querySelector('.ai-translate-btn');
-  if (btn) btn.textContent = '⏳';
-  aiTranslating = true;
-
-  // Collect elements and their text
-  const els = Array.from(document.querySelectorAll(AI_TRANSLATE_SELECTORS));
-  const texts = els.map(el => el.textContent.trim());
+  aiActive = true;
+  setAiBtn('⏳', true);
+  const texts  = els.map(el => el.dataset.orig || el.textContent.trim());
+  const all    = [];
 
   try {
-    // Uses @ankr/ai-translate package via /ai/translate/batch endpoint
-    const res = await fetch(AI_TRANSLATE_ENDPOINT, {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({ texts, from: 'en', to: lang, domain: 'general' })
-    });
-
-    const data = await res.json();
-    const translated = (data.results || []).map(r => r.translated);
-
-    // Build map: element → translated text
-    const result = els.map((el, i) => ({el, text: translated[i] || null}));
-    aiTranslateCache[cacheKey] = result;
-    applyAiTranslation(result);
-  } catch(e) {
+    for (let i = 0; i < texts.length; i += AI_BATCH_SIZE) {
+      const chunk  = texts.slice(i, i + AI_BATCH_SIZE);
+      const result = await fetchBatch(chunk, lang);
+      all.push(...result);
+      // Apply each chunk as it arrives
+      result.forEach((t, j) => { if (t && els[i + j]) els[i + j].textContent = t; });
+      const pct = Math.round((i + chunk.length) / texts.length * 100);
+      setAiBtn(pct < 100 ? `⏳${pct}%` : '✓', true);
+    }
+    aiCache[lang] = all;
+    aiLang = lang;
+    setAiBadge(true);
+    setAiBtn('✓', true);
+  } catch (e) {
     console.warn('AI translate failed:', e);
+    setAiBtn('🤖', false);
   } finally {
-    aiTranslating = false;
-    if (btn) btn.textContent = '🤖';
+    aiActive = false;
   }
 }
 
-function applyAiTranslation(items) {
-  items.forEach(({el, text}) => { if (el && text) el.textContent = text; });
+function setAiBadge(show) {
+  let badge = document.getElementById('ai-pow-badge');
+  if (!badge && show) {
+    badge = document.createElement('div');
+    badge.id = 'ai-pow-badge';
+    badge.innerHTML = '🤖 Powered by <strong>@ankr/ai-translate</strong>';
+    badge.style.cssText = [
+      'position:fixed;bottom:5.5rem;left:1.5rem;z-index:7999',
+      'background:rgba(0,0,0,.82);border:1px solid rgba(0,212,255,.3)',
+      'color:rgba(0,212,255,.92);font-size:.6875rem;padding:.35rem .75rem',
+      'border-radius:6px;backdrop-filter:blur(8px);pointer-events:none',
+      'opacity:0;transition:opacity .4s',
+    ].join(';');
+    document.body.appendChild(badge);
+  }
+  if (badge) setTimeout(() => { badge.style.opacity = show ? '1' : '0'; }, 40);
 }
 
-function resetAiTranslation() {
-  // Re-apply built-in i18n to restore English
-  applyLang('en');
+function setAiBtn(text, active) {
+  const btn = document.querySelector('.ai-translate-btn');
+  if (!btn) return;
+  btn.textContent = text;
+  btn.style.opacity = active ? '1' : '0.55';
+  btn.title = active ? 'Translation active — click to restore English' : 'AI Full-Page Translate';
 }
 
 (function init() {
   const saved = localStorage.getItem('ankr-lang') || 'en';
   document.addEventListener('DOMContentLoaded', () => {
     applyLang(saved);
-    document.querySelectorAll('.lang-btn').forEach(btn => {
+    // Auto-translate on startup if non-English saved
+    if (saved !== 'en') aiTranslatePage(saved);
+
+    document.querySelectorAll('.lang-btn:not(.ai-translate-btn)').forEach(btn => {
       btn.addEventListener('click', () => {
-        applyLang(btn.dataset.lang);
-        // If AI translate was active, refresh
-        const aiBtn = document.querySelector('.ai-translate-btn');
-        if (aiBtn && aiBtn.dataset.active === '1') {
-          aiTranslatePage(btn.dataset.lang);
+        const lang = btn.dataset.lang;
+        applyLang(lang);
+        // Always auto-trigger AI translate for non-English
+        if (lang !== 'en') {
+          aiTranslatePage(lang);
+        } else {
+          restoreOriginals();
         }
       });
     });
 
-    // AI Translate button
+    // 🤖 button — toggle off/on
     const aiBtn = document.querySelector('.ai-translate-btn');
     if (aiBtn) {
       aiBtn.addEventListener('click', () => {
-        const lang = document.documentElement.lang || localStorage.getItem('ankr-lang') || 'en';
-        if (aiBtn.dataset.active === '1') {
-          aiBtn.dataset.active = '0';
-          aiBtn.style.opacity = '0.5';
-          resetAiTranslation();
+        if (aiLang) {
+          restoreOriginals();
+          applyLang(document.documentElement.lang || 'en');
         } else {
-          aiBtn.dataset.active = '1';
-          aiBtn.style.opacity = '1';
-          aiTranslatePage(lang);
+          const lang = document.documentElement.lang || localStorage.getItem('ankr-lang') || 'en';
+          if (lang !== 'en') aiTranslatePage(lang);
         }
       });
     }
