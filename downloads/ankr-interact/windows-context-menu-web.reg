@@ -1,0 +1,65 @@
+Windows Registry Editor Version 5.00
+
+; ═══════════════════════════════════════════════════════════════════════════
+; ANKR Interact - Windows Context Menu (WEB VERSION)
+; ═══════════════════════════════════════════════════════════════════════════
+;
+; This adds "Open with ANKR Interact" to the right-click context menu
+; Opens files in your default browser at ankr.in/interact/
+;
+; No desktop app installation required!
+;
+; To install: Double-click this file and confirm
+; To uninstall: Run windows-context-menu-web-uninstall.reg
+; ═══════════════════════════════════════════════════════════════════════════
+
+; ─────────────────────────────────────────────────────────────────────────────
+; All Files - Context Menu (Web Version)
+; ─────────────────────────────────────────────────────────────────────────────
+[HKEY_CLASSES_ROOT\*\shell\ANKRInteractWeb]
+@="Open with ANKR Interact (Web)"
+"Icon"="shell32.dll,14"
+"Position"="middle"
+
+[HKEY_CLASSES_ROOT\*\shell\ANKRInteractWeb\command]
+@="cmd /c start \"\" \"https://ankr.in/interact/?file=%1\""
+
+; ─────────────────────────────────────────────────────────────────────────────
+; Markdown Files - Specific Handler
+; ─────────────────────────────────────────────────────────────────────────────
+[HKEY_CLASSES_ROOT\.md\shell\ANKRInteract]
+@="Edit with ANKR Interact"
+"Icon"="shell32.dll,70"
+
+[HKEY_CLASSES_ROOT\.md\shell\ANKRInteract\command]
+@="cmd /c start \"\" \"https://ankr.in/interact/?file=%1&edit=true\""
+
+; ─────────────────────────────────────────────────────────────────────────────
+; Text Files - Specific Handler
+; ─────────────────────────────────────────────────────────────────────────────
+[HKEY_CLASSES_ROOT\.txt\shell\ANKRInteract]
+@="Edit with ANKR Interact"
+"Icon"="shell32.dll,70"
+
+[HKEY_CLASSES_ROOT\.txt\shell\ANKRInteract\command]
+@="cmd /c start \"\" \"https://ankr.in/interact/?file=%1&edit=true\""
+
+; ─────────────────────────────────────────────────────────────────────────────
+; JSON Files - Specific Handler
+; ─────────────────────────────────────────────────────────────────────────────
+[HKEY_CLASSES_ROOT\.json\shell\ANKRInteract]
+@="View with ANKR Interact"
+"Icon"="shell32.dll,70"
+
+[HKEY_CLASSES_ROOT\.json\shell\ANKRInteract\command]
+@="cmd /c start \"\" \"https://ankr.in/interact/?file=%1\""
+
+; ─────────────────────────────────────────────────────────────────────────────
+; PDF Files - Specific Handler
+; ─────────────────────────────────────────────────────────────────────────────
+[HKEY_CLASSES_ROOT\.pdf\shell\ANKRInteract]
+@="View with ANKR Interact"
+"Icon"="shell32.dll,21"
+
+[HKEY_CLASSES_ROOT\.pdf\shell\ANKRInteract\command]
+@="cmd /c start \"\" \"https://ankr.in/interact/?file=%1\""

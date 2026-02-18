@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ANKR TMS 2.0 | Product Datasheet</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root { --ankr-orange: #f97316; --ankr-blue: #3b82f6; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Space Grotesk', sans-serif; background: white; color: #1a1a2e; line-height: 1.6; font-size: 11pt; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    @media print { .no-print { display: none; } }
+    @media screen { .document { max-width: 210mm; margin: 20px auto; background: white; box-shadow: 0 4px 20px rgba(0,0,0,0.1); } }
+    .document { padding: 40px 50px; }
+    .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--ankr-blue); padding-bottom: 20px; margin-bottom: 30px; }
+    .logo { display: flex; align-items: center; gap: 12px; }
+    .logo-icon { font-size: 36px; }
+    .logo-text { font-size: 24px; font-weight: 700; color: var(--ankr-blue); }
+    h1 { font-size: 28pt; color: #1a1a2e; margin-bottom: 8px; }
+    h2 { font-size: 14pt; color: var(--ankr-blue); margin: 25px 0 12px 0; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+    h3 { font-size: 12pt; margin: 15px 0 8px 0; }
+    p { margin-bottom: 10px; color: #444; }
+    .subtitle { color: #666; font-size: 14pt; }
+    table { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 10pt; }
+    th, td { padding: 10px 12px; text-align: left; border: 1px solid #ddd; }
+    th { background: #f0f7ff; font-weight: 600; }
+    ul { margin: 10px 0 10px 20px; }
+    li { margin-bottom: 5px; }
+    .highlight { background: #f0f7ff; border-left: 4px solid var(--ankr-blue); padding: 15px 20px; margin: 20px 0; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .card { border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; }
+    .card h4 { color: var(--ankr-blue); margin-bottom: 8px; }
+    .tag { display: inline-block; padding: 2px 8px; background: #e3f2fd; color: var(--ankr-blue); border-radius: 4px; font-size: 9pt; margin-right: 4px; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; display: flex; justify-content: space-between; color: #888; font-size: 9pt; }
+    .download-bar { position: fixed; bottom: 20px; right: 20px; }
+    .download-btn { background: var(--ankr-blue); color: white; padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="download-bar no-print">
+    <button class="download-btn" onclick="window.print()">&#128196; Save as PDF</button>
+  </div>
+
+  <div class="document">
+    <div class="header">
+      <div class="logo">
+        <span class="logo-icon">&#128666;</span>
+        <div>
+          <div class="logo-text">ANKR TMS 2.0</div>
+          <div style="color: #666; font-size: 10pt;">Transport Management System</div>
+        </div>
+      </div>
+      <div style="text-align: right; color: #666; font-size: 10pt;">
+        <div>ankr Labs</div>
+        <div>January 2026</div>
+      </div>
+    </div>
+
+    <h1>ANKR TMS 2.0</h1>
+    <p class="subtitle">Complete TMS for Indian Road Freight Operators</p>
+
+    <div class="highlight">
+      <p><strong>Market:</strong> India Road Freight - &#8377;15 Lakh Crore TAM | <strong>Target:</strong> Fleet owners, Transport companies, 3PLs</p>
+    </div>
+
+    <h2>&#127919; Key Features</h2>
+    <div class="grid">
+      <div class="card">
+        <h4>&#128205; Real-Time Fleet Tracking</h4>
+        <ul>
+          <li>Live GPS tracking on Leaflet maps</li>
+          <li>FASTag balance & toll monitoring</li>
+          <li>Geofencing & route deviation alerts</li>
+          <li>Vehicle health monitoring</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>&#128230; Order Management</h4>
+        <ul>
+          <li>Booking &#8594; Dispatch &#8594; POD &#8594; Invoice</li>
+          <li>Multi-stop trip planning</li>
+          <li>Load optimization</li>
+          <li>Customer portal for tracking</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>&#128176; Billing & Compliance</h4>
+        <ul>
+          <li>E-Invoice generation (NIC API)</li>
+          <li>E-Way Bill automation</li>
+          <li>GST-compliant invoicing</li>
+          <li>Bank reconciliation</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>&#128241; Driver App (PWA)</h4>
+        <ul>
+          <li>Hindi voice commands</li>
+          <li>Offline-first operation</li>
+          <li>Document capture (POD, RC)</li>
+          <li>Expense tracking</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2>&#128187; Technical Specifications</h2>
+    <table>
+      <tr><th>Component</th><th>Technology</th><th>Details</th></tr>
+      <tr><td>Frontend</td><td>React 19 + Vite</td><td>Port 3002, Tailwind CSS, Apollo Client</td></tr>
+      <tr><td>Backend</td><td>Fastify + Mercurius</td><td>Port 4000, GraphQL API</td></tr>
+      <tr><td>Database</td><td>PostgreSQL + Prisma</td><td>pgvector for semantic search</td></tr>
+      <tr><td>Maps</td><td>Leaflet + OpenStreetMap</td><td>No Google Maps dependency</td></tr>
+      <tr><td>Driver App</td><td>PWA (React)</td><td>Port 3005, installable</td></tr>
+      <tr><td>WhatsApp Bot</td><td>Fastify</td><td>Fleet ops via messaging</td></tr>
+    </table>
+
+    <h2>&#128200; Modules</h2>
+    <table>
+      <tr><th>Module</th><th>Features</th></tr>
+      <tr><td>Command Center</td><td>Real-time dashboard, trip monitoring, alerts</td></tr>
+      <tr><td>Fleet Management</td><td>Vehicles, drivers, documents, maintenance</td></tr>
+      <tr><td>Orders & Trips</td><td>Booking, dispatch, tracking, POD capture</td></tr>
+      <tr><td>Rate Engine</td><td>Auto-quote, market rates, customer contracts</td></tr>
+      <tr><td>Invoicing</td><td>E-Invoice, E-Way Bill, GST returns</td></tr>
+      <tr><td>Bank Reconciliation</td><td>Statement upload, auto-matching, reports</td></tr>
+      <tr><td>CRM</td><td>Leads, quotes, customer management</td></tr>
+      <tr><td>WhatsApp Inbox</td><td>Customer communication, broadcast</td></tr>
+      <tr><td>Analytics</td><td>Fleet performance, revenue, cost analysis</td></tr>
+      <tr><td>HRMS</td><td>Employees, attendance, payroll, leave</td></tr>
+    </table>
+
+    <h2>&#128279; Integrations</h2>
+    <p><span class="tag">NIC E-Invoice</span> <span class="tag">E-Way Bill</span> <span class="tag">FASTag</span> <span class="tag">GPS Devices</span> <span class="tag">WhatsApp API</span> <span class="tag">UPI</span> <span class="tag">DigiLocker</span> <span class="tag">Aadhaar</span></p>
+
+    <h2>&#128176; Pricing</h2>
+    <table>
+      <tr><th>Plan</th><th>Vehicles</th><th>Price</th><th>Includes</th></tr>
+      <tr><td>Starter</td><td>Up to 10</td><td>&#8377;5,000/mo</td><td>Core TMS, GPS, Invoicing</td></tr>
+      <tr><td>Growth</td><td>Up to 50</td><td>&#8377;15,000/mo</td><td>+ WhatsApp, Analytics, CRM</td></tr>
+      <tr><td>Enterprise</td><td>Unlimited</td><td>Custom</td><td>+ API access, White-label, Support</td></tr>
+    </table>
+
+    <div class="footer">
+      <div>&#9875; ankr Labs | Jai Guru Ji</div>
+      <div>capt.anil.sharma@powerpbox.org | +91 7506926394</div>
+    </div>
+  </div>
+</body>
+</html>

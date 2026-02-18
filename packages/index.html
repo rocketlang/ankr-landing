@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ANKR Packages | @ankr/* Registry</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
+      color: #e5e5e5;
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+    .container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
+    header { text-align: center; padding: 2rem 0; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 2rem; }
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .subtitle { color: #a1a1aa; font-size: 1.1rem; margin-top: 0.5rem; }
+    .stats { display: flex; justify-content: center; gap: 2rem; margin-top: 1.5rem; flex-wrap: wrap; }
+    .stat { text-align: center; padding: 1rem 2rem; background: rgba(99, 102, 241, 0.1); border-radius: 12px; border: 1px solid rgba(99, 102, 241, 0.2); cursor: pointer; transition: all 0.2s; }
+    .stat:hover { background: rgba(99, 102, 241, 0.25); transform: translateY(-2px); }
+    .stat.active { background: rgba(99, 102, 241, 0.4); border-color: #6366f1; }
+    .stat-value { font-size: 2rem; font-weight: 700; color: #6366f1; }
+    .stat-label { font-size: 0.75rem; color: #71717a; text-transform: uppercase; letter-spacing: 1px; }
+
+    /* Search & Filter */
+    .controls { display: flex; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
+    .search-box {
+      flex: 1; min-width: 250px;
+      padding: 0.75rem 1rem;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      color: #e5e5e5;
+      font-size: 1rem;
+    }
+    .search-box:focus { outline: none; border-color: #6366f1; }
+    .filter-btn {
+      padding: 0.75rem 1.25rem;
+      background: rgba(99, 102, 241, 0.2);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 8px;
+      color: #a78bfa;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+    .filter-btn:hover, .filter-btn.active { background: rgba(99, 102, 241, 0.4); }
+
+    /* Package Grid */
+    .packages-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1rem;
+    }
+    .package-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      padding: 1.25rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .package-card:hover {
+      background: rgba(99, 102, 241, 0.1);
+      border-color: rgba(99, 102, 241, 0.3);
+      transform: translateY(-2px);
+    }
+    .pkg-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }
+    .pkg-name { font-family: 'Monaco', monospace; color: #a78bfa; font-size: 0.95rem; font-weight: 600; }
+    .pkg-version { font-size: 0.75rem; color: #6366f1; background: rgba(99, 102, 241, 0.2); padding: 2px 8px; border-radius: 4px; }
+    .pkg-desc { color: #a1a1aa; font-size: 0.85rem; margin-bottom: 0.75rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .pkg-meta { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .pkg-tag { font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; background: rgba(255,255,255,0.05); color: #71717a; }
+
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.8);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal {
+      background: #1a1a2e;
+      border-radius: 16px;
+      max-width: 700px;
+      width: 100%;
+      max-height: 80vh;
+      overflow-y: auto;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .modal-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-title { font-size: 1.3rem; color: #a78bfa; font-family: monospace; }
+    .modal-close { background: none; border: none; color: #71717a; font-size: 1.5rem; cursor: pointer; }
+    .modal-body { padding: 1.5rem; }
+    .detail-row { margin-bottom: 1rem; }
+    .detail-label { font-size: 0.75rem; color: #71717a; text-transform: uppercase; margin-bottom: 0.25rem; }
+    .detail-value { color: #e5e5e5; }
+    .install-cmd {
+      background: #0a0a0f;
+      padding: 1rem;
+      border-radius: 8px;
+      font-family: monospace;
+      color: #10b981;
+      margin-top: 1rem;
+      position: relative;
+    }
+    .copy-btn {
+      position: absolute;
+      right: 0.5rem;
+      top: 0.5rem;
+      background: rgba(99, 102, 241, 0.3);
+      border: none;
+      padding: 0.4rem 0.8rem;
+      border-radius: 4px;
+      color: #a78bfa;
+      cursor: pointer;
+      font-size: 0.75rem;
+    }
+    .deps-list { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+    .dep-tag { font-size: 0.8rem; padding: 4px 8px; background: rgba(99, 102, 241, 0.15); border-radius: 4px; color: #a78bfa; }
+
+    /* Loading */
+    .loading { text-align: center; padding: 3rem; color: #71717a; }
+    .spinner { display: inline-block; width: 30px; height: 30px; border: 3px solid rgba(99, 102, 241, 0.3); border-top-color: #6366f1; border-radius: 50%; animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    footer { text-align: center; padding: 2rem; color: #71717a; font-size: 0.85rem; border-top: 1px solid rgba(255,255,255,0.1); margin-top: 3rem; }
+    footer a { color: #6366f1; text-decoration: none; }
+
+    @media (max-width: 768px) {
+      .packages-grid { grid-template-columns: 1fr; }
+      .controls { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>@ankr/* Packages</h1>
+      <p class="subtitle">Enterprise-grade npm packages for Indian businesses</p>
+      <div class="stats">
+        <div class="stat" onclick="showAllPackages()" title="View all packages"><div class="stat-value" id="total-count">-</div><div class="stat-label">Total</div></div>
+        <div class="stat" onclick="showAnkrOnly()" title="Filter @ankr/* only"><div class="stat-value" id="ankr-count">-</div><div class="stat-label">@ankr/*</div></div>
+        <div class="stat" onclick="showCategoriesModal()" title="View categories breakdown"><div class="stat-value" id="category-count">-</div><div class="stat-label">Categories</div></div>
+      </div>
+    </header>
+
+    <div class="controls">
+      <input type="text" class="search-box" id="search" placeholder="Search packages... (e.g. gst, voice, eon)">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="ai">AI</button>
+      <button class="filter-btn" data-filter="compliance">Compliance</button>
+      <button class="filter-btn" data-filter="erp">ERP</button>
+      <button class="filter-btn" data-filter="voice">Voice</button>
+      <button class="filter-btn" data-filter="logistics">Logistics</button>
+    </div>
+
+    <div class="packages-grid" id="packages-grid">
+      <div class="loading"><div class="spinner"></div><p>Loading packages...</p></div>
+    </div>
+
+    <footer>
+      <p><a href="/">ankr.in</a> | <a href="/project/documents/">Documents</a> | <a href="https://ankrlabs.org">ANKR Labs</a></p>
+      <p style="margin-top: 0.5rem;">Registry: <code>https://swayam.digimitra.guru/npm/</code></p>
+    </footer>
+  </div>
+
+  <!-- Package Detail Modal -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title" id="modal-name">@ankr/package</span>
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="modal-body">Loading...</div>
+    </div>
+  </div>
+
+  <!-- Categories Modal -->
+  <div class="modal-overlay" id="categories-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title">Package Categories</span>
+        <button class="modal-close" onclick="closeCategoriesModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="categories-body">Loading...</div>
+    </div>
+  </div>
+
+  <script>
+    let allPackages = [];
+    let currentFilter = 'all';
+
+    // Category detection
+    function detectCategory(pkg) {
+      const name = pkg.name.toLowerCase();
+      const desc = (pkg.description || '').toLowerCase();
+      if (name.includes('gst') || name.includes('compliance') || name.includes('mca') || name.includes('itr') || desc.includes('gst')) return 'compliance';
+      if (name.includes('ai') || name.includes('eon') || name.includes('rag') || name.includes('llm') || name.includes('embed')) return 'ai';
+      if (name.includes('voice') || name.includes('bani') || name.includes('speech') || name.includes('tts')) return 'voice';
+      if (name.includes('erp') || name.includes('dodd') || name.includes('accounting') || name.includes('invoice')) return 'erp';
+      if (name.includes('tms') || name.includes('truck') || name.includes('freight') || name.includes('ship') || name.includes('logistics')) return 'logistics';
+      if (name.includes('crm') || name.includes('lead') || name.includes('contact')) return 'crm';
+      if (name.includes('auth') || name.includes('oauth') || name.includes('iam')) return 'auth';
+      return 'core';
+    }
+
+    // Load packages from API
+    async function loadPackages() {
+      try {
+        const res = await fetch('/npm-api/data/packages');
+        const data = await res.json();
+        allPackages = data.map(p => ({ ...p, category: detectCategory(p) }));
+
+        // Update stats
+        document.getElementById('total-count').textContent = allPackages.length;
+        document.getElementById('ankr-count').textContent = allPackages.filter(p => p.name.startsWith('@ankr/')).length;
+        const categories = [...new Set(allPackages.map(p => p.category))];
+        document.getElementById('category-count').textContent = categories.length;
+
+        renderPackages();
+      } catch (err) {
+        document.getElementById('packages-grid').innerHTML = '<p style="color:#ef4444;">Failed to load packages. Is Verdaccio running?</p>';
+      }
+    }
+
+    // Render packages
+    function renderPackages() {
+      const search = document.getElementById('search').value.toLowerCase();
+      const grid = document.getElementById('packages-grid');
+
+      let filtered = allPackages
+        .filter(p => p.name.startsWith('@ankr/') || p.name.startsWith('@ankr-labs/'))
+        .filter(p => currentFilter === 'all' || p.category === currentFilter)
+        .filter(p => !search || p.name.includes(search) || (p.description || '').toLowerCase().includes(search))
+        .sort((a, b) => a.name.localeCompare(b.name));
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '<p style="color:#71717a;text-align:center;padding:2rem;">No packages found</p>';
+        return;
+      }
+
+      grid.innerHTML = filtered.map(pkg => `
+        <div class="package-card" onclick="showPackage('${pkg.name}')">
+          <div class="pkg-header">
+            <span class="pkg-name">${pkg.name}</span>
+            <span class="pkg-version">v${pkg.version || '1.0.0'}</span>
+          </div>
+          <p class="pkg-desc">${pkg.description || 'No description'}</p>
+          <div class="pkg-meta">
+            <span class="pkg-tag">${pkg.category}</span>
+            ${pkg.author ? `<span class="pkg-tag">${typeof pkg.author === 'string' ? pkg.author : pkg.author.name || ''}</span>` : ''}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Show package details
+    async function showPackage(name) {
+      document.getElementById('modal').classList.add('active');
+      document.getElementById('modal-name').textContent = name;
+      document.getElementById('modal-body').innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+
+      try {
+        const res = await fetch(`/npm/${encodeURIComponent(name).replace('%40', '@')}`);
+        const data = await res.json();
+        const latest = data['dist-tags']?.latest;
+        const version = data.versions?.[latest] || {};
+
+        document.getElementById('modal-body').innerHTML = `
+          <div class="detail-row">
+            <div class="detail-label">Version</div>
+            <div class="detail-value">${latest || 'N/A'}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Description</div>
+            <div class="detail-value">${data.description || 'No description'}</div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">License</div>
+            <div class="detail-value">${version.license || data.license || 'MIT'}</div>
+          </div>
+          ${version.dependencies ? `
+          <div class="detail-row">
+            <div class="detail-label">Dependencies</div>
+            <div class="deps-list">
+              ${Object.keys(version.dependencies).slice(0, 10).map(d => `<span class="dep-tag">${d}</span>`).join('')}
+              ${Object.keys(version.dependencies).length > 10 ? `<span class="dep-tag">+${Object.keys(version.dependencies).length - 10} more</span>` : ''}
+            </div>
+          </div>` : ''}
+          <div class="detail-row">
+            <div class="detail-label">Install</div>
+            <div class="install-cmd">
+              npm install ${name} --registry https://swayam.digimitra.guru/npm/
+              <button class="copy-btn" onclick="copyInstall('${name}')">Copy</button>
+            </div>
+          </div>
+          <div class="detail-row">
+            <div class="detail-label">Published</div>
+            <div class="detail-value">${data.time?.[latest] ? new Date(data.time[latest]).toLocaleDateString() : 'N/A'}</div>
+          </div>
+        `;
+      } catch (err) {
+        document.getElementById('modal-body').innerHTML = '<p style="color:#ef4444;">Failed to load package details</p>';
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.remove('active');
+    }
+
+    function closeCategoriesModal() {
+      document.getElementById('categories-modal').classList.remove('active');
+    }
+
+    // Stat tile click handlers
+    function showAllPackages() {
+      currentFilter = 'all';
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector('[data-filter="all"]').classList.add('active');
+      renderPackages();
+      document.getElementById('packages-grid').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function showAnkrOnly() {
+      document.getElementById('search').value = '@ankr/';
+      currentFilter = 'all';
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector('[data-filter="all"]').classList.add('active');
+      renderPackages();
+      document.getElementById('packages-grid').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function showCategoriesModal() {
+      document.getElementById('categories-modal').classList.add('active');
+      const categoryStats = {};
+      allPackages.filter(p => p.name.startsWith('@ankr/') || p.name.startsWith('@ankr-labs/')).forEach(p => {
+        categoryStats[p.category] = (categoryStats[p.category] || 0) + 1;
+      });
+
+      const sorted = Object.entries(categoryStats).sort((a, b) => b[1] - a[1]);
+      document.getElementById('categories-body').innerHTML = `
+        <div style="display:grid;gap:0.75rem;">
+          ${sorted.map(([cat, count]) => `
+            <div class="category-row" onclick="filterByCategory('${cat}')" style="display:flex;justify-content:space-between;align-items:center;padding:1rem;background:rgba(99,102,241,0.1);border-radius:8px;cursor:pointer;transition:all 0.2s;">
+              <span style="font-weight:600;text-transform:capitalize;">${cat}</span>
+              <span style="background:#6366f1;color:white;padding:4px 12px;border-radius:20px;font-size:0.85rem;">${count}</span>
+            </div>
+          `).join('')}
+        </div>
+        <p style="color:#71717a;font-size:0.85rem;margin-top:1rem;text-align:center;">Click a category to filter packages</p>
+      `;
+    }
+
+    function filterByCategory(cat) {
+      closeCategoriesModal();
+      currentFilter = cat;
+      document.querySelectorAll('.filter-btn').forEach(b => {
+        b.classList.remove('active');
+        if (b.dataset.filter === cat) b.classList.add('active');
+      });
+      if (!document.querySelector(`[data-filter="${cat}"]`)) {
+        document.querySelector('[data-filter="all"]').classList.add('active');
+      }
+      renderPackages();
+      document.getElementById('packages-grid').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function copyInstall(name) {
+      navigator.clipboard.writeText(`npm install ${name} --registry https://swayam.digimitra.guru/npm/`);
+      event.target.textContent = 'Copied!';
+      setTimeout(() => event.target.textContent = 'Copy', 1500);
+    }
+
+    // Event listeners
+    document.getElementById('search').addEventListener('input', renderPackages);
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilter = btn.dataset.filter;
+        renderPackages();
+      });
+    });
+    document.getElementById('modal').addEventListener('click', e => {
+      if (e.target.id === 'modal') closeModal();
+    });
+    document.getElementById('categories-modal').addEventListener('click', e => {
+      if (e.target.id === 'categories-modal') closeCategoriesModal();
+    });
+
+    // Load on start
+    loadPackages();
+  </script>
+</body>
+</html>

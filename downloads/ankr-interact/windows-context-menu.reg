@@ -1,0 +1,59 @@
+Windows Registry Editor Version 5.00
+
+; ═══════════════════════════════════════════════════════════════════════════
+; ANKR Interact - Windows Context Menu Integration
+; ═══════════════════════════════════════════════════════════════════════════
+;
+; This adds "Open with ANKR Interact" to the right-click context menu
+; for all files and folders.
+;
+; To install: Double-click this file and confirm
+; To uninstall: Run windows-context-menu-uninstall.reg
+; ═══════════════════════════════════════════════════════════════════════════
+
+; ─────────────────────────────────────────────────────────────────────────────
+; All Files - Context Menu
+; ─────────────────────────────────────────────────────────────────────────────
+[HKEY_CLASSES_ROOT\*\shell\ANKRInteract]
+@="Open with ANKR Interact"
+"Icon"="\"%LOCALAPPDATA%\\Programs\\ankr-interact-desktop\\ANKR Interact.exe\",0"
+"Position"="middle"
+
+[HKEY_CLASSES_ROOT\*\shell\ANKRInteract\command]
+@="\"%LOCALAPPDATA%\\Programs\\ankr-interact-desktop\\ANKR Interact.exe\" \"%1\""
+
+; ─────────────────────────────────────────────────────────────────────────────
+; Folders - Context Menu
+; ─────────────────────────────────────────────────────────────────────────────
+[HKEY_CLASSES_ROOT\Directory\shell\ANKRInteract]
+@="Browse with ANKR Interact"
+"Icon"="\"%LOCALAPPDATA%\\Programs\\ankr-interact-desktop\\ANKR Interact.exe\",0"
+"Position"="middle"
+
+[HKEY_CLASSES_ROOT\Directory\shell\ANKRInteract\command]
+@="\"%LOCALAPPDATA%\\Programs\\ankr-interact-desktop\\ANKR Interact.exe\" \"%1\""
+
+; ─────────────────────────────────────────────────────────────────────────────
+; Directory Background - Context Menu (right-click in empty space)
+; ─────────────────────────────────────────────────────────────────────────────
+[HKEY_CLASSES_ROOT\Directory\Background\shell\ANKRInteract]
+@="Open ANKR Interact here"
+"Icon"="\"%LOCALAPPDATA%\\Programs\\ankr-interact-desktop\\ANKR Interact.exe\",0"
+"Position"="middle"
+
+[HKEY_CLASSES_ROOT\Directory\Background\shell\ANKRInteract\command]
+@="\"%LOCALAPPDATA%\\Programs\\ankr-interact-desktop\\ANKR Interact.exe\" \"%V\""
+
+; ─────────────────────────────────────────────────────────────────────────────
+; Protocol Handler: ankr://
+; ─────────────────────────────────────────────────────────────────────────────
+[HKEY_CLASSES_ROOT\ankr]
+@="URL:ANKR Protocol"
+"URL Protocol"=""
+
+[HKEY_CLASSES_ROOT\ankr\shell]
+
+[HKEY_CLASSES_ROOT\ankr\shell\open]
+
+[HKEY_CLASSES_ROOT\ankr\shell\open\command]
+@="\"%LOCALAPPDATA%\\Programs\\ankr-interact-desktop\\ANKR Interact.exe\" \"%1\""

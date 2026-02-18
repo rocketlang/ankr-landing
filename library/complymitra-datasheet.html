@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ComplyMitra | Product Datasheet</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root { --ankr-orange: #f97316; --comply-green: #22c55e; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Space Grotesk', sans-serif; background: white; color: #1a1a2e; line-height: 1.6; font-size: 11pt; }
+    @media print { .no-print { display: none; } }
+    @media screen { .document { max-width: 210mm; margin: 20px auto; background: white; box-shadow: 0 4px 20px rgba(0,0,0,0.1); } }
+    .document { padding: 40px 50px; }
+    .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid var(--comply-green); padding-bottom: 20px; margin-bottom: 30px; }
+    .logo { display: flex; align-items: center; gap: 12px; }
+    .logo-icon { font-size: 36px; }
+    .logo-text { font-size: 24px; font-weight: 700; color: var(--comply-green); }
+    h1 { font-size: 28pt; color: #1a1a2e; margin-bottom: 8px; }
+    h2 { font-size: 14pt; color: var(--comply-green); margin: 25px 0 12px 0; border-bottom: 1px solid #eee; padding-bottom: 5px; }
+    p { margin-bottom: 10px; color: #444; }
+    .subtitle { color: #666; font-size: 14pt; }
+    table { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 10pt; }
+    th, td { padding: 10px 12px; text-align: left; border: 1px solid #ddd; }
+    th { background: #f0fdf4; font-weight: 600; }
+    ul { margin: 10px 0 10px 20px; }
+    li { margin-bottom: 5px; }
+    .highlight { background: #f0fdf4; border-left: 4px solid var(--comply-green); padding: 15px 20px; margin: 20px 0; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .card { border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; }
+    .card h4 { color: var(--comply-green); margin-bottom: 8px; }
+    .tag { display: inline-block; padding: 2px 8px; background: #dcfce7; color: #166534; border-radius: 4px; font-size: 9pt; margin-right: 4px; }
+    .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #ddd; display: flex; justify-content: space-between; color: #888; font-size: 9pt; }
+    .download-bar { position: fixed; bottom: 20px; right: 20px; }
+    .download-btn { background: var(--comply-green); color: white; padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; }
+    .count { font-size: 48pt; font-weight: 700; color: var(--comply-green); }
+  </style>
+</head>
+<body>
+  <div class="download-bar no-print">
+    <button class="download-btn" onclick="window.print()">&#128196; Save as PDF</button>
+  </div>
+
+  <div class="document">
+    <div class="header">
+      <div class="logo">
+        <span class="logo-icon">&#9989;</span>
+        <div>
+          <div class="logo-text">ComplyMitra</div>
+          <div style="color: #666; font-size: 10pt;">AI-Powered Compliance Platform</div>
+        </div>
+      </div>
+      <div style="text-align: right; color: #666; font-size: 10pt;">
+        <div>ankr Labs</div>
+        <div>January 2026</div>
+      </div>
+    </div>
+
+    <h1>ComplyMitra</h1>
+    <p class="subtitle">61 AI-Powered Tools for Indian Business Compliance</p>
+
+    <div class="highlight" style="text-align: center;">
+      <span class="count">61</span>
+      <p style="margin: 0;"><strong>AI Compliance Tools</strong> | GST, TDS, ITR, MCA, and more</p>
+    </div>
+
+    <h2>&#127919; The Problem We Solve</h2>
+    <p>Indian businesses face complex, ever-changing compliance requirements across multiple agencies. Missing deadlines results in penalties, and manual processes are error-prone and time-consuming.</p>
+
+    <h2>&#9989; Compliance Modules</h2>
+
+    <h3>GST Compliance Suite</h3>
+    <table>
+      <tr><th>Tool</th><th>Function</th></tr>
+      <tr><td>GSTR-1 Auto-Filer</td><td>Auto-generate and file outward supply returns</td></tr>
+      <tr><td>GSTR-3B Generator</td><td>Summary return with ITC reconciliation</td></tr>
+      <tr><td>GSTR-2A/2B Matcher</td><td>Match purchase data with supplier filings</td></tr>
+      <tr><td>HSN Code Validator</td><td>Validate and suggest correct HSN codes</td></tr>
+      <tr><td>E-Invoice Generator</td><td>NIC-compliant IRN generation</td></tr>
+      <tr><td>E-Way Bill Manager</td><td>Generate, extend, cancel e-way bills</td></tr>
+      <tr><td>ITC Calculator</td><td>Input Tax Credit optimization</td></tr>
+      <tr><td>GST Audit Prep</td><td>Annual return preparation (GSTR-9)</td></tr>
+    </table>
+
+    <h3>TDS Management</h3>
+    <table>
+      <tr><th>Tool</th><th>Function</th></tr>
+      <tr><td>TDS Calculator</td><td>Auto-calculate TDS for all sections</td></tr>
+      <tr><td>Form 16/16A Generator</td><td>Generate salary and other TDS certificates</td></tr>
+      <tr><td>TDS Return Filer</td><td>Quarterly return preparation (24Q, 26Q)</td></tr>
+      <tr><td>Lower Deduction Tracker</td><td>Track 197 certificates</td></tr>
+      <tr><td>TDS Reconciliation</td><td>Match with Form 26AS</td></tr>
+    </table>
+
+    <h3>Income Tax & ITR</h3>
+    <table>
+      <tr><th>Tool</th><th>Function</th></tr>
+      <tr><td>ITR Form Selector</td><td>AI suggests correct ITR form</td></tr>
+      <tr><td>Document OCR</td><td>Extract data from Form 16, bank statements</td></tr>
+      <tr><td>Tax Calculator</td><td>Old vs New regime comparison</td></tr>
+      <tr><td>Deduction Optimizer</td><td>Suggest 80C, 80D deductions</td></tr>
+      <tr><td>ITR Filer</td><td>Guided filing with validation</td></tr>
+    </table>
+
+    <h3>MCA & Corporate</h3>
+    <table>
+      <tr><th>Tool</th><th>Function</th></tr>
+      <tr><td>Annual Return (AOC-4)</td><td>Financial statement filing</td></tr>
+      <tr><td>MGT-7 Generator</td><td>Annual return preparation</td></tr>
+      <tr><td>Director KYC (DIR-3)</td><td>Annual director verification</td></tr>
+      <tr><td>Board Resolution Helper</td><td>AI-generated resolution templates</td></tr>
+      <tr><td>ROC Filing Tracker</td><td>Track all MCA filings</td></tr>
+    </table>
+
+    <h2>&#128197; Smart Compliance Calendar</h2>
+    <div class="grid">
+      <div class="card">
+        <h4>&#128276; Never Miss a Deadline</h4>
+        <ul>
+          <li>All India compliance dates</li>
+          <li>SMS, Email, WhatsApp alerts</li>
+          <li>7-day, 3-day, 1-day reminders</li>
+          <li>Custom calendar sync</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4>&#128202; Dashboard</h4>
+        <ul>
+          <li>Upcoming deadlines view</li>
+          <li>Overdue items highlight</li>
+          <li>Completion tracking</li>
+          <li>Team assignment</li>
+        </ul>
+      </div>
+    </div>
+
+    <h2>&#129302; AI Features</h2>
+    <p><span class="tag">Document OCR</span> <span class="tag">Auto-Fill Forms</span> <span class="tag">Error Detection</span> <span class="tag">Anomaly Alerts</span> <span class="tag">Penalty Prediction</span> <span class="tag">Deduction Suggestions</span></p>
+
+    <h2>&#128176; Pricing</h2>
+    <table>
+      <tr><th>Plan</th><th>Entities</th><th>Price</th><th>Tools</th></tr>
+      <tr><td>Solo</td><td>1</td><td>&#8377;999/mo</td><td>GST + TDS + Calendar</td></tr>
+      <tr><td>Professional</td><td>Up to 10</td><td>&#8377;4,999/mo</td><td>All 61 tools</td></tr>
+      <tr><td>CA Firm</td><td>Unlimited</td><td>&#8377;14,999/mo</td><td>All + Client Portal</td></tr>
+    </table>
+
+    <div class="footer">
+      <div>&#9875; ankr Labs | Jai Guru Ji</div>
+      <div>capt.anil.sharma@powerpbox.org | +91 7506926394</div>
+    </div>
+  </div>
+</body>
+</html>

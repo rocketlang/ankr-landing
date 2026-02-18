@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Downloads | ankr Library</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+Devanagari:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --ankr-orange: #f97316;
+      --ankr-dark: #0a0a0f;
+      --ankr-darker: #050508;
+    }
+    body {
+      font-family: 'Space Grotesk', sans-serif;
+      background: var(--ankr-darker);
+      color: #e5e5e5;
+    }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .hindi { font-family: 'Noto Sans Devanagari', sans-serif; }
+    .gradient-text {
+      background: linear-gradient(135deg, #f97316, #fb923c, #fbbf24);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .card {
+      background: linear-gradient(145deg, rgba(20,20,30,0.9), rgba(10,10,15,0.95));
+      border: 1px solid rgba(249, 115, 22, 0.2);
+      transition: all 0.3s ease;
+    }
+    .card:hover {
+      border-color: rgba(249, 115, 22, 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 40px rgba(249, 115, 22, 0.1);
+    }
+    .download-btn {
+      background: linear-gradient(135deg, #f97316, #ea580c);
+      transition: all 0.3s ease;
+    }
+    .download-btn:hover {
+      background: linear-gradient(135deg, #fb923c, #f97316);
+      transform: scale(1.02);
+    }
+    .tag {
+      background: rgba(249, 115, 22, 0.15);
+      border: 1px solid rgba(249, 115, 22, 0.3);
+    }
+    @media print {
+      body { background: white; color: black; }
+      .no-print { display: none; }
+    }
+  </style>
+</head>
+<body class="min-h-screen">
+  <!-- Navigation -->
+  <nav class="fixed top-0 left-0 right-0 z-50 bg-opacity-90 backdrop-blur-md border-b border-gray-800 no-print" style="background: rgba(5,5,8,0.9);">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-3">
+        <span class="text-3xl">&#9875;</span>
+        <span class="text-xl font-bold gradient-text">ankr</span>
+        <span class="text-gray-500">/</span>
+        <span class="text-gray-400">library</span>
+      </a>
+      <div class="flex items-center gap-6">
+        <a href="/" class="text-gray-400 hover:text-orange-400 transition-colors">Home</a>
+        <a href="/library/" class="text-orange-400">Downloads</a>
+        <a href="https://github.com/anthropics" target="_blank" class="text-gray-400 hover:text-orange-400 transition-colors">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="pt-32 pb-16 px-6">
+    <div class="max-w-7xl mx-auto text-center">
+      <h1 class="text-5xl font-bold mb-4">
+        <span class="gradient-text">ankr Library</span>
+      </h1>
+      <p class="text-xl text-gray-400 mb-2">Product Documentation & Resources</p>
+      <p class="text-gray-500 hindi">उत्पाद दस्तावेज़ और संसाधन</p>
+    </div>
+  </section>
+
+  <!-- Downloads Grid -->
+  <section class="py-12 px-6">
+    <div class="max-w-7xl mx-auto">
+
+      <!-- Featured Download -->
+      <div class="mb-12">
+        <h2 class="text-2xl font-semibold mb-6 flex items-center gap-3">
+          <span class="text-orange-400">&#9733;</span> Featured
+        </h2>
+        <div class="card rounded-2xl p-8">
+          <div class="flex flex-col lg:flex-row gap-8 items-start">
+            <div class="flex-1">
+              <div class="flex items-center gap-3 mb-4">
+                <span class="tag px-3 py-1 rounded-full text-sm text-orange-400">NEW</span>
+                <span class="tag px-3 py-1 rounded-full text-sm text-gray-400">PDF</span>
+              </div>
+              <h3 class="text-3xl font-bold text-white mb-3">ankr Product Suite Overview</h3>
+              <p class="text-gray-400 mb-4 leading-relaxed">
+                Complete overview of the ankr platform - AI-first infrastructure for India's digital economy.
+                Includes ANKR TMS 2.0, ComplyMitra, SWAYAM, Live Babel, and the entire AI stack.
+              </p>
+              <p class="text-gray-500 hindi mb-6">
+                भारत की डिजिटल अर्थव्यवस्था के लिए AI-फर्स्ट इंफ्रास्ट्रक्चर का पूर्ण अवलोकन
+              </p>
+              <div class="flex flex-wrap gap-2 mb-6">
+                <span class="tag px-3 py-1 rounded-full text-xs text-gray-400">TMS</span>
+                <span class="tag px-3 py-1 rounded-full text-xs text-gray-400">Compliance</span>
+                <span class="tag px-3 py-1 rounded-full text-xs text-gray-400">Voice AI</span>
+                <span class="tag px-3 py-1 rounded-full text-xs text-gray-400">Memory Engine</span>
+                <span class="tag px-3 py-1 rounded-full text-xs text-gray-400">Enterprise</span>
+              </div>
+              <div class="flex gap-4">
+                <a href="/library/ankr-product-showcase.html" target="_blank" class="download-btn px-6 py-3 rounded-xl text-white font-semibold flex items-center gap-2">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                  View Document
+                </a>
+                <button onclick="window.print()" class="px-6 py-3 rounded-xl border border-gray-700 text-gray-300 hover:border-orange-500 hover:text-orange-400 transition-colors flex items-center gap-2">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                  Print
+                </button>
+              </div>
+            </div>
+            <div class="lg:w-72 w-full">
+              <div class="bg-gray-900 rounded-xl p-6 border border-gray-800">
+                <h4 class="text-sm text-gray-500 uppercase mb-4">Document Info</h4>
+                <div class="space-y-3 text-sm">
+                  <div class="flex justify-between">
+                    <span class="text-gray-500">Version</span>
+                    <span class="text-white mono">1.0.0</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-500">Updated</span>
+                    <span class="text-white mono">Jan 2026</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-500">Format</span>
+                    <span class="text-white mono">HTML/PDF</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-500">Products</span>
+                    <span class="text-orange-400 mono">10+</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-500">Packages</span>
+                    <span class="text-orange-400 mono">125+</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Other Downloads -->
+      <h2 class="text-2xl font-semibold mb-6 flex items-center gap-3">
+        <span class="text-orange-400">&#128195;</span> All Documents
+      </h2>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        <!-- ANKR TMS Datasheet -->
+        <div class="card rounded-xl p-6">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center text-2xl">&#128666;</div>
+            <div>
+              <h3 class="text-lg font-semibold text-white">ANKR TMS 2.0</h3>
+              <p class="text-sm text-gray-500">Transport Management System</p>
+            </div>
+          </div>
+          <p class="text-gray-400 text-sm mb-4">Complete TMS for Indian road freight with GPS tracking, E-Invoice, WhatsApp bot, and Hindi driver app.</p>
+          <div class="flex gap-2 mb-4">
+            <span class="tag px-2 py-0.5 rounded text-xs text-gray-400">Logistics</span>
+            <span class="tag px-2 py-0.5 rounded text-xs text-gray-400">GPS</span>
+            <span class="tag px-2 py-0.5 rounded text-xs text-gray-400">GST</span>
+          </div>
+          <a href="/library/ankrtms-datasheet.html" class="text-orange-400 text-sm hover:underline flex items-center gap-1">
+            View Datasheet <span>&#8594;</span>
+          </a>
+        </div>
+
+        <!-- ComplyMitra Datasheet -->
+        <div class="card rounded-xl p-6">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-12 h-12 rounded-xl bg-green-500/20 flex items-center justify-center text-2xl">&#9989;</div>
+            <div>
+              <h3 class="text-lg font-semibold text-white">ComplyMitra</h3>
+              <p class="text-sm text-gray-500">61 AI Compliance Tools</p>
+            </div>
+          </div>
+          <p class="text-gray-400 text-sm mb-4">AI automation for GST, TDS, ITR, and MCA compliance. Never miss a deadline with smart calendar.</p>
+          <div class="flex gap-2 mb-4">
+            <span class="tag px-2 py-0.5 rounded text-xs text-gray-400">GST</span>
+            <span class="tag px-2 py-0.5 rounded text-xs text-gray-400">TDS</span>
+            <span class="tag px-2 py-0.5 rounded text-xs text-gray-400">MCA</span>
+          </div>
+          <a href="/library/complymitra-datasheet.html" class="text-orange-400 text-sm hover:underline flex items-center gap-1">
+            View Datasheet <span>&#8594;</span>
+          </a>
+        </div>
+
+        <!-- AI Stack Technical Doc -->
+        <div class="card rounded-xl p-6">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center text-2xl">&#129504;</div>
+            <div>
+              <h3 class="text-lg font-semibold text-white">AI Stack</h3>
+              <p class="text-sm text-gray-500">Technical Architecture</p>
+            </div>
+          </div>
+          <p class="text-gray-400 text-sm mb-4">Deep dive into @ankr/brain, @ankr/eon memory engine, agent swarm, and voice AI infrastructure.</p>
+          <div class="flex gap-2 mb-4">
+            <span class="tag px-2 py-0.5 rounded text-xs text-gray-400">LLM</span>
+            <span class="tag px-2 py-0.5 rounded text-xs text-gray-400">Memory</span>
+            <span class="tag px-2 py-0.5 rounded text-xs text-gray-400">Agents</span>
+          </div>
+          <a href="/library/ai-stack-technical.html" class="text-orange-400 text-sm hover:underline flex items-center gap-1">
+            View Document <span>&#8594;</span>
+          </a>
+        </div>
+
+        <!-- SWAYAM Overview -->
+        <div class="card rounded-xl p-6">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-12 h-12 rounded-xl bg-yellow-500/20 flex items-center justify-center text-2xl">&#128483;</div>
+            <div>
+              <h3 class="text-lg font-semibold text-white">SWAYAM</h3>
+              <p class="text-sm text-gray-500 hindi">सबका साथी</p>
+            </div>
+          </div>
+          <p class="text-gray-400 text-sm mb-4">Voice-first AI companion for Bharat. 21 Indian languages, works on basic smartphones, offline capable.</p>
+          <div class="flex gap-2 mb-4">
+            <span class="tag px-2 py-0.5 rounded text-xs text-gray-400">Voice</span>
+            <span class="tag px-2 py-0.5 rounded text-xs text-gray-400">Hindi</span>
+            <span class="tag px-2 py-0.5 rounded text-xs text-gray-400">Mobile</span>
+          </div>
+          <a href="/library/swayam-overview.html" class="text-orange-400 text-sm hover:underline flex items-center gap-1">
+            View Overview <span>&#8594;</span>
+          </a>
+        </div>
+
+        <!-- Live Babel -->
+        <div class="card rounded-xl p-6">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-12 h-12 rounded-xl bg-red-500/20 flex items-center justify-center text-2xl">&#127760;</div>
+            <div>
+              <h3 class="text-lg font-semibold text-white">Live Babel</h3>
+              <p class="text-sm text-gray-500">Real-Time Translation</p>
+            </div>
+          </div>
+          <p class="text-gray-400 text-sm mb-4">Break language barriers with sub-500ms latency translation and voice cloning across 22 Indian languages.</p>
+          <div class="flex gap-2 mb-4">
+            <span class="tag px-2 py-0.5 rounded text-xs text-gray-400">Translation</span>
+            <span class="tag px-2 py-0.5 rounded text-xs text-gray-400">Real-time</span>
+            <span class="tag px-2 py-0.5 rounded text-xs text-gray-400">Voice</span>
+          </div>
+          <a href="/library/livebabel-whitepaper.html" class="text-orange-400 text-sm hover:underline flex items-center gap-1">
+            View Whitepaper <span>&#8594;</span>
+          </a>
+        </div>
+
+        <!-- Enterprise Modules -->
+        <div class="card rounded-xl p-6">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-12 h-12 rounded-xl bg-cyan-500/20 flex items-center justify-center text-2xl">&#127970;</div>
+            <div>
+              <h3 class="text-lg font-semibold text-white">Enterprise Modules</h3>
+              <p class="text-sm text-gray-500">ERP, HRMS, CRM, IAM</p>
+            </div>
+          </div>
+          <p class="text-gray-400 text-sm mb-4">Plug-and-play enterprise modules: Complete ERP, HR management, multi-tenant CRM, and identity management.</p>
+          <div class="flex gap-2 mb-4">
+            <span class="tag px-2 py-0.5 rounded text-xs text-gray-400">ERP</span>
+            <span class="tag px-2 py-0.5 rounded text-xs text-gray-400">HRMS</span>
+            <span class="tag px-2 py-0.5 rounded text-xs text-gray-400">CRM</span>
+          </div>
+          <a href="/library/enterprise-modules.html" class="text-orange-400 text-sm hover:underline flex items-center gap-1">
+            View Catalog <span>&#8594;</span>
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section class="py-16 px-6 border-t border-gray-800 no-print">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="text-2xl font-bold mb-4">Need Custom Documentation?</h2>
+      <p class="text-gray-400 mb-6">Contact us for detailed technical specs, API documentation, or custom presentations.</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+        <a href="mailto:capt.anil.sharma@powerpbox.org" class="download-btn px-6 py-3 rounded-xl text-white font-semibold">
+          capt.anil.sharma@powerpbox.org
+        </a>
+        <span class="text-gray-500">or</span>
+        <a href="tel:+917506926394" class="text-orange-400 hover:underline">+91 7506926394</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-8 px-6 border-t border-gray-800 no-print">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+      <div class="flex items-center gap-2">
+        <span class="text-2xl">&#9875;</span>
+        <span class="text-gray-500">Jai Guru Ji | &copy; 2025 ANKR Labs</span>
+      </div>
+      <div class="text-gray-500 text-sm">
+        Powerp Box IT Solutions Pvt. Ltd.
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

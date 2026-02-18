@@ -1,0 +1,17 @@
+Windows Registry Editor Version 5.00
+
+; ═══════════════════════════════════════════════════════════════════════════
+; ANKR Interact - Uninstall Context Menu Integration
+; ═══════════════════════════════════════════════════════════════════════════
+
+; Remove all ANKR Interact context menu entries
+
+[-HKEY_CLASSES_ROOT\*\shell\ANKRInteract]
+[-HKEY_CLASSES_ROOT\*\shell\ANKRInteractWeb]
+[-HKEY_CLASSES_ROOT\Directory\shell\ANKRInteract]
+[-HKEY_CLASSES_ROOT\Directory\Background\shell\ANKRInteract]
+[-HKEY_CLASSES_ROOT\.md\shell\ANKRInteract]
+[-HKEY_CLASSES_ROOT\.txt\shell\ANKRInteract]
+[-HKEY_CLASSES_ROOT\.json\shell\ANKRInteract]
+[-HKEY_CLASSES_ROOT\.pdf\shell\ANKRInteract]
+[-HKEY_CLASSES_ROOT\ankr]

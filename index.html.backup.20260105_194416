@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ANKR Labs - Saathi to a Billion Indians | सबके लिए AI</title>
+  <meta name="description" content="ANKR Labs - Democratizing AI for billions left behind. PowerPBox IT Solutions Pvt Ltd - AI-First Enterprise Software.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg'><text y='32' font-size='32'>⚓</text></svg>">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary: #00ff88;
+      --secondary: #00d4ff;
+      --accent: #f97316;
+      --bg-dark: #050508;
+      --bg-card: #0a0a0f;
+      --bg-elevated: #12121a;
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255,255,255,0.7);
+      --text-muted: rgba(255,255,255,0.4);
+      --border: rgba(255,255,255,0.1);
+      --glow-primary: rgba(0,255,136,0.3);
+      --glow-secondary: rgba(0,212,255,0.3);
+    }
+    
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    html { scroll-behavior: smooth; }
+    
+    body {
+      font-family: 'Space Grotesk', 'Noto Sans Devanagari', sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    
+    /* Typography */
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+    .font-hindi { font-family: 'Noto Sans Devanagari', sans-serif; }
+    
+    .gradient-text {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .gradient-text-warm {
+      background: linear-gradient(135deg, var(--accent), #fbbf24);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    /* Layout */
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+    
+    section {
+      padding: 120px 0;
+      position: relative;
+    }
+    
+    /* Glass morphism */
+    .glass {
+      background: rgba(255,255,255,0.03);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+    }
+    
+    .glass-strong {
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(30px);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 20px;
+    }
+    
+    /* Cards */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(0,255,136,0.3);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 60px var(--glow-primary);
+    }
+    
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 15px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border: none;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: #000;
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px var(--glow-primary);
+    }
+    
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid var(--primary);
+      color: var(--primary);
+    }
+    
+    .btn-secondary:hover {
+      background: rgba(0,255,136,0.1);
+    }
+    
+    /* Navigation */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 16px 0;
+      background: rgba(5,5,8,0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    
+    nav .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 24px;
+      font-weight: 700;
+    }
+    
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+    
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+    
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+    
+    .nav-links a:hover {
+      color: var(--primary);
+    }
+    
+    .lang-toggle {
+      padding: 8px 16px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .lang-toggle:hover {
+      background: rgba(255,255,255,0.1);
+      color: var(--text-primary);
+    }
+    
+    /* Hero Section */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: 100px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background: 
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(0,255,136,0.15), transparent),
+        radial-gradient(ellipse 60% 40% at 80% 60%, rgba(0,212,255,0.1), transparent),
+        radial-gradient(ellipse 40% 30% at 20% 80%, rgba(249,115,22,0.08), transparent);
+    }
+    
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+    }
+    
+    .hero-content {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 20px;
+      border-radius: 30px;
+      background: rgba(0,255,136,0.1);
+      border: 1px solid rgba(0,255,136,0.2);
+      font-size: 13px;
+      color: var(--primary);
+      margin-bottom: 32px;
+      animation: float 3s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    
+    .hero-title {
+      font-size: clamp(48px, 8vw, 80px);
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 24px;
+      letter-spacing: -2px;
+    }
+    
+    .hero-subtitle {
+      font-size: clamp(18px, 2.5vw, 24px);
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .hero-tagline {
+      font-size: 16px;
+      color: var(--text-muted);
+      margin-bottom: 40px;
+    }
+    
+    .hero-cta {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    /* Stats Bar */
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      margin-top: 80px;
+      flex-wrap: wrap;
+    }
+    
+    .stat-item {
+      text-align: center;
+    }
+    
+    .stat-value {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--primary);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    
+    .stat-label {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    
+    /* Problem Section */
+    #problem {
+      background: linear-gradient(180deg, var(--bg-dark), var(--bg-card));
+    }
+    
+    .section-header {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+    
+    .section-badge {
+      display: inline-block;
+      padding: 6px 16px;
+      border-radius: 20px;
+      background: rgba(249,115,22,0.1);
+      border: 1px solid rgba(249,115,22,0.2);
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+    }
+    
+    .section-title {
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    
+    .section-subtitle {
+      font-size: 18px;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    .problem-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+    
+    .problem-card {
+      padding: 32px;
+      text-align: center;
+    }
+    
+    .problem-icon {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+    
+    .problem-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    
+    .problem-desc {
+      color: var(--text-secondary);
+      font-size: 15px;
+    }
+    
+    /* Journey Section */
+    #journey {
+      background: var(--bg-card);
+    }
+    
+    .timeline {
+      position: relative;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2px;
+      height: 100%;
+      background: linear-gradient(180deg, var(--primary), var(--secondary), var(--accent));
+      border-radius: 2px;
+    }
+    
+    .timeline-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 40px;
+      margin-bottom: 60px;
+      position: relative;
+    }
+    
+    .timeline-item:nth-child(odd) {
+      flex-direction: row-reverse;
+      text-align: right;
+    }
+    
+    .timeline-item:nth-child(odd) .timeline-content {
+      text-align: right;
+    }
+    
+    .timeline-dot {
+      width: 20px;
+      height: 20px;
+      background: var(--bg-dark);
+      border: 3px solid var(--primary);
+      border-radius: 50%;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      box-shadow: 0 0 20px var(--glow-primary);
+    }
+    
+    .timeline-content {
+      flex: 1;
+      max-width: calc(50% - 40px);
+    }
+    
+    .timeline-date {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+    
+    .timeline-title {
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    
+    .timeline-desc {
+      color: var(--text-secondary);
+      font-size: 15px;
+    }
+    
+    /* Platform Section */
+    #platform {
+      background: linear-gradient(180deg, var(--bg-card), var(--bg-dark));
+    }
+    
+    .platform-categories {
+      display: flex;
+      flex-direction: column;
+      gap: 48px;
+    }
+    
+    .platform-category {
+      padding: 32px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border);
+    }
+    
+    .category-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    
+    .category-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+    }
+    
+    .category-icon.ai { background: linear-gradient(135deg, rgba(168,85,247,0.2), rgba(139,92,246,0.2)); }
+    .category-icon.security { background: linear-gradient(135deg, rgba(239,68,68,0.2), rgba(220,38,38,0.2)); }
+    .category-icon.logistics { background: linear-gradient(135deg, rgba(249,115,22,0.2), rgba(234,88,12,0.2)); }
+    .category-icon.comm { background: linear-gradient(135deg, rgba(34,197,94,0.2), rgba(22,163,74,0.2)); }
+    .category-icon.ui { background: linear-gradient(135deg, rgba(0,212,255,0.2), rgba(6,182,212,0.2)); }
+    
+    .category-title {
+      font-size: 20px;
+      font-weight: 600;
+    }
+    
+    .category-count {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 12px;
+    }
+    
+    .module-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 13px;
+      transition: all 0.3s;
+    }
+    
+    .module-chip:hover {
+      background: rgba(0,255,136,0.05);
+      border-color: rgba(0,255,136,0.3);
+    }
+    
+    .module-chip .icon {
+      font-size: 16px;
+    }
+    
+    /* Proof Section */
+    #proof {
+      background: var(--bg-dark);
+      text-align: center;
+    }
+    
+    .proof-card {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 48px;
+      background: linear-gradient(135deg, rgba(249,115,22,0.1), rgba(0,255,136,0.05));
+      border: 1px solid rgba(249,115,22,0.2);
+      border-radius: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .proof-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(249,115,22,0.1) 0%, transparent 50%);
+      animation: rotate 20s linear infinite;
+    }
+    
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    
+    .proof-content {
+      position: relative;
+      z-index: 10;
+    }
+    
+    .proof-logo {
+      font-size: 64px;
+      margin-bottom: 24px;
+    }
+    
+    .proof-title {
+      font-size: 36px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    
+    .proof-desc {
+      font-size: 18px;
+      color: var(--text-secondary);
+      margin-bottom: 32px;
+    }
+    
+    .proof-stats {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+    
+    .proof-stat {
+      text-align: center;
+    }
+    
+    .proof-stat-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--accent);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    
+    .proof-stat-label {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    
+    /* Vision Section */
+    #vision {
+      background: linear-gradient(180deg, var(--bg-dark), var(--bg-card));
+    }
+    
+    .vision-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+    
+    .vision-card {
+      padding: 32px;
+      text-align: center;
+    }
+    
+    .vision-icon {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+    
+    .vision-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    
+    .vision-desc {
+      color: var(--text-secondary);
+      font-size: 15px;
+    }
+    
+    /* CTA Section */
+    #cta {
+      background: var(--bg-card);
+      text-align: center;
+    }
+    
+    .cta-box {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    
+    .cta-title {
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 700;
+      margin-bottom: 24px;
+    }
+    
+    .cta-desc {
+      font-size: 18px;
+      color: var(--text-secondary);
+      margin-bottom: 40px;
+    }
+    
+    .cta-buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    /* Footer */
+    footer {
+      padding: 60px 0 30px;
+      background: var(--bg-dark);
+      border-top: 1px solid var(--border);
+    }
+    
+    .footer-content {
+      text-align: center;
+    }
+    
+    .footer-logo {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    
+    .footer-tagline {
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+    
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    
+    .footer-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.3s;
+    }
+    
+    .footer-links a:hover {
+      color: var(--primary);
+    }
+    
+    .footer-bottom {
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+    
+    .footer-blessing {
+      color: var(--accent);
+      margin-top: 8px;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      section { padding: 80px 0; }
+      
+      .nav-links { display: none; }
+      
+      .timeline::before { left: 20px; }
+      
+      .timeline-item,
+      .timeline-item:nth-child(odd) {
+        flex-direction: column;
+        padding-left: 50px;
+      }
+      
+      .timeline-item:nth-child(odd) .timeline-content {
+        text-align: left;
+      }
+      
+      .timeline-dot {
+        left: 20px;
+      }
+      
+      .timeline-content {
+        max-width: 100%;
+      }
+      
+      .stats-bar { gap: 24px; }
+      
+      .stat-value { font-size: 28px; }
+    }
+    
+    /* Animations */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeIn 0.8s ease forwards;
+    }
+    
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.3s; }
+    .delay-4 { animation-delay: 0.4s; }
+    .delay-5 { animation-delay: 0.5s; }
+    
+    /* Scroll animations */
+    .scroll-reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .scroll-reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    /* Hindi text styling */
+    [data-lang="hi"] .hero-title,
+    [data-lang="hi"] .section-title {
+      font-family: 'Noto Sans Devanagari', sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav>
+    <div class="container">
+      <div class="logo">
+        <div class="logo-icon">⚓</div>
+        <span>ANKR</span>
+      </div>
+      
+      <div class="nav-links">
+        <a href="#problem">The Problem</a>
+        <a href="#journey">Our Journey</a>
+        <a href="#platform">Platform</a>
+        <a href="#proof">Live Proof</a>
+        <button class="lang-toggle" onclick="toggleLang()">
+          🌐 <span id="langText">English</span>
+        </button>
+        <a href="https://wowtruck.ankr.in" class="btn btn-primary">Live Demo</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-badge fade-in">
+          <span>🤖</span>
+          <span data-en="PowerPBox × AI" data-hi="100% AI से बना">PowerPBox × AI</span>
+        </div>
+        
+        <h1 class="hero-title fade-in delay-1">
+          <span data-en="SWAYAM:" data-hi="AI">SWAYAM:</span><br>
+          <span class="gradient-text" data-en="सबका साथी" data-hi="अगले अरब लोगों के लिए">सबका साथी</span>
+        </h1>
+        
+        <p class="hero-subtitle fade-in delay-2" data-en="From coding to cooking, compliance to conversations - your AI companion for everything. In your language." data-hi="कोडिंग से खाना बनाने तक, कंप्लायंस से बातचीत तक - हर काम के लिए आपका AI साथी। आपकी भाषा में।">
+          From coding to cooking, compliance to conversations - your AI companion for everything. In your language.
+        </p>
+        
+        <p class="hero-tagline fade-in delay-3 font-hindi" data-en="बोलो, स्वयं कर देगा • Speak, SWAYAM Will Do It" data-hi="बोलो, स्वयं कर देगा • Speak, SWAYAM Will Do It">
+          बोलो, स्वयं कर देगा • Speak, SWAYAM Will Do It
+        </p>
+        
+        <div class="hero-cta fade-in delay-4">
+          <a href="https://wowtruck.ankr.in" target="_blank" class="btn btn-primary">
+            🚀 <span data-en="See Live Demo" data-hi="लाइव डेमो देखें">See Live Demo</span>
+          </a>
+          <a href="#journey" class="btn btn-secondary">
+            📖 <span data-en="Our Story" data-hi="हमारी कहानी">Our Story</span>
+          </a>
+        </div>
+        
+        <div class="stats-bar fade-in delay-5">
+          <div class="stat-item">
+            <div class="stat-value">155</div>
+            <div class="stat-label" data-en="Days to Build" data-hi="दिनों में बनाया">Days to Build</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">11578</div>
+            <div class="stat-label" data-en="TypeScript Files" data-hi="टाइपस्क्रिप्ट फाइल्स">TypeScript Files</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value" id="pkg-count">105+</div>
+            <div class="stat-label" data-en="Packages" data-hi="पैकेज">Packages</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">₹0</div>
+            <div class="stat-label" data-en="External Dev Cost" data-hi="बाहरी डेव खर्च">External Dev Cost</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Problem Section -->
+  <section id="problem">
+    <div class="container">
+      <div class="section-header scroll-reveal">
+        <div class="section-badge" data-en="The Problem" data-hi="समस्या">The Problem</div>
+        <h2 class="section-title" data-en="1 Billion Left Behind" data-hi="1 अरब लोग पीछे छूटे">1 Billion Left Behind</h2>
+        <p class="section-subtitle" data-en="The AI revolution is happening, but not for everyone" data-hi="AI क्रांति हो रही है, लेकिन सबके लिए नहीं">
+          The AI revolution is happening, but not for everyone
+        </p>
+      </div>
+      
+      <div class="problem-grid">
+        <div class="card problem-card scroll-reveal">
+          <div class="problem-icon">🇮🇳</div>
+          <div class="problem-title" data-en="English-Only Tech" data-hi="सिर्फ अंग्रेजी वाली टेक">English-Only Tech</div>
+          <div class="problem-desc" data-en="500M+ Indians don't speak English fluently. Current software excludes them." data-hi="50 करोड़+ भारतीय धाराप्रवाह अंग्रेजी नहीं बोलते। मौजूदा सॉफ्टवेयर उन्हें बाहर करता है।">
+            500M+ Indians don't speak English fluently. Current software excludes them.
+          </div>
+        </div>
+        
+        <div class="card problem-card scroll-reveal">
+          <div class="problem-icon">💰</div>
+          <div class="problem-title" data-en="Expensive Solutions" data-hi="महंगे समाधान">Expensive Solutions</div>
+          <div class="problem-desc" data-en="₹50,000+/month for enterprise software. Small businesses can't afford it." data-hi="एंटरप्राइज सॉफ्टवेयर के लिए ₹50,000+/महीना। छोटे व्यवसाय इसे वहन नहीं कर सकते।">
+            ₹50,000+/month for enterprise software. Small businesses can't afford it.
+          </div>
+        </div>
+        
+        <div class="card problem-card scroll-reveal">
+          <div class="problem-icon">🎓</div>
+          <div class="problem-title" data-en="Complex Training" data-hi="जटिल प्रशिक्षण">Complex Training</div>
+          <div class="problem-desc" data-en="Weeks of training needed. A truck driver in Bihar can't attend webinars." data-hi="हफ्तों की ट्रेनिंग चाहिए। बिहार का ट्रक ड्राइवर वेबिनार अटेंड नहीं कर सकता।">
+            Weeks of training needed. A truck driver in Bihar can't attend webinars.
+          </div>
+        </div>
+        
+        <div class="card problem-card scroll-reveal">
+          <div class="problem-icon">📱</div>
+          <div class="problem-title" data-en="Desktop-First Design" data-hi="डेस्कटॉप-फर्स्ट डिज़ाइन">Desktop-First Design</div>
+          <div class="problem-desc" data-en="Most Indians only have smartphones. Desktop software doesn't help them." data-hi="ज्यादातर भारतीयों के पास सिर्फ स्मार्टफोन है। डेस्कटॉप सॉफ्टवेयर उनके काम का नहीं।">
+            Most Indians only have smartphones. Desktop software doesn't help them.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Journey Section -->
+  <section id="journey">
+    <div class="container">
+      <div class="section-header scroll-reveal">
+        <div class="section-badge" data-en="Our Journey" data-hi="हमारी यात्रा">Our Journey</div>
+        <h2 class="section-title" data-en="PowerPBox Goes AI-First" data-hi="पावरपीबॉक्स AI-फर्स्ट">PowerPBox Goes AI-First</h2>
+        <p class="section-subtitle" data-en="Captain Anil Sharma & Team ANKR's Leap of Faith" data-hi="पावरपीबॉक्स की AI-फर्स्ट विकास में छलांग">
+          Captain Anil Sharma & Team ANKR's Leap of Faith
+        </p>
+      </div>
+      
+      <div class="timeline">
+        <div class="timeline-item scroll-reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-date">August 25, 2025</div>
+            <div class="timeline-title" data-en="Day 1: The Question" data-hi="दिन 1: एक सवाल">Day 1: The Question</div>
+            <div class="timeline-desc" data-en="'PowerPBox IT Solutions Pvt Ltd, Gurgaon. Captain Anil Sharma asks: 'Can AI help build enterprise software?' Not from IIT, not VC-funded - just a vision for the common man." data-hi="'क्या AI मुझे सॉफ्टवेयर बनाने में मदद कर सकता है?' कैप्टन अनिल शर्मा - न प्रोग्रामर, न IIT से, न फंडेड - ने एक सीधा सवाल पूछा।">
+              "Can AI help me build software?" Captain Anil Sharma - NOT a programmer, NOT from IIT, NOT funded - asked a simple question.
+            </div>
+          </div>
+        </div>
+        
+        <div class="timeline-item scroll-reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-date">September - October 2025</div>
+            <div class="timeline-title" data-en="Foundation: AI-Proxy & Free LLMs" data-hi="नींव: AI-Proxy और मुफ्त LLMs">Foundation: AI-Proxy & Free LLMs</div>
+            <div class="timeline-desc" data-en="With AI as the only 'developer', modules started taking shape. Auth, GPS tracking, voice AI, messaging - all built through conversation." data-hi="AI को एकमात्र 'डेवलपर' बनाकर, मॉड्यूल आकार लेने लगे। Auth, GPS ट्रैकिंग, वॉइस AI, मैसेजिंग - सब बातचीत से बने।">
+              Built AI-Proxy with 17 providers (Groq, Cerebras, Together) - FREE tier first. Cost: $0. EON memory with PostgreSQL + pgvector for RAG.
+            </div>
+          </div>
+        </div>
+        
+        <div class="timeline-item scroll-reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-date">November 2025</div>
+            <div class="timeline-title" data-en="BANI: Voice AI & MCP Tools" data-hi="BANI: वॉइस AI और MCP टूल्स">BANI: Voice AI & MCP Tools</div>
+            <div class="timeline-desc" data-en="SUNOKAHOBOLO - Hindi/Tamil/Telugu voice AI. @powerpbox/mcp with India Stack: Aadhaar, DigiLocker, GST, UPI, ULIP. A truck driver can now talk to software." data-hi="पहला प्रोडक्ट उभरा - एक पूर्ण ट्रांसपोर्ट मैनेजमेंट सिस्टम। असली GPS, असली इनवॉइस, असली बिजनेस लॉजिक।">
+              SUNOKAHOBOLO - Hindi/Tamil/Telugu voice AI. @powerpbox/mcp with India Stack: Aadhaar, DigiLocker, GST, UPI, ULIP. A truck driver can now talk to software.
+            </div>
+          </div>
+        </div>
+        
+        <div class="timeline-item scroll-reveal">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content">
+            <div class="timeline-date">December 11, 2025</div>
+            <div class="timeline-title gradient-text" data-en="SWAYAM: AI Saathi for Everyone" data-hi="स्वयं: सबका AI साथी">SWAYAM: AI Saathi for Everyone</div>
+            <div class="timeline-desc" data-en="SWAYAM - Your AI Saathi. 100+ tools, multilingual chat, multiple personas. Code builder, compliance helper, logistics assistant, voice companion. सबका साथी।" data-hi="WowTruck 2.0 लाइव हुआ। 11,578 फाइल्स। 105+ मॉड्यूल। 1 व्यक्ति ने AI के साथ पूरा प्लेटफॉर्म बनाया।">
+              SWAYAM - Your AI Saathi. 100+ tools, multilingual chat, multiple personas. Code builder, compliance helper, logistics assistant, voice companion. सबका साथी।
+            </div>
+          </div>
+        </div>
+        
+        <div class="timeline-item scroll-reveal">
+          <div class="timeline-dot" style="border-color: var(--accent);"></div>
+          <div class="timeline-content">
+            <div class="timeline-date" style="color: var(--accent);">Q1 2026</div>
+            <div class="timeline-title gradient-text-warm" data-en="Saathi to a Billion Indians" data-hi="एक अरब भारतीयों का साथी">Saathi to a Billion Indians</div>
+            <div class="timeline-desc" data-en="SWAYAM will be the AI Saathi for a billion Indians. Chat in your language, build what you need, access government services, manage your business - all through one companion. From truck drivers to small businesses, from farmers to shopkeepers. एक अरब भारतीयों का AI साथी।" data-hi="ANKR प्लेटफॉर्म सबके लिए खुलता है। बस बोलकर एंटरप्राइज सॉफ्टवेयर बनाएं। अपनी भाषा में। अपनी कीमत पर।">
+              SWAYAM will be the AI Saathi for a billion Indians. Chat in your language, build what you need, access government services, manage your business - all through one companion. From truck drivers to small businesses, from farmers to shopkeepers. एक अरब भारतीयों का AI साथी।
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Platform Section -->
+  <section id="platform">
+    <div class="container">
+      <div class="section-header scroll-reveal">
+        <div class="section-badge" data-en="The Platform" data-hi="प्लेटफॉर्म">The Platform</div>
+        <h2 class="section-title" data-en="105+ Modules. Infinite Possibilities." data-hi="105+ मॉड्यूल। अनंत संभावनाएं।">105+ Modules. Infinite Possibilities.</h2>
+        <p class="section-subtitle" data-en="Everything you need to build enterprise software" data-hi="एंटरप्राइज सॉफ्टवेयर बनाने के लिए सब कुछ">
+          Everything you need to build enterprise software
+        </p>
+      </div>
+      
+      <div class="platform-categories">
+        <!-- AI & Intelligence -->
+        <div class="platform-category scroll-reveal">
+          <div class="category-header">
+            <div class="category-icon ai">🧠</div>
+            <div>
+              <div class="category-title" data-en="AI & Intelligence" data-hi="AI और इंटेलिजेंस">AI & Intelligence</div>
+              <div class="category-count">18 modules</div>
+            </div>
+          </div>
+          <div class="modules-grid">
+            <div class="module-chip"><span class="icon">Ω</span> Omega AI</div>
+            <div class="module-chip"><span class="icon">🧠</span> EON Memory</div>
+            <div class="module-chip"><span class="icon">🎤</span> Voice Saathi</div>
+            <div class="module-chip"><span class="icon">🔀</span> AI Proxy</div>
+            <div class="module-chip"><span class="icon">🔮</span> Chroma DB</div>
+            <div class="module-chip"><span class="icon">🧬</span> Evolution</div>
+            <div class="module-chip"><span class="icon">📄</span> OCR Engine</div>
+            <div class="module-chip"><span class="icon">🗣️</span> NLP Pipeline</div>
+          </div>
+        </div>
+        
+        <!-- Security & Auth -->
+        <div class="platform-category scroll-reveal">
+          <div class="category-header">
+            <div class="category-icon security">🔐</div>
+            <div>
+              <div class="category-title" data-en="Security & Auth" data-hi="सुरक्षा और Auth">Security & Auth</div>
+              <div class="category-count">6 modules</div>
+            </div>
+          </div>
+          <div class="modules-grid">
+            <div class="module-chip"><span class="icon">🔐</span> OAuth (9 providers)</div>
+            <div class="module-chip"><span class="icon">🛡️</span> Zero Trust</div>
+            <div class="module-chip"><span class="icon">👤</span> IAM</div>
+            <div class="module-chip"><span class="icon">📋</span> RBAC (7 roles)</div>
+            <div class="module-chip"><span class="icon">🔑</span> Sessions</div>
+            <div class="module-chip"><span class="icon">📱</span> OTP/Passwordless</div>
+          </div>
+        </div>
+        
+        <!-- Logistics Suite -->
+        <div class="platform-category scroll-reveal">
+          <div class="category-header">
+            <div class="category-icon logistics">🚛</div>
+            <div>
+              <div class="category-title" data-en="Logistics Suite" data-hi="लॉजिस्टिक्स सूट">Logistics Suite</div>
+              <div class="category-count">15 modules</div>
+            </div>
+          </div>
+          <div class="modules-grid">
+            <div class="module-chip"><span class="icon">🚛</span> TMS</div>
+            <div class="module-chip"><span class="icon">📦</span> WMS</div>
+            <div class="module-chip"><span class="icon">📋</span> OMS</div>
+            <div class="module-chip"><span class="icon">📍</span> GPS Tracking</div>
+            <div class="module-chip"><span class="icon">🗺️</span> Navigation</div>
+            <div class="module-chip"><span class="icon">🛣️</span> Route Optimizer</div>
+            <div class="module-chip"><span class="icon">📄</span> E-Way Bills</div>
+            <div class="module-chip"><span class="icon">🧾</span> Invoicing</div>
+            <div class="module-chip"><span class="icon">⛽</span> Fuel Tracking</div>
+            <div class="module-chip"><span class="icon">🔧</span> Maintenance</div>
+          </div>
+        </div>
+        
+        <!-- Communication -->
+        <div class="platform-category scroll-reveal">
+          <div class="category-header">
+            <div class="category-icon comm">📡</div>
+            <div>
+              <div class="category-title" data-en="Communication" data-hi="संचार">Communication</div>
+              <div class="category-count">6 modules</div>
+            </div>
+          </div>
+          <div class="modules-grid">
+            <div class="module-chip"><span class="icon">📡</span> Wire (Event Bus)</div>
+            <div class="module-chip"><span class="icon">💬</span> SMS Gateway</div>
+            <div class="module-chip"><span class="icon">💚</span> WhatsApp API</div>
+            <div class="module-chip"><span class="icon">📱</span> Push (FCM)</div>
+            <div class="module-chip"><span class="icon">📧</span> Email</div>
+            <div class="module-chip"><span class="icon">🚨</span> Alerts & SOS</div>
+          </div>
+        </div>
+        
+        <!-- UI & Experience -->
+        <div class="platform-category scroll-reveal">
+          <div class="category-header">
+            <div class="category-icon ui">🎨</div>
+            <div>
+              <div class="category-title" data-en="UI & Experience" data-hi="UI और अनुभव">UI & Experience</div>
+              <div class="category-count">12 modules</div>
+            </div>
+          </div>
+          <div class="modules-grid">
+            <div class="module-chip"><span class="icon">🐚</span> Shell (Universal)</div>
+            <div class="module-chip"><span class="icon">🧩</span> Widgets</div>
+            <div class="module-chip"><span class="icon">🎨</span> Themes (10+)</div>
+            <div class="module-chip"><span class="icon">📱</span> Mobile PWA</div>
+            <div class="module-chip"><span class="icon">🌐</span> 20 Languages</div>
+            <div class="module-chip"><span class="icon">♿</span> Accessibility</div>
+            <div class="module-chip"><span class="icon">📴</span> Offline First</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Proof Section -->
+  <section id="proof">
+    <div class="container">
+      <div class="section-header scroll-reveal">
+        <div class="section-badge" data-en="Live Proof" data-hi="लाइव प्रमाण">Live Proof</div>
+        <h2 class="section-title" data-en="See It Working. Now." data-hi="अभी देखें। काम करते हुए।">See It Working. Now.</h2>
+      </div>
+      
+      <div class="proof-card scroll-reveal">
+        <div class="proof-content">
+          <div class="proof-logo">🚛</div>
+          <div class="proof-title gradient-text-warm">WowTruck 2.0</div>
+          <div class="proof-desc" data-en="India's First AI-Powered Transport Management System" data-hi="भारत का पहला AI-संचालित ट्रांसपोर्ट मैनेजमेंट सिस्टम">
+            India's First AI-Powered Transport Management System
+          </div>
+          
+          <div class="proof-stats">
+            <div class="proof-stat">
+              <div class="proof-stat-value">155</div>
+              <div class="proof-stat-label" data-en="Vehicles" data-hi="वाहन">Vehicles</div>
+            </div>
+            <div class="proof-stat">
+              <div class="proof-stat-value">104</div>
+              <div class="proof-stat-label" data-en="Orders" data-hi="ऑर्डर">Orders</div>
+            </div>
+            <div class="proof-stat">
+              <div class="proof-stat-value">₹37.1L</div>
+              <div class="proof-stat-label" data-en="Revenue" data-hi="राजस्व">Revenue</div>
+            </div>
+            <div class="proof-stat">
+              <div class="proof-stat-value">2,900+</div>
+              <div class="proof-stat-label" data-en="Records" data-hi="रिकॉर्ड">Records</div>
+            </div>
+          </div>
+          
+          <a href="https://wowtruck.ankr.in" class="btn btn-primary" target="_blank">
+            🚀 <span data-en="Try Live Demo" data-hi="लाइव डेमो देखें">Try Live Demo</span>
+          </a>
+          <p style="margin-top: 16px; font-size: 13px; color: var(--text-muted);">
+            Login: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="640500090d0a24130b13101611070f4a070b09">[email&#160;protected]</a> / Admin@123
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Vision Section -->
+  <section id="vision">
+    <div class="container">
+      <div class="section-header scroll-reveal">
+        <div class="section-badge" data-en="The Vision" data-hi="विजन">The Vision</div>
+        <h2 class="section-title" data-en="AI for Everyone. Really." data-hi="सबके लिए AI। सच में।">AI for Everyone. Really.</h2>
+      </div>
+      
+      <div class="vision-grid">
+        <div class="card vision-card scroll-reveal">
+          <div class="vision-icon">🗣️</div>
+          <div class="vision-title" data-en="Voice First" data-hi="वॉइस फर्स्ट">Voice First</div>
+          <div class="vision-desc" data-en="No typing. No training. Just speak in Hindi, Tamil, Telugu - any of 20 languages. AI understands and acts." data-hi="टाइपिंग नहीं। ट्रेनिंग नहीं। बस हिंदी, तमिल, तेलुगु - 20 में से कोई भी भाषा बोलें। AI समझता है और करता है।">
+            No typing. No training. Just speak in Hindi, Tamil, Telugu - any of 20 languages. AI understands and acts.
+          </div>
+        </div>
+        
+        <div class="card vision-card scroll-reveal">
+          <div class="vision-icon">🧠</div>
+          <div class="vision-title" data-en="Self-Evolving" data-hi="स्व-विकसित">Self-Evolving</div>
+          <div class="vision-desc" data-en="The platform learns from usage. Gets smarter every day. No manual updates needed. AI improves itself." data-hi="प्लेटफॉर्म उपयोग से सीखता है। हर दिन स्मार्ट होता है। मैन्युअल अपडेट नहीं चाहिए। AI खुद को सुधारता है।">
+            The platform learns from usage. Gets smarter every day. No manual updates needed. AI improves itself.
+          </div>
+        </div>
+        
+        <div class="card vision-card scroll-reveal">
+          <div class="vision-icon">💰</div>
+          <div class="vision-title" data-en="Common Man Pricing" data-hi="आम आदमी की कीमत">Common Man Pricing</div>
+          <div class="vision-desc" data-en="Not ₹50,000/month. ₹500/month. Enterprise software at the cost of a mobile recharge." data-hi="₹50,000/महीना नहीं। ₹500/महीना। मोबाइल रिचार्ज की कीमत पर एंटरप्राइज सॉफ्टवेयर।">
+            Not ₹50,000/month. ₹500/month. Enterprise software at the cost of a mobile recharge.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section id="cta">
+    <div class="container">
+      <div class="cta-box scroll-reveal">
+        <h2 class="cta-title" data-en="Join the Revolution" data-hi="क्रांति में शामिल हों">Join the Revolution</h2>
+        <p class="cta-desc" data-en="Whether you're an investor, enterprise, or builder - there's a place for you in democratizing AI for billions." data-hi="चाहे आप निवेशक हों, एंटरप्राइज हों, या बिल्डर - अरबों के लिए AI के लोकतंत्रीकरण में आपके लिए जगह है।">
+          Whether you're an investor, enterprise, or builder - there's a place for you in democratizing AI for billions.
+        </p>
+        
+        <div class="cta-buttons">
+          <a href="/cdn-cgi/l/email-protection#9af9fbeaeefbf3f4dafbf4f1e8b4f3f4" class="btn btn-primary">
+            📧 <span data-en="Contact Captain" data-hi="कैप्टन से संपर्क करें">Contact Captain</span>
+          </a>
+          <a href="https://wowtruck.ankr.in" class="btn btn-secondary">
+            🚀 <span data-en="See Demo" data-hi="डेमो देखें">See Demo</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <!-- Products Section -->
+  <section id="products" style="padding: 120px 0;">
+    <div class="container">
+      <div class="section-header scroll-reveal">
+        <div class="section-badge" data-en="Our Products" data-hi="हमारे प्रोडक्ट्स">Our Products</div>
+        <h2 class="section-title" data-en="Built with ANKR" data-hi="ANKR के साथ बना">Built with ANKR</h2>
+        <p class="section-subtitle" data-en="Enterprise solutions powered by AI" data-hi="AI द्वारा संचालित एंटरप्राइज़ समाधान">Enterprise solutions powered by AI</p>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-top: 60px;">
+        <a href="https://complymitra.in" target="_blank" class="card scroll-reveal" style="text-decoration: none; color: inherit;">
+          <div style="font-size: 2.5rem; margin-bottom: 16px;">🛡️</div>
+          <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 8px;">ComplyMitra</h3>
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">India's smartest compliance platform. GST, TDS, ITR, EPF, ESI, MCA filing.</p>
+          <div style="margin-top: 16px; color: var(--primary); font-size: 0.875rem;">complymitra.in →</div>
+        </a>
+        <a href="https://freightbox.org" target="_blank" class="card scroll-reveal" style="text-decoration: none; color: inherit;">
+          <div style="font-size: 2.5rem; margin-bottom: 16px;">🚢</div>
+          <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 8px;">FreightBox</h3>
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">Next-gen Ocean/Air/Multimodal freight. Blockchain eBL on DCSA standard.</p>
+          <div style="margin-top: 16px; color: var(--primary); font-size: 0.875rem;">freightbox.org →</div>
+        </a>
+        <a href="https://baniai.io" target="_blank" class="card scroll-reveal" style="text-decoration: none; color: inherit;">
+          <div style="font-size: 2.5rem; margin-bottom: 16px;">🗣️</div>
+          <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 8px;">BaniAI (बानी)</h3>
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">Your Voice, Every Language. Multi-modal voice AI with translation.</p>
+          <div style="margin-top: 16px; color: var(--primary); font-size: 0.875rem;">baniai.io →</div>
+        </a>
+        <a href="https://wowtruck.ankr.in" target="_blank" class="card scroll-reveal" style="text-decoration: none; color: inherit;">
+          <div style="font-size: 2.5rem; margin-bottom: 16px;">🚚</div>
+          <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 8px;">WowTruck 2.0</h3>
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">Transport Management System. Fleet tracking, trip billing, driver app.</p>
+          <div style="margin-top: 16px; color: var(--primary); font-size: 0.875rem;">wowtruck.ankr.in →</div>
+        </a>
+        <a href="https://sunosunao.ankr.in" target="_blank" class="card scroll-reveal" style="text-decoration: none; color: inherit;">
+          <div style="font-size: 2.5rem; margin-bottom: 16px;">💝</div>
+          <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 8px;">SunoSunao</h3>
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">Your Voice, Forever. Voice messages for loved ones.</p>
+          <div style="margin-top: 16px; color: var(--primary); font-size: 0.875rem;">sunosunao.ankr.in →</div>
+        </a>
+        <a href="https://swayam.digimitra.guru" target="_blank" class="card scroll-reveal" style="text-decoration: none; color: inherit;">
+          <div style="font-size: 2.5rem; margin-bottom: 16px;">🙏</div>
+          <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 8px;">स्वयं (Swayam)</h3>
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">Voice AI for Bharat. Conversational AI in Indian languages.</p>
+          <div style="margin-top: 16px; color: var(--primary); font-size: 0.875rem;">swayam.digimitra.guru →</div>
+        </a>
+        <a href="https://ever-pure.in" target="_blank" class="card scroll-reveal" style="text-decoration: none; color: inherit;">
+          <div style="font-size: 2.5rem; margin-bottom: 16px;">🌿</div>
+          <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 8px;">EverPure</h3>
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">Premium organic products. E-commerce with OTP login, AI chat support.</p>
+          <div style="margin-top: 16px; color: var(--primary); font-size: 0.875rem;">ever-pure.in →</div>
+        </a>
+        <a href="https://swayam.digimitra.guru/npm/" target="_blank" class="card scroll-reveal" style="text-decoration: none; color: inherit;">
+          <div style="font-size: 2.5rem; margin-bottom: 16px;">📦</div>
+          <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 8px;">PowerPBox NPM</h3>
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">Private NPM Registry. 105+ packages, MCP tools, AI libraries.</p>
+          <div style="margin-top: 16px; color: var(--primary); font-size: 0.875rem;">swayam.digimitra.guru/npm →</div>
+        </a>
+        <a href="https://ankr.in/cockpit" target="_blank" class="card scroll-reveal" style="text-decoration: none; color: inherit;">
+          <div style="font-size: 2.5rem; margin-bottom: 16px;">🎛️</div>
+          <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 8px;">ANKR Cockpit</h3>
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">Unified dashboard. Monitor all services, logs, metrics in one place.</p>
+          <div style="margin-top: 16px; color: var(--primary); font-size: 0.875rem;">ankr.in/cockpit →</div>
+        </a>
+      </div>
+      <div style="text-align: center; margin-top: 60px;" class="scroll-reveal">
+        <p style="color: var(--text-muted); margin-bottom: 16px;">A venture of</p>
+        <a href="https://powerpbox.org" target="_blank" style="display: inline-flex; align-items: center; gap: 12px; padding: 16px 32px; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 12px; text-decoration: none; color: var(--text-primary);">
+          <div style="width: 40px; height: 40px; background: linear-gradient(135deg, var(--primary), var(--secondary)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold;">P</div>
+          <div style="text-align: left;">
+            <div style="font-weight: 600;">PowerPBox IT Solutions Pvt Ltd</div>
+            <div style="font-size: 0.875rem; color: var(--text-muted);">Gurgaon, Haryana</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <!-- SWAYAM CAN DO - Showcase Section -->
+  <!-- ═══════════════════════════════════════════════════════════════════════ -->
+  <section id="swayam-can-do" style="padding: 100px 0; background: linear-gradient(180deg, var(--bg-dark) 0%, var(--bg-elevated) 100%);">
+    <div class="container">
+      <div class="section-header scroll-reveal" style="text-align: center; margin-bottom: 60px;">
+        <div class="section-badge">What Can SWAYAM Do?</div>
+        <h2 class="section-title gradient-text" style="font-size: 2.5rem;">From Coding to Cooking</h2>
+        <p class="section-subtitle">आपका AI साथी - हर काम के लिए, हर भाषा में</p>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+        <div class="card scroll-reveal" style="text-align: center; padding: 24px;">
+          <div style="font-size: 2.5rem; margin-bottom: 12px;">💻</div>
+          <h3 style="font-size: 1.1rem; margin-bottom: 8px; color: var(--primary);">Coding</h3>
+          <p style="color: var(--text-secondary); font-size: 0.85rem;">"Build me a GPS tracker"</p>
+          <p style="color: var(--text-muted); font-size: 0.75rem;">→ Working React + Node.js</p>
+        </div>
+        <div class="card scroll-reveal" style="text-align: center; padding: 24px;">
+          <div style="font-size: 2.5rem; margin-bottom: 12px;">🍳</div>
+          <h3 style="font-size: 1.1rem; margin-bottom: 8px; color: var(--primary);">Cooking</h3>
+          <p style="color: var(--text-secondary); font-size: 0.85rem;">"आज क्या बनाऊं?"</p>
+          <p style="color: var(--text-muted); font-size: 0.75rem;">→ Recipe in Hindi</p>
+        </div>
+        <div class="card scroll-reveal" style="text-align: center; padding: 24px;">
+          <div style="font-size: 2.5rem; margin-bottom: 12px;">📋</div>
+          <h3 style="font-size: 1.1rem; margin-bottom: 8px; color: var(--primary);">Compliance</h3>
+          <p style="color: var(--text-secondary); font-size: 0.85rem;">"GST return file करो"</p>
+          <p style="color: var(--text-muted); font-size: 0.75rem;">→ Auto GSTR forms</p>
+        </div>
+        <div class="card scroll-reveal" style="text-align: center; padding: 24px;">
+          <div style="font-size: 2.5rem; margin-bottom: 12px;">🚛</div>
+          <h3 style="font-size: 1.1rem; margin-bottom: 8px; color: var(--primary);">Logistics</h3>
+          <p style="color: var(--text-secondary); font-size: 0.85rem;">"Track HR55AB1234"</p>
+          <p style="color: var(--text-muted); font-size: 0.75rem;">→ Real-time GPS</p>
+        </div>
+        <div class="card scroll-reveal" style="text-align: center; padding: 24px;">
+          <div style="font-size: 2.5rem; margin-bottom: 12px;">🗣️</div>
+          <h3 style="font-size: 1.1rem; margin-bottom: 8px; color: var(--primary);">Voice</h3>
+          <p style="color: var(--text-secondary); font-size: 0.85rem;">Hindi, Tamil, Telugu</p>
+          <p style="color: var(--text-muted); font-size: 0.75rem;">→ No typing needed</p>
+        </div>
+        <div class="card scroll-reveal" style="text-align: center; padding: 24px;">
+          <div style="font-size: 2.5rem; margin-bottom: 12px;">🏛️</div>
+          <h3 style="font-size: 1.1rem; margin-bottom: 8px; color: var(--primary);">Government</h3>
+          <p style="color: var(--text-secondary); font-size: 0.85rem;">"Check Aadhaar status"</p>
+          <p style="color: var(--text-muted); font-size: 0.75rem;">→ DigiLocker, ULIP</p>
+        </div>
+        <div class="card scroll-reveal" style="text-align: center; padding: 24px;">
+          <div style="font-size: 2.5rem; margin-bottom: 12px;">💰</div>
+          <h3 style="font-size: 1.1rem; margin-bottom: 8px; color: var(--primary);">Finance</h3>
+          <p style="color: var(--text-secondary); font-size: 0.85rem;">"Calculate my EMI"</p>
+          <p style="color: var(--text-muted); font-size: 0.75rem;">→ UPI, BBPS, Banking</p>
+        </div>
+        <div class="card scroll-reveal" style="text-align: center; padding: 24px;">
+          <div style="font-size: 2.5rem; margin-bottom: 12px;">📄</div>
+          <h3 style="font-size: 1.1rem; margin-bottom: 8px; color: var(--primary);">Documents</h3>
+          <p style="color: var(--text-secondary); font-size: 0.85rem;">"Generate ₹50K invoice"</p>
+          <p style="color: var(--text-muted); font-size: 0.75rem;">→ E-invoice, reports</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PERSONAS Section -->
+  <section id="personas" style="padding: 80px 0;">
+    <div class="container">
+      <div class="section-header scroll-reveal" style="text-align: center; margin-bottom: 40px;">
+        <div class="section-badge">Multiple Personas</div>
+        <h2 class="section-title">One AI, Many Saathis</h2>
+        <p class="section-subtitle">SWAYAM adapts to who you are</p>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px;">
+        <div class="card scroll-reveal" style="text-align: center; padding: 20px; border-color: rgba(0,255,136,0.3);">
+          <div style="font-size: 2rem;">👨‍💼</div>
+          <h3 style="font-size: 1rem; color: var(--primary);">Business Saathi</h3>
+          <p style="color: var(--text-muted); font-size: 0.75rem;">Entrepreneurs</p>
+        </div>
+        <div class="card scroll-reveal" style="text-align: center; padding: 20px; border-color: rgba(0,212,255,0.3);">
+          <div style="font-size: 2rem;">🚚</div>
+          <h3 style="font-size: 1rem; color: var(--secondary);">Driver Saathi</h3>
+          <p style="color: var(--text-muted); font-size: 0.75rem;">Truck Drivers</p>
+        </div>
+        <div class="card scroll-reveal" style="text-align: center; padding: 20px; border-color: rgba(249,115,22,0.3);">
+          <div style="font-size: 2rem;">👩‍🍳</div>
+          <h3 style="font-size: 1rem; color: var(--accent);">Ghar ka Saathi</h3>
+          <p style="color: var(--text-muted); font-size: 0.75rem;">Homemakers</p>
+        </div>
+        <div class="card scroll-reveal" style="text-align: center; padding: 20px; border-color: rgba(168,85,247,0.3);">
+          <div style="font-size: 2rem;">📚</div>
+          <h3 style="font-size: 1rem; color: #a855f7;">Padhai Saathi</h3>
+          <p style="color: var(--text-muted); font-size: 0.75rem;">Students</p>
+        </div>
+        <div class="card scroll-reveal" style="text-align: center; padding: 20px; border-color: rgba(34,197,94,0.3);">
+          <div style="font-size: 2rem;">🏪</div>
+          <h3 style="font-size: 1rem; color: #22c55e;">Dukaan Saathi</h3>
+          <p style="color: var(--text-muted); font-size: 0.75rem;">Shopkeepers</p>
+        </div>
+        <div class="card scroll-reveal" style="text-align: center; padding: 20px; border-color: rgba(236,72,153,0.3);">
+          <div style="font-size: 2rem;">👨‍⚕️</div>
+          <h3 style="font-size: 1rem; color: #ec4899;">Health Saathi</h3>
+          <p style="color: var(--text-muted); font-size: 0.75rem;">Wellness</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIVE STATS -->
+  <section style="padding: 60px 0; background: linear-gradient(90deg, rgba(0,255,136,0.05), rgba(0,212,255,0.05));">
+    <div class="container">
+      <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 40px; text-align: center;">
+        <div class="scroll-reveal">
+          <div style="font-size: 2.5rem; font-weight: 700; color: var(--primary);">105+</div>
+          <div style="color: var(--text-muted); font-size: 0.85rem;">📦 Packages</div>
+        </div>
+        <div class="scroll-reveal">
+          <div style="font-size: 2.5rem; font-weight: 700; color: var(--secondary);">100+</div>
+          <div style="color: var(--text-muted); font-size: 0.85rem;">🛠️ MCP Tools</div>
+        </div>
+        <div class="scroll-reveal">
+          <div style="font-size: 2.5rem; font-weight: 700; color: var(--accent);">3</div>
+          <div style="color: var(--text-muted); font-size: 0.85rem;">🗣️ Languages</div>
+        </div>
+        <div class="scroll-reveal">
+          <div style="font-size: 2.5rem; font-weight: 700; color: #a855f7;">17</div>
+          <div style="color: var(--text-muted); font-size: 0.85rem;">🤖 AI Providers</div>
+        </div>
+        <div class="scroll-reveal">
+          <div style="font-size: 2.5rem; font-weight: 700; color: #22c55e;">$0</div>
+          <div style="color: var(--text-muted); font-size: 0.85rem;">💰 Free Tier</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-logo">⚓ ANKR Labs</div>
+        <p class="footer-tagline" data-en="Saathi to a Billion Indians" data-hi="अगले अरब लोगों के लिए AI">Saathi to a Billion Indians</p>
+        
+        <div class="footer-links">
+          <a href="https://complymitra.in">ComplyMitra</a>
+          <a href="https://freightbox.org">FreightBox</a>
+          <a href="https://baniai.io">BaniAI</a>
+          <a href="https://wowtruck.ankr.in">WowTruck</a>
+          <a href="https://ever-pure.in">EverPure</a>
+          <a href="https://ankr.in/cockpit">Cockpit</a>
+          <a href="mailto:capt.anil.sharma@powerpbox.org">Contact</a>
+          <a href="https://github.com/rocketlang/ankr-labs-nx">GitHub</a>
+        </div>
+        
+        <div class="footer-bottom">
+          <p>© 2025 ANKR Labs | PowerPBox IT Solutions Pvt Ltd</p>
+          <p class="footer-blessing">🙏 Jai Guru Ji | Built with AI + ❤️</p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    // Language Toggle
+    let currentLang = 'en';
+    
+    function toggleLang() {
+      currentLang = currentLang === 'en' ? 'hi' : 'en';
+      document.getElementById('langText').textContent = currentLang === 'en' ? 'English' : 'हिंदी';
+      
+      document.querySelectorAll('[data-en]').forEach(function(el) {
+        var newText = el.getAttribute('data-' + currentLang);
+        if (newText) {
+          el.textContent = newText;
+        }
+      });
+      
+      document.body.setAttribute('data-lang', currentLang);
+    }
+    
+    // Scroll Reveal Animation
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, observerOptions);
+    
+    document.querySelectorAll('.scroll-reveal').forEach(el => {
+      observer.observe(el);
+    });
+    
+    // Smooth scroll for nav links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+    
+    // Console Easter Egg
+    console.log('%c⚓ ANKR Labs', 'font-size: 24px; font-weight: bold; color: #00ff88;');
+    console.log('%cSaathi to a Billion Indians', 'font-size: 14px; color: #00d4ff;');
+    console.log('%c🙏 Jai Guru Ji', 'font-size: 12px; color: #f97316;');
+  </script>

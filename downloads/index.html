@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ANKR Downloads - FreightBox Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            min-height: 100vh;
+            color: #e2e8f0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .logo {
+            font-size: 48px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #94a3b8;
+            font-size: 18px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border-radius: 2px;
+        }
+
+        .downloads-grid {
+            display: grid;
+            gap: 20px;
+            margin-bottom: 50px;
+        }
+
+        .download-card {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(71, 85, 105, 0.5);
+            border-radius: 16px;
+            padding: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .download-card:hover {
+            border-color: #3b82f6;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(59, 130, 246, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .card-icon svg {
+            width: 30px;
+            height: 30px;
+            fill: white;
+        }
+
+        .card-info h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .card-info .meta {
+            color: #94a3b8;
+            font-size: 14px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .card-info .meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .card-description {
+            color: #cbd5e1;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .tag {
+            background: rgba(59, 130, 246, 0.1);
+            color: #60a5fa;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .download-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .download-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 50px;
+        }
+
+        .stat-card {
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid rgba(71, 85, 105, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .footer {
+            text-align: center;
+            color: #64748b;
+            font-size: 14px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(71, 85, 105, 0.3);
+        }
+
+        .footer a {
+            color: #60a5fa;
+            text-decoration: none;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #94a3b8;
+            text-decoration: none;
+            margin-bottom: 30px;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: #e2e8f0;
+        }
+
+        @media (max-width: 640px) {
+            .card-header {
+                flex-direction: column;
+            }
+
+            .stat-value {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="https://ankr.in" class="back-link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Back to ANKR
+        </a>
+
+        <div class="header">
+            <div class="logo">FreightBox</div>
+            <p class="subtitle">Project Documentation & Technical Specifications</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">10</div>
+                <div class="stat-label">Frontend Pages</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">40+</div>
+                <div class="stat-label">GraphQL Endpoints</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">9</div>
+                <div class="stat-label">Prisma Models</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">6</div>
+                <div class="stat-label">Development Phases</div>
+            </div>
+        </div>
+
+        <h2 class="section-title">Available Downloads</h2>
+
+        <div class="downloads-grid">
+            <!-- Vision Document -->
+            <div class="download-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                        </svg>
+                    </div>
+                    <div class="card-info">
+                        <h3>FreightBox Vision 2025</h3>
+                        <div class="meta">
+                            <span>
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <polyline points="14 2 14 8 20 8"/>
+                                </svg>
+                                Markdown
+                            </span>
+                            <span>
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <polyline points="12 6 12 12 16 14"/>
+                                </svg>
+                                January 2025
+                            </span>
+                            <span>~15 KB</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="card-description">
+                    Strategic vision document covering the two-product architecture (FreightBox Core SaaS + Marketplace Exchange),
+                    RBAC/ABAC design, multi-tenant architecture, revenue model, competitive positioning, and go-to-market strategy.
+                </p>
+                <div class="card-tags">
+                    <span class="tag">Strategy</span>
+                    <span class="tag">Architecture</span>
+                    <span class="tag">Business Model</span>
+                    <span class="tag">RBAC/ABAC</span>
+                    <span class="tag">Multi-Tenant</span>
+                </div>
+                <a href="FREIGHTBOX_VISION_2025.md" download class="download-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    Download Vision Document
+                </a>
+            </div>
+
+            <!-- Complete Project Documentation -->
+            <div class="download-card">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                        </svg>
+                    </div>
+                    <div class="card-info">
+                        <h3>Complete Project Documentation</h3>
+                        <div class="meta">
+                            <span>
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <polyline points="14 2 14 8 20 8"/>
+                                </svg>
+                                Markdown
+                            </span>
+                            <span>
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <polyline points="12 6 12 12 16 14"/>
+                                </svg>
+                                January 2025
+                            </span>
+                            <span>~50 KB</span>
+                        </div>
+                    </div>
+                </div>
+                <p class="card-description">
+                    Comprehensive technical documentation including database schema (Prisma models), GraphQL API reference,
+                    all 10 frontend pages, user journeys, deployment guide, and complete 6-phase roadmap with 20 items.
+                </p>
+                <div class="card-tags">
+                    <span class="tag">Technical Spec</span>
+                    <span class="tag">Database Schema</span>
+                    <span class="tag">API Reference</span>
+                    <span class="tag">Deployment</span>
+                    <span class="tag">Roadmap</span>
+                </div>
+                <a href="FREIGHTBOX_MARKETPLACE_COMPLETE_PROJECT.md" download class="download-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    Download Full Documentation
+                </a>
+            </div>
+        </div>
+
+        <h2 class="section-title">What's Inside</h2>
+
+        <div class="download-card" style="margin-bottom: 50px;">
+            <h3 style="margin-bottom: 20px;">Table of Contents</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                <div>
+                    <h4 style="color: #60a5fa; margin-bottom: 10px;">Vision Document</h4>
+                    <ul style="list-style: none; color: #94a3b8; line-height: 1.8; font-size: 14px;">
+                        <li>Executive Vision</li>
+                        <li>Two-Product Architecture</li>
+                        <li>RBAC + ABAC Design</li>
+                        <li>Multi-Tenant Data Architecture</li>
+                        <li>Revenue Model</li>
+                        <li>Competitive Positioning</li>
+                        <li>Technology Stack</li>
+                        <li>Rollout Phases</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="color: #60a5fa; margin-bottom: 10px;">Technical Documentation</h4>
+                    <ul style="list-style: none; color: #94a3b8; line-height: 1.8; font-size: 14px;">
+                        <li>Database Schema (9 Models)</li>
+                        <li>GraphQL Queries & Mutations</li>
+                        <li>All Frontend Pages (10)</li>
+                        <li>User Journeys</li>
+                        <li>Deployment Guide</li>
+                        <li>Complete Roadmap (20 Items)</li>
+                        <li>Business Model</li>
+                        <li>Glossary & Appendix</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 style="color: #60a5fa; margin-bottom: 10px;">Key Features Built</h4>
+                    <ul style="list-style: none; color: #94a3b8; line-height: 1.8; font-size: 14px;">
+                        <li>Vendor Registration (4-step)</li>
+                        <li>Shipper Portal (5-step)</li>
+                        <li>Bidding System</li>
+                        <li>Vendor Profiles & Ratings</li>
+                        <li>Contract Management</li>
+                        <li>13 Vendor Types</li>
+                        <li>6 Freight Modes</li>
+                        <li>DG/Reefer/ODC Support</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>FreightBox Marketplace - Part of the ANKR Labs Ecosystem</p>
+            <p style="margin-top: 10px;">
+                <a href="https://freightbox.org">freightbox.org</a> &bull;
+                <a href="https://ankr.in">ankr.in</a> &bull;
+                Last Updated: January 2025
+            </p>
+        </div>
+    </div>
+</body>
+</html>
