@@ -4,12 +4,18 @@
  * Languages: en, hi, ta, te, kn, mr
  */
 const LANGS = {
-  en: { label: 'EN', native: 'English',  flag: '🌐' },
-  hi: { label: 'हिं', native: 'हिंदी',   flag: '🇮🇳' },
-  ta: { label: 'தமிழ்', native: 'தமிழ்',flag: '🇮🇳' },
-  te: { label: 'తె',  native: 'తెలుగు', flag: '🇮🇳' },
-  kn: { label: 'ಕನ್ನ', native: 'ಕನ್ನಡ', flag: '🇮🇳' },
-  mr: { label: 'मर',  native: 'मराठी',  flag: '🇮🇳' },
+  en: { label: 'EN',    native: 'English',    flag: '🌐' },
+  hi: { label: 'हिं',   native: 'हिंदी',      flag: '🇮🇳' },
+  ta: { label: 'தமிழ்',native: 'தமிழ்',      flag: '🇮🇳' },
+  te: { label: 'తె',   native: 'తెలుగు',    flag: '🇮🇳' },
+  kn: { label: 'ಕನ್ನ', native: 'ಕನ್ನಡ',     flag: '🇮🇳' },
+  mr: { label: 'मर',   native: 'मराठी',      flag: '🇮🇳' },
+  bn: { label: 'বাং',  native: 'বাংলা',      flag: '🇮🇳' },
+  gu: { label: 'ગુજ',  native: 'ગુજરાતી',   flag: '🇮🇳' },
+  pa: { label: 'ਪੰਜ',  native: 'ਪੰਜਾਬੀ',    flag: '🇮🇳' },
+  ml: { label: 'മല',   native: 'മലയാളം',    flag: '🇮🇳' },
+  ur: { label: 'اردو', native: 'اردو',       flag: '🇮🇳' },
+  or: { label: 'ଓଡ଼',  native: 'ଓଡ଼ିଆ',      flag: '🇮🇳' },
 };
 
 const T = {
@@ -235,9 +241,11 @@ function applyLang(lang) {
 const AI_TRANSLATE_ENDPOINT = '/ai/translate/batch';
 const AI_BATCH_SIZE = 50;
 
-// All translatable content — excludes code/package .tag, nav buttons, brand names,
-// numeric stats (.ti-n), and empty elements (.glow)
+// All translatable content — [id^="i18n-"] covers hero H1, CTAs, footer (works for
+// ALL languages including those without static dictionary entries).
+// Excludes code/package .tag, nav buttons, brand names, numeric stats (.ti-n).
 const AI_TRANSLATE_SELECTORS = [
+  '[id^="i18n-"]',
   '.hero-p', '.sec-h', '.sec-tag', '.sec-p',
   '.vc-h', '.vc-p',
   '.sc-desc', '.sc-tagline', '.sc-cat',

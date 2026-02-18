@@ -60,7 +60,8 @@
     @media(max-width:768px) { .theme-bar { display: none; } }
 
     /* LANG SWITCHER */
-    .lang-bar { display: flex; align-items: center; gap: .25rem; }
+    .lang-bar { display: flex; align-items: center; gap: .25rem; overflow-x: auto; max-width: 360px; scrollbar-width: none; }
+    .lang-bar::-webkit-scrollbar { display: none; }
     .lang-btn { background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.25);
       border-radius: 5px; padding: .2rem .45rem; font-size: .6875rem; font-weight: 700;
       color: rgba(255,255,255,.9); cursor: pointer; transition: all .2s; line-height: 1.4; }
@@ -342,7 +343,13 @@
       <button class="lang-btn" data-lang="te">తె</button>
       <button class="lang-btn" data-lang="kn">ಕನ್ನ</button>
       <button class="lang-btn" data-lang="mr">मर</button>
-      <button class="lang-btn ai-translate-btn" data-active="0" title="AI Deep Translate — translates full page content using ANKR AI" style="opacity:.55;font-size:.75rem;padding:.2rem .5rem">🤖</button>
+      <button class="lang-btn" data-lang="bn">বাং</button>
+      <button class="lang-btn" data-lang="gu">ગુજ</button>
+      <button class="lang-btn" data-lang="pa">ਪੰਜ</button>
+      <button class="lang-btn" data-lang="ml">മല</button>
+      <button class="lang-btn" data-lang="ur">اردو</button>
+      <button class="lang-btn" data-lang="or">ଓଡ଼</button>
+      <button class="lang-btn ai-translate-btn" data-active="0" title="AI Full-Page Translate" style="opacity:.55;font-size:.75rem;padding:.2rem .5rem">🤖</button>
     </div>
     <a href="/interact/login" class="nav-cta">Interact →</a>
   </div>
