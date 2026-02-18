@@ -1260,5 +1260,157 @@
 
 <script src="/assets/theme.js"></script>
 <script src="/assets/i18n.js"></script>
+
+<!-- ── ANKR Ask Bot ──────────────────────────────────────────────── -->
+<style>
+  #askbot-fab {
+    position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 8000;
+    width: 56px; height: 56px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; box-shadow: 0 4px 24px rgba(0,212,255,.4);
+    transition: transform .2s, box-shadow .2s;
+  }
+  #askbot-fab:hover { transform: scale(1.1); box-shadow: 0 6px 32px rgba(0,212,255,.6); }
+  #askbot-panel {
+    display: none; position: fixed; bottom: 5rem; right: 1.5rem; z-index: 8001;
+    width: 340px; max-height: 480px;
+    background: var(--card); border: 1px solid rgba(0,212,255,.25);
+    border-radius: 16px; overflow: hidden;
+    box-shadow: 0 16px 48px rgba(0,0,0,.6);
+    flex-direction: column;
+  }
+  #askbot-panel.open { display: flex; }
+  .ab-head {
+    padding: .75rem 1rem; background: linear-gradient(135deg, rgba(0,212,255,.12), rgba(124,58,237,.08));
+    border-bottom: 1px solid rgba(0,212,255,.15);
+    display: flex; align-items: center; gap: .625rem;
+  }
+  .ab-avatar { width: 32px; height: 32px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    display: flex; align-items: center; justify-content: center; font-size: .85rem; }
+  .ab-title { font-weight: 700; font-size: .875rem; color: var(--white); }
+  .ab-sub { font-size: .65rem; color: var(--accent); }
+  .ab-close { margin-left: auto; background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1.25rem; line-height: 1; }
+  .ab-msgs { flex: 1; overflow-y: auto; padding: .875rem; display: flex; flex-direction: column; gap: .625rem; }
+  .ab-msg { max-width: 86%; padding: .5rem .75rem; border-radius: 10px; font-size: .8125rem; line-height: 1.5; }
+  .ab-msg.bot { background: rgba(0,212,255,.08); border: 1px solid rgba(0,212,255,.12); color: var(--text); align-self: flex-start; border-radius: 2px 10px 10px 10px; }
+  .ab-msg.user { background: rgba(124,58,237,.15); border: 1px solid rgba(124,58,237,.2); color: var(--text); align-self: flex-end; border-radius: 10px 2px 10px 10px; }
+  .ab-msg.typing { color: var(--muted); font-style: italic; }
+  .ab-input-row { display: flex; gap: .5rem; padding: .75rem; border-top: 1px solid rgba(0,212,255,.1); }
+  .ab-input { flex: 1; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.15);
+    border-radius: 8px; padding: .45rem .75rem; color: var(--text); font-size: .8125rem;
+    outline: none; font-family: inherit; }
+  .ab-input::placeholder { color: var(--muted); }
+  .ab-input:focus { border-color: rgba(0,212,255,.35); }
+  .ab-send { background: var(--accent); border: none; border-radius: 8px; padding: .45rem .875rem;
+    color: #000; font-weight: 700; cursor: pointer; font-size: .8125rem; transition: opacity .2s; }
+  .ab-send:hover { opacity: .85; }
+  .ab-send:disabled { opacity: .4; cursor: default; }
+</style>
+
+<button id="askbot-fab" title="Ask ANKR AI">⚓</button>
+<div id="askbot-panel">
+  <div class="ab-head">
+    <div class="ab-avatar">⚓</div>
+    <div>
+      <div class="ab-title">ANKR AI</div>
+      <div class="ab-sub">Ask me anything · Powered by @ankr/ai-translate</div>
+    </div>
+    <button class="ab-close" onclick="document.getElementById('askbot-panel').classList.remove('open')">×</button>
+  </div>
+  <div class="ab-msgs" id="ab-msgs">
+    <div class="ab-msg bot">Namaste! I'm the ANKR AI assistant. Ask me about our products, capabilities, or anything you'd like translated. I respond in your selected language. 🙏</div>
+  </div>
+  <div class="ab-input-row">
+    <input class="ab-input" id="ab-input" placeholder="Ask anything... (any language)" maxlength="500" />
+    <button class="ab-send" id="ab-send">↑</button>
+  </div>
+</div>
+
+<script>
+(function() {
+  const fab   = document.getElementById('askbot-fab');
+  const panel = document.getElementById('askbot-panel');
+  const msgs  = document.getElementById('ab-msgs');
+  const input = document.getElementById('ab-input');
+  const send  = document.getElementById('ab-send');
+
+  // Swayam WebSocket connection
+  const SWAYAM_WS = (location.protocol === 'https:' ? 'wss' : 'ws') + '://' + location.host + '/swayam/ws';
+  let ws = null;
+  let typingEl = null;
+  let sessionId = 'landing_' + Date.now();
+
+  function getLang() { return localStorage.getItem('ankr-lang') || 'en'; }
+
+  function connectSwayam() {
+    if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) return;
+    ws = new WebSocket(SWAYAM_WS);
+
+    ws.onopen = () => {
+      ws.send(JSON.stringify({ type: 'join', sessionId, userId: 'landing-visitor', language: getLang() }));
+    };
+
+    ws.onmessage = (ev) => {
+      try {
+        const msg = JSON.parse(ev.data);
+        if (msg.type === 'response' && msg.text) {
+          if (typingEl) {
+            typingEl.textContent = msg.text;
+            typingEl.classList.remove('typing');
+            typingEl = null;
+          }
+          send.disabled = false;
+          input.focus();
+        }
+      } catch(e) {}
+    };
+
+    ws.onerror = () => {
+      if (typingEl) { typingEl.textContent = 'Connection error — please try again.'; typingEl.classList.remove('typing'); typingEl = null; }
+      send.disabled = false;
+    };
+
+    ws.onclose = () => { ws = null; };
+  }
+
+  fab.addEventListener('click', () => {
+    panel.classList.toggle('open');
+    if (panel.classList.contains('open')) connectSwayam();
+  });
+
+  function addMsg(text, role) {
+    const d = document.createElement('div');
+    d.className = 'ab-msg ' + role;
+    d.textContent = text;
+    msgs.appendChild(d);
+    msgs.scrollTop = msgs.scrollHeight;
+    return d;
+  }
+
+  function askAI() {
+    const q = input.value.trim();
+    if (!q) return;
+    input.value = '';
+    send.disabled = true;
+    addMsg(q, 'user');
+    typingEl = addMsg('Thinking...', 'bot typing');
+
+    connectSwayam();
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify({ type: 'text', text: q }));
+    } else {
+      ws.addEventListener('open', function onOpen() {
+        ws.removeEventListener('open', onOpen);
+        ws.send(JSON.stringify({ type: 'text', text: q }));
+      });
+    }
+  }
+
+  send.addEventListener('click', askAI);
+  input.addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); askAI(); } });
+})();
+</script>
 </body>
 </html>
