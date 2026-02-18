@@ -229,12 +229,114 @@ function applyLang(lang) {
   localStorage.setItem('ankr-lang', lang);
 }
 
+// ─── AI Full-Page Translate ───────────────────────────────────────────────────
+const AI_TRANSLATE_ENDPOINT = 'https://ankrlabs.org/api/ai/chat/completions';
+const AI_TRANSLATE_SELECTORS = '.sc-desc,.vc-p,.bc-sub,.svc-desc,.hero-p,.sec-p';
+const aiTranslateCache = {};
+let aiTranslating = false;
+
+async function aiTranslatePage(lang) {
+  if (lang === 'en') return resetAiTranslation();
+  const langName = {hi:'Hindi',ta:'Tamil',te:'Telugu',kn:'Kannada',mr:'Marathi'}[lang] || lang;
+  const cacheKey = lang;
+
+  if (aiTranslateCache[cacheKey]) {
+    applyAiTranslation(aiTranslateCache[cacheKey]);
+    return;
+  }
+
+  const btn = document.querySelector('.ai-translate-btn');
+  if (btn) btn.textContent = '⏳';
+  aiTranslating = true;
+
+  // Collect elements and their text
+  const els = Array.from(document.querySelectorAll(AI_TRANSLATE_SELECTORS));
+  const texts = els.map((el, i) => `${i}|||${el.textContent.trim()}`).join('\n');
+
+  try {
+    const res = await fetch(AI_TRANSLATE_ENDPOINT, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model: 'auto',
+        messages: [{
+          role: 'user',
+          content: `Translate the following text segments to ${langName}.
+Each line is in format: INDEX|||TEXT
+Return ONLY the translations in the same format: INDEX|||TRANSLATED_TEXT
+Keep all numbers, brand names (ANKR, Mari8X, CarbonX, etc.), and technical terms unchanged.
+Do not add explanations.
+
+${texts}`
+        }],
+        max_tokens: 3000,
+        temperature: 0.1
+      })
+    });
+
+    const data = await res.json();
+    const raw = data?.choices?.[0]?.message?.content || '';
+    const translations = {};
+    raw.split('\n').forEach(line => {
+      const sep = line.indexOf('|||');
+      if (sep > -1) {
+        const idx = parseInt(line.slice(0, sep).trim());
+        const translated = line.slice(sep + 3).trim();
+        if (!isNaN(idx) && translated) translations[idx] = translated;
+      }
+    });
+
+    // Build map: element → translated text
+    const result = els.map((el, i) => ({el, text: translations[i] || null}));
+    aiTranslateCache[cacheKey] = result;
+    applyAiTranslation(result);
+  } catch(e) {
+    console.warn('AI translate failed:', e);
+  } finally {
+    aiTranslating = false;
+    if (btn) btn.textContent = '🤖';
+  }
+}
+
+function applyAiTranslation(items) {
+  items.forEach(({el, text}) => { if (el && text) el.textContent = text; });
+}
+
+function resetAiTranslation() {
+  // Re-apply built-in i18n to restore English
+  applyLang('en');
+}
+
 (function init() {
   const saved = localStorage.getItem('ankr-lang') || 'en';
   document.addEventListener('DOMContentLoaded', () => {
     applyLang(saved);
     document.querySelectorAll('.lang-btn').forEach(btn => {
-      btn.addEventListener('click', () => applyLang(btn.dataset.lang));
+      btn.addEventListener('click', () => {
+        applyLang(btn.dataset.lang);
+        // If AI translate was active, refresh
+        const aiBtn = document.querySelector('.ai-translate-btn');
+        if (aiBtn && aiBtn.dataset.active === '1') {
+          aiTranslatePage(btn.dataset.lang);
+        }
+      });
     });
+
+    // AI Translate button
+    const aiBtn = document.querySelector('.ai-translate-btn');
+    if (aiBtn) {
+      aiBtn.addEventListener('click', () => {
+        const lang = document.documentElement.lang || localStorage.getItem('ankr-lang') || 'en';
+        if (aiBtn.dataset.active === '1') {
+          aiBtn.dataset.active = '0';
+          aiBtn.style.opacity = '0.5';
+          resetAiTranslation();
+        } else {
+          aiBtn.dataset.active = '1';
+          aiBtn.style.opacity = '1';
+          aiTranslatePage(lang);
+        }
+      });
+    }
   });
 })();

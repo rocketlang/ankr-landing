@@ -31,21 +31,23 @@ a{color:inherit;text-decoration:none}
 
 /* TOPBAR */
 .topbar{position:sticky;top:0;z-index:100;display:flex;align-items:center;gap:1rem;
-  padding:.75rem 1.75rem;background:var(--surface);backdrop-filter:blur(20px);
-  border-bottom:1px solid var(--border);}
+  padding:.75rem 1.75rem;background:rgba(2,4,8,.97);backdrop-filter:blur(20px);
+  border-bottom:1px solid rgba(0,212,255,.22);
+  box-shadow:0 1px 20px rgba(0,0,0,.6);}
 .tb-back{display:flex;align-items:center;gap:.4rem;
-  background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.2);
+  background:rgba(0,212,255,.12);border:1px solid rgba(0,212,255,.35);
   border-radius:6px;padding:.35rem .875rem;
-  font-size:.8rem;font-weight:700;color:var(--accent);transition:all .2s}
-.tb-back:hover{background:rgba(0,212,255,.16)}
+  font-size:.8rem;font-weight:700;color:var(--accent);transition:all .2s;
+  box-shadow:0 0 8px rgba(0,212,255,.2)}
+.tb-back:hover{background:rgba(0,212,255,.22);box-shadow:0 0 16px rgba(0,212,255,.35)}
 .tb-logo{display:flex;align-items:center;gap:.5rem}
 .tb-mark{width:28px;height:28px;border-radius:6px;
   background:linear-gradient(135deg,var(--accent),var(--accent2));
   display:flex;align-items:center;justify-content:center;
   font-size:.65rem;font-weight:900;color:#fff}
-.tb-name{font-weight:800;font-size:.9375rem;color:var(--white)}
-.tb-sep{color:var(--border);margin:0 .25rem}
-.tb-product{font-weight:600;font-size:.875rem;color:var(--muted)}
+.tb-name{font-weight:800;font-size:.9375rem;color:#ffffff}
+.tb-sep{color:rgba(255,255,255,.4);margin:0 .25rem}
+.tb-product{font-weight:700;font-size:.875rem;color:rgba(255,255,255,.85)}
 .tb-spacer{flex:1}
 .tb-live{display:flex;align-items:center;gap:.4rem;
   background:var(--accent);color:#000;font-weight:700;font-size:.8rem;
@@ -56,7 +58,7 @@ a{color:inherit;text-decoration:none}
 .theme-bar{display:flex;align-items:center;gap:.375rem;padding:.25rem}
 .th-btn{width:22px;height:22px;border-radius:50%;border:2px solid transparent;
   cursor:pointer;transition:all .2s;outline:none;position:relative}
-.th-btn:hover,.th-btn.active{border-color:var(--white);transform:scale(1.15)}
+.th-btn:hover,.th-btn.active{border-color:#ffffff;transform:scale(1.15);box-shadow:0 0 6px rgba(255,255,255,.5)}
 .th-btn[data-t="night"]{background:radial-gradient(circle,#0b1929,#00d4ff)}
 .th-btn[data-t="day"]{background:radial-gradient(circle,#fff,#0284c7)}
 .th-btn[data-t="ocean"]{background:radial-gradient(circle,#041f35,#00e5ff)}

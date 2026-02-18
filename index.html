@@ -61,20 +61,21 @@
 
     /* LANG SWITCHER */
     .lang-bar { display: flex; align-items: center; gap: .25rem; }
-    .lang-btn { background: rgba(255,255,255,.05); border: 1px solid var(--border);
+    .lang-btn { background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.25);
       border-radius: 5px; padding: .2rem .45rem; font-size: .6875rem; font-weight: 700;
-      color: var(--muted); cursor: pointer; transition: all .2s; line-height: 1.4; }
-    .lang-btn:hover { color: var(--white); border-color: rgba(0,212,255,.3); }
-    .lang-btn.lang-active { background: rgba(0,212,255,.1); color: var(--accent);
-      border-color: rgba(0,212,255,.35); }
+      color: rgba(255,255,255,.9); cursor: pointer; transition: all .2s; line-height: 1.4; }
+    .lang-btn:hover { color: #fff; border-color: var(--accent); background: rgba(255,255,255,.18); }
+    .lang-btn.lang-active { background: rgba(0,212,255,.22); color: var(--accent);
+      border-color: var(--accent); box-shadow: 0 0 8px rgba(0,212,255,.3); }
     @media(max-width:768px) { .lang-bar { display: none; } }
 
     /* NAV */
     nav { position: fixed; top: 0; left: 0; right: 0; z-index: 200;
       display: flex; align-items: center; justify-content: space-between;
       padding: .875rem 2.5rem;
-      background: rgba(2,4,8,.9); backdrop-filter: blur(24px);
-      border-bottom: 1px solid rgba(0,212,255,.07); }
+      background: rgba(2,4,8,.95); backdrop-filter: blur(24px);
+      border-bottom: 1px solid rgba(0,212,255,.18);
+      box-shadow: 0 1px 24px rgba(0,0,0,.6); }
     .logo { display: flex; align-items: center; gap: .625rem; text-decoration: none; }
     .logo-mark { width: 34px; height: 34px; border-radius: 8px;
       background: linear-gradient(135deg, var(--accent), var(--accent2));
@@ -82,9 +83,9 @@
       font-size: .75rem; font-weight: 900; color: #fff; letter-spacing: -1px; }
     .logo-text { font-weight: 800; font-size: 1.125rem; color: var(--white); }
     .nav-r { display: flex; align-items: center; gap: 1.75rem; }
-    .nav-r a { color: var(--muted); text-decoration: none; font-size: .8125rem; font-weight: 500; transition: color .2s; }
-    .nav-r a:hover { color: var(--white); }
-    .nav-cta { background: var(--accent) !important; color: #000 !important; padding: .45rem 1.1rem; border-radius: 6px; font-weight: 700 !important; }
+    .nav-r a { color: rgba(255,255,255,.85); text-decoration: none; font-size: .8125rem; font-weight: 600; transition: color .2s; letter-spacing: .01em; }
+    .nav-r a:hover { color: #fff; text-shadow: 0 0 8px rgba(255,255,255,.5); }
+    .nav-cta { background: var(--accent) !important; color: #000 !important; padding: .45rem 1.1rem; border-radius: 6px; font-weight: 700 !important; box-shadow: 0 0 14px rgba(0,212,255,.4); }
 
     /* HERO */
     .hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center;
@@ -287,6 +288,30 @@
       .bc.tall, .bc.wide { grid-column: 1; grid-row: auto; }
       footer { flex-direction: column; text-align: center; }
     }
+
+    /* ── Day theme overrides ─────────────────────────────────────── */
+    [data-theme="day"] .btn-s {
+      background: rgba(2,132,199,.08); border-color: rgba(2,132,199,.3); color: #1e293b; }
+    [data-theme="day"] .btn-s:hover { background: rgba(2,132,199,.14); }
+    [data-theme="day"] .tag { background: rgba(2,132,199,.06); border-color: #94a3b8; color: #334155; }
+    [data-theme="day"] .vc:hover { box-shadow: 0 12px 36px rgba(0,0,0,.12); }
+    [data-theme="day"] .sc-card:hover { box-shadow: 0 12px 36px rgba(0,0,0,.12); }
+    [data-theme="day"] .sec-h { color: #0f172a; }
+    [data-theme="day"] .hero-p { color: #334155; }
+    [data-theme="day"] .sec-p { color: #334155; }
+    [data-theme="day"] .vc-p { color: #334155; }
+    [data-theme="day"] .sc-desc { color: #334155; }
+    [data-theme="day"] .bc-sub { color: #334155; }
+    [data-theme="day"] .glow { background: linear-gradient(90deg,transparent,rgba(2,132,199,.3),transparent); }
+    [data-theme="day"] .ticker-wrap { background: rgba(2,132,199,.06); }
+
+    /* ── Sunset theme text boosts ─────────────────────────────────── */
+    [data-theme="sunset"] .hero-p { color: #ffc9a0; }
+    [data-theme="sunset"] .sec-p { color: #ffc9a0; }
+    [data-theme="sunset"] .vc-p { color: #ffc9a0; }
+    [data-theme="sunset"] .sc-desc { color: #ffc9a0; }
+    [data-theme="sunset"] .bc-sub { color: #ffc9a0; }
+    [data-theme="sunset"] .tag { color: #ffb088; }
   </style>
 </head>
 <body>
@@ -317,6 +342,7 @@
       <button class="lang-btn" data-lang="te">తె</button>
       <button class="lang-btn" data-lang="kn">ಕನ್ನ</button>
       <button class="lang-btn" data-lang="mr">मर</button>
+      <button class="lang-btn ai-translate-btn" data-active="0" title="AI Deep Translate — translates full page content using ANKR AI" style="opacity:.55;font-size:.75rem;padding:.2rem .5rem">🤖</button>
     </div>
     <a href="/interact/login" class="nav-cta">Interact →</a>
   </div>
@@ -714,15 +740,15 @@
           <div class="sc-glow"></div>
           <div class="sc-screen-inner">
             <div class="sc-logo-big" style="color:#e879f9;font-size:1.5rem">Corals ✦</div>
-            <div class="sc-tagline">Vedic Astrology × AI</div>
+            <div class="sc-tagline">Science of Predictions × AI</div>
           </div>
         </div>
         <div class="sc-body">
           <div class="sc-head">
-            <div><div class="sc-name">🔮 Corals Astrology</div><div class="sc-cat">AI-Powered Vedic Platform</div></div>
+            <div><div class="sc-name">🔮 Corals Astrology</div><div class="sc-cat">Science of Predictions — AI Platform</div></div>
             <span class="badge-live">LIVE</span>
           </div>
-          <p class="sc-desc">Vedic Jyotish meets modern AI — birth charts via Swiss Ephemeris, KP system, Lal Kitab, Prashna Kundali, astrologer consultations, and GPT-4 personalised readings.</p>
+          <p class="sc-desc">The ancient science of predictions meets modern AI — birth charts via Swiss Ephemeris, KP system, Lal Kitab, Prashna Kundali, astrologer consultations, and GPT-4 personalised readings.</p>
           <div class="sc-metrics">
             <div><div class="sm-v">$12.8B</div><div class="sm-k">Market (2024)</div></div>
             <div><div class="sm-v">25+yr</div><div class="sm-k">Expert founder</div></div>
