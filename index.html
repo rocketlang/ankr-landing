@@ -346,6 +346,24 @@
     [data-theme="sunset"] .sc-desc { color: #ffc9a0; }
     [data-theme="sunset"] .bc-sub { color: #ffc9a0; }
     [data-theme="sunset"] .tag { color: #ffb088; }
+
+    /* ── ANKR SPINE ─────────────────────────────────────────────────── */
+    #spine { padding: 5rem 1.5rem; background: linear-gradient(180deg, var(--bg1) 0%, var(--bg) 100%); }
+    .spine-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 2rem; }
+    @media(max-width: 768px) { .spine-grid { grid-template-columns: 1fr; } }
+    .spine-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1.25rem; transition: all .2s; }
+    .spine-card:hover { border-color: rgba(0,212,255,.4); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,212,255,.08); }
+    .spine-num { font-family: 'JetBrains Mono', monospace; font-size: .62rem; font-weight: 700; color: var(--accent); letter-spacing: .1em; text-transform: uppercase; margin-bottom: .3rem; }
+    .spine-layer { font-size: .95rem; font-weight: 700; color: var(--white); margin-bottom: .2rem; }
+    .spine-port { font-family: 'JetBrains Mono', monospace; font-size: .63rem; color: var(--muted); margin-bottom: .6rem; }
+    .spine-desc { font-size: .74rem; color: var(--muted); line-height: 1.65; margin-bottom: .75rem; }
+    .spine-live { font-size: .63rem; font-weight: 700; color: var(--accent3); background: rgba(16,185,129,.1); border: 1px solid rgba(16,185,129,.25); border-radius: 4px; display: inline-block; padding: .15rem .55rem; letter-spacing: .05em; }
+    .spine-stats { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: 1.5rem; }
+    .spine-stat { background: rgba(0,212,255,.06); border: 1px solid rgba(0,212,255,.15); border-radius: 6px; padding: .35rem .7rem; font-size: .7rem; color: var(--text); font-family: 'JetBrains Mono', monospace; }
+    .spine-stat span { color: var(--accent); font-weight: 700; }
+    .spine-cta { margin-top: 2.5rem; display: flex; gap: 1rem; flex-wrap: wrap; }
+    [data-theme="day"] .spine-layer { color: #0f172a; }
+    [data-theme="day"] .spine-port { color: #475569; }
   </style>
 </head>
 <body>
@@ -360,6 +378,7 @@
     <a href="#verticals">Verticals</a>
     <a href="#products">Products</a>
     <a href="#platform">Platform</a>
+    <a href="#spine" style="color:var(--accent3)">Spine ✓</a>
     <a href="#services">Services</a>
     <a href="#contact">Contact</a>
     <div class="theme-bar" title="Change theme">
@@ -1008,6 +1027,108 @@
         </div>
       </div>
 
+    </div>
+  </div>
+</section>
+
+<div class="glow"></div>
+
+<!-- ANKR SPINE -->
+<section id="spine">
+  <div class="wrap">
+    <div class="fi">
+      <span class="sec-tag">ANKR Spine · Built 2026-02-25</span>
+      <h2 class="sec-h">The Self-Aware<br>Infrastructure Backbone.</h2>
+      <p class="sec-p">9 layers. 15 build phases. All delivered in a single session. Every ANKR service is now self-managing, self-observing, and self-healing — from a unified data mesh across 21 databases to distributed tracing across 45+ services.</p>
+      <div class="spine-stats">
+        <div class="spine-stat"><span>9</span> / 9 Layers Live</div>
+        <div class="spine-stat"><span>21</span> Databases in Mesh</div>
+        <div class="spine-stat"><span>75</span> Services Graphed</div>
+        <div class="spine-stat"><span>5</span> Feature Flags Deployed</div>
+        <div class="spine-stat"><span>v3.17.1</span> COMPASS CLI</div>
+        <div class="spine-stat"><span>$0</span> Added Infra Cost</div>
+      </div>
+    </div>
+
+    <div class="spine-grid" style="margin-top:2.5rem;">
+
+      <div class="spine-card fi">
+        <div class="spine-num">Layer 01 · port 4578</div>
+        <div class="spine-layer">Universe DB</div>
+        <div class="spine-port">Data Mesh — `compass db`</div>
+        <p class="spine-desc">21 databases, 1,200+ tables accessible via a single GraphQL endpoint. Safety gates block destructive migrations. Smart backups. Row-count baselines.</p>
+        <div class="spine-live">✓ LIVE</div>
+      </div>
+
+      <div class="spine-card fi">
+        <div class="spine-num">Layer 02 · port 4567</div>
+        <div class="spine-layer">Secrets Management</div>
+        <div class="spine-port">Encrypted Vault — `compass secret`</div>
+        <p class="spine-desc">AES-256-GCM vault. Per-service scoping. Rotation engine. `ankr-ctl start` auto-injects secrets — apps never read vault files directly.</p>
+        <div class="spine-live">✓ LIVE</div>
+      </div>
+
+      <div class="spine-card fi">
+        <div class="spine-num">Layer 03 · integrated</div>
+        <div class="spine-layer">Seed-as-Code</div>
+        <div class="spine-port">Snapshot Insurance — `compass db seed`</div>
+        <p class="spine-desc">Idempotent seed runner. Auto-snapshot before every DDL change. Point-in-time restore. Baseline validation — alert if row count drops 10%.</p>
+        <div class="spine-live">✓ LIVE</div>
+      </div>
+
+      <div class="spine-card fi">
+        <div class="spine-num">Layer 04 · port 4581</div>
+        <div class="spine-layer">Dependency Graph</div>
+        <div class="spine-port">75 services, 58 edges — `compass graph`</div>
+        <p class="spine-desc">RECON-powered scan of 89,195 entities. "Which services break if I restart X?" answered in under 1 second. Blast radius analysis built-in.</p>
+        <div class="spine-live">✓ LIVE</div>
+      </div>
+
+      <div class="spine-card fi">
+        <div class="spine-num">Layer 05 · integrated</div>
+        <div class="spine-layer">AI Impact Analysis</div>
+        <div class="spine-port">LLM-powered — `compass impact`</div>
+        <p class="spine-desc">Traces code change → calling services → AI officers → OKRs. Impact score 0–100. The only infrastructure tool that tells you which schema change degrades which OKR.</p>
+        <div class="spine-live">✓ LIVE</div>
+      </div>
+
+      <div class="spine-card fi">
+        <div class="spine-num">Layer 06 · CLI-driven</div>
+        <div class="spine-layer">Blue-Green Deploy</div>
+        <div class="spine-port">Zero-downtime — `compass deploy`</div>
+        <p class="spine-desc">Starts new instance on alternate port, health-checks, swaps nginx. 30s cutover. Auto-rollback if health check fails within 60 seconds.</p>
+        <div class="spine-live">✓ LIVE</div>
+      </div>
+
+      <div class="spine-card fi">
+        <div class="spine-num">Layer 07 · port 4568</div>
+        <div class="spine-layer">Feature Flags</div>
+        <div class="spine-port">5 flags deployed — `compass feature`</div>
+        <p class="spine-desc">Deterministic SHA256-hash rollout per app-key. Test with Adonia, not all clients — no code change, no redeploy. `@ankr/feature-flags` SDK with 30s polling.</p>
+        <div class="spine-live">✓ LIVE</div>
+      </div>
+
+      <div class="spine-card fi">
+        <div class="spine-num">Layer 08 · ai-proxy</div>
+        <div class="spine-layer">Cost Attribution</div>
+        <div class="spine-port">106 calls logged — `compass cost ai`</div>
+        <p class="spine-desc">Every AI call tagged with product, client, officer, OKR. Non-blocking JSONL logging. LEDGER integration. Budget alerts per product per month.</p>
+        <div class="spine-live">✓ LIVE</div>
+      </div>
+
+      <div class="spine-card fi">
+        <div class="spine-num">Layer 09 · port 4569</div>
+        <div class="spine-layer">Distributed Tracing</div>
+        <div class="spine-port">Rolling 24h — `compass trace`</div>
+        <p class="spine-desc">Full request waterfall across all hops. `@ankr/tracer` SDK with fire-and-forget spans. ASCII waterfall view. `compass trace tail` live stream.</p>
+        <div class="spine-live">✓ LIVE</div>
+      </div>
+
+    </div>
+
+    <div class="spine-cta fi">
+      <a href="/project/documents/ANKR-SPINE-COMPLETE-REPORT_2026-02-25.md" class="btn btn-p" target="_blank">Read Full Report →</a>
+      <a href="/viewer/" class="btn btn-s" target="_blank">Open Viewer</a>
     </div>
   </div>
 </section>
