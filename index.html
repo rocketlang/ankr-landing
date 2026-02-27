@@ -2011,5 +2011,98 @@ function abAskCompass(query) {
   });
 })();
 </script>
+
+<!-- SDGE FLOATING VIEWER WIDGET -->
+<style>
+#sdge-widget-container { position: fixed; bottom: 20px; right: 20px; z-index: 99998; }
+#sdge-fab {
+  display: flex; align-items: center; gap: 8px; padding: 12px 20px;
+  background: linear-gradient(135deg, #1e3a8a, #1d4ed8);
+  border: none; border-radius: 50px; color: #fff; font-weight: 600; font-size: 14px;
+  cursor: pointer; box-shadow: 0 4px 20px rgba(29,78,216,0.45);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+#sdge-fab:hover { transform: scale(1.05); box-shadow: 0 6px 28px rgba(29,78,216,0.6); }
+#sdge-fab.hidden { display: none; }
+.sdge-fab-icon { font-size: 20px; }
+@media (max-width: 600px) { .sdge-fab-label { display: none; } #sdge-fab { padding: 14px; border-radius: 50%; } }
+#sdge-window {
+  position: fixed; bottom: 80px; right: 20px;
+  width: 520px; height: 600px;
+  background: #0a0f1e; border: 1px solid rgba(29,78,216,0.5);
+  border-radius: 16px; overflow: hidden;
+  display: flex; flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgba(29,78,216,0.15);
+}
+#sdge-window.sdge-closed { display: none; }
+#sdge-window.sdge-fullscreen {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  width: 100vw; height: 100vh; border-radius: 0; z-index: 999999;
+}
+.sdge-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 16px; background: linear-gradient(135deg, #1e3a8a, #1d4ed8);
+  color: #fff; font-size: 13px; font-weight: 600; cursor: grab; user-select: none; flex-shrink: 0;
+}
+.sdge-header:active { cursor: grabbing; }
+.sdge-controls { display: flex; gap: 4px; }
+.sdge-controls button {
+  width: 26px; height: 26px; border: none; border-radius: 6px;
+  background: rgba(255,255,255,0.15); color: #fff; cursor: pointer; font-size: 14px;
+}
+.sdge-controls button:hover { background: rgba(255,255,255,0.28); }
+#sdge-iframe { flex: 1; width: 100%; border: none; background: #0a0f1e; }
+@media (max-width: 600px) { #sdge-window { width: calc(100vw - 32px); right: 16px; bottom: 70px; } }
+</style>
+
+<div id="sdge-widget-container">
+  <button id="sdge-fab" onclick="toggleSdgeWidget()">
+    <span class="sdge-fab-icon">📜</span>
+    <span class="sdge-fab-label">SDGE</span>
+  </button>
+  <div id="sdge-window" class="sdge-closed">
+    <div class="sdge-header" onmousedown="startSdgeDrag(event)">
+      <span>📜 SDGE — Document Governance</span>
+      <div class="sdge-controls">
+        <button onclick="toggleSdgeFullscreen()" title="Fullscreen">⛶</button>
+        <button onclick="toggleSdgeWidget()" title="Close">×</button>
+      </div>
+    </div>
+    <iframe id="sdge-iframe" src="https://sdge.ankrlabs.in"></iframe>
+  </div>
+</div>
+
+<script>
+let sdgeOpen = false, sdgeFS = false, sdgeDragging = false, sdgeDragX = 0, sdgeDragY = 0;
+function toggleSdgeWidget() {
+  sdgeOpen = !sdgeOpen;
+  document.getElementById('sdge-window').classList.toggle('sdge-closed', !sdgeOpen);
+  document.getElementById('sdge-fab').classList.toggle('hidden', sdgeOpen);
+}
+function toggleSdgeFullscreen() {
+  sdgeFS = !sdgeFS;
+  document.getElementById('sdge-window').classList.toggle('sdge-fullscreen', sdgeFS);
+}
+function startSdgeDrag(e) {
+  if (sdgeFS) return;
+  sdgeDragging = true;
+  const win = document.getElementById('sdge-window');
+  const rect = win.getBoundingClientRect();
+  sdgeDragX = e.clientX - rect.left;
+  sdgeDragY = e.clientY - rect.top;
+  win.style.transition = 'none';
+}
+document.addEventListener('mousemove', (e) => {
+  if (!sdgeDragging) return;
+  const win = document.getElementById('sdge-window');
+  win.style.left = (e.clientX - sdgeDragX) + 'px';
+  win.style.top  = (e.clientY - sdgeDragY) + 'px';
+  win.style.right = 'auto'; win.style.bottom = 'auto';
+});
+document.addEventListener('mouseup', () => {
+  sdgeDragging = false;
+  document.getElementById('sdge-window').style.transition = '';
+});
+</script>
 </body>
 </html>
