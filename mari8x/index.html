@@ -38,8 +38,8 @@
     <span class="pb">DCSA eBL 3.0</span>
   </div>
   <div class="prod-stats">
-    <div class="ps"><div class="ps-v">11.6M+</div><div class="ps-k">AIS Positions</div></div>
-    <div class="ps"><div class="ps-v">1000+</div><div class="ps-k">Positions / sec</div></div>
+    <div class="ps"><div class="ps-v" data-stat="positions_7d_human">14M+</div><div class="ps-k">AIS Positions (7d)</div></div>
+    <div class="ps"><div class="ps-v" data-stat="vessels_total_human">130K+</div><div class="ps-k">Unique vessels observed</div></div>
     <div class="ps"><div class="ps-v">&lt;100ms</div><div class="ps-k">API Response p95</div></div>
     <div class="ps"><div class="ps-v">99.9%</div><div class="ps-k">SLA Uptime</div></div>
   </div>
@@ -48,8 +48,8 @@
   <p class="sec-lbl">Core Capabilities</p>
   <h2 class="sec-title">Everything a Ship Manager Needs</h2>
   <div class="feat-grid">
-    <div class="feat"><div class="feat-icon">🗺️</div><h3 class="feat-h">ML Route Optimisation</h3><p class="feat-p">AI-powered route planning using 11.6M+ historical AIS positions. Predicts port congestion and optimises fuel consumption.</p></div>
-    <div class="feat"><div class="feat-icon">📡</div><h3 class="feat-h">Live AIS Vessel Overlay</h3><p class="feat-p">Real-time vessel tracking with heatmap visualisation and traffic density analysis. Ingests 1000+ positions per second.</p></div>
+    <div class="feat"><div class="feat-icon">🗺️</div><h3 class="feat-h">ML Route Optimisation</h3><p class="feat-p">AI-powered route planning using a 14M-position 7-day AIS window. Predicts port congestion and optimises fuel consumption.</p></div>
+    <div class="feat"><div class="feat-icon">📡</div><h3 class="feat-h">Live AIS Vessel Overlay</h3><p class="feat-p">Real-time vessel tracking with heatmap visualisation and traffic density analysis. Live ingest at ~25/sec sustained · 150/sec peak.</p></div>
     <div class="feat"><div class="feat-icon">⚓</div><h3 class="feat-h">Voyage Management</h3><p class="feat-p">Complete voyage lifecycle — fixture, pre-departure, sea passage, port arrival, and final voyage accounts.</p></div>
     <div class="feat"><div class="feat-icon">💼</div><h3 class="feat-h">Chartering Desk</h3><p class="feat-p">Full chartering operations — TC/VC/BB fixtures, hire calculations, off-hire tracking, and commission management.</p></div>
     <div class="feat"><div class="feat-icon">🏦</div><h3 class="feat-h">DA Desk & Disbursements</h3><p class="feat-p">Automated Disbursement Account management with proforma/final DA, port cost tracking, and one-click approvals.</p></div>
@@ -71,4 +71,20 @@
   </div>
 </div>
 <script src="/assets/theme.js"></script>
+<script>
+  // Dynamic substrate stats — fetches /api/maritime-stats.json (refreshed 4×/day via cron).
+  // Graceful fallback: if fetch fails or JSON is malformed, the hardcoded values stay.
+  (function () {
+    fetch('/api/maritime-stats.json', { cache: 'no-cache' })
+      .then(function (r) { if (!r.ok) throw new Error('http ' + r.status); return r.json(); })
+      .then(function (j) {
+        if (!j || !j.display) return;
+        document.querySelectorAll('[data-stat]').forEach(function (el) {
+          var key = el.getAttribute('data-stat');
+          if (j.display[key]) el.textContent = j.display[key];
+        });
+      })
+      .catch(function () { /* fallback to baked-in values */ });
+  })();
+</script>
 </body></html>
