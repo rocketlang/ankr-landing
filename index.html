@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ANKR Labs — India's Enterprise AI OS</title>
-  <meta name="description" content="ANKR Labs — Maritime AI, Voice AI in 22 languages, Logistics, Compliance and complete AI build for enterprise India." />
+  <title>ANKR Labs — Domain OS for Knowledge-Native Services</title>
+  <meta name="description" content="ANKR is an AI OS — 231 production-grade services across 16+ verticals, Forja Protocol, Trust Bitmask. Binary capability proof across maritime, logistics, compliance, cybersecurity, energy, healthcare, banking, education, and more. 84 Zenodo research papers. AnvilOS, TraitOS, VajraStack." />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
   <style>
@@ -120,6 +120,26 @@
     .nav-r a { color: rgba(255,255,255,.85); text-decoration: none; font-size: .8125rem; font-weight: 600; transition: color .2s; letter-spacing: .01em; }
     .nav-r a:hover { color: #fff; text-shadow: 0 0 8px rgba(255,255,255,.5); }
     .nav-cta { background: var(--accent) !important; color: #000 !important; padding: .45rem 1.1rem; border-radius: 6px; font-weight: 700 !important; box-shadow: 0 0 14px rgba(0,212,255,.4); }
+
+    /* IICS 2026 EVENT BANNER (self-retires after 06 Jun 2026) */
+    .iics-banner { position: fixed; top: 0; left: 0; right: 0; z-index: 210;
+      display: none; align-items: center; justify-content: center; gap: .75rem;
+      padding: .5rem 2.75rem .5rem 1rem; text-align: center;
+      background: linear-gradient(90deg, rgba(0,80,120,.97), rgba(124,58,237,.92), rgba(0,80,120,.97));
+      border-bottom: 1px solid rgba(0,212,255,.45);
+      font-size: .8125rem; font-weight: 600; color: #fff; letter-spacing: .01em; }
+    .iics-banner strong { color: #7dfbff; font-weight: 800; }
+    .iics-banner a.iics-cta { color: #000; background: #7dfbff; text-decoration: none;
+      padding: .15rem .7rem; border-radius: 5px; font-weight: 800; white-space: nowrap;
+      box-shadow: 0 0 12px rgba(0,212,255,.5); }
+    .iics-banner .iics-x { position: absolute; right: .75rem; top: 50%; transform: translateY(-50%);
+      background: none; border: none; color: rgba(255,255,255,.7); font-size: 1rem; cursor: pointer; padding: .25rem; }
+    body.has-iics .iics-banner { display: flex; }
+    body.has-iics nav { top: 38px; }
+    @media (max-width: 760px) {
+      .iics-banner { font-size: .7rem; padding: .45rem 2.25rem .45rem .6rem; gap: .5rem; }
+      body.has-iics nav { top: 46px; }
+    }
 
     /* HERO */
     .hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center;
@@ -364,9 +384,30 @@
     .spine-cta { margin-top: 2.5rem; display: flex; gap: 1rem; flex-wrap: wrap; }
     [data-theme="day"] .spine-layer { color: #0f172a; }
     [data-theme="day"] .spine-port { color: #475569; }
+    @media(max-width:768px) {
+      #founder > .wrap > div { grid-template-columns: 1fr; }
+      #domain-os > .wrap > div:nth-child(2) { grid-template-columns: 1fr; }
+      #research > .wrap > div:nth-child(2) { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
+
+<!-- IICS 2026 EVENT BANNER -->
+<div class="iics-banner" id="iicsBanner" role="region" aria-label="Event announcement">
+  <span>📍 <strong>ON NOW</strong> — Meet ANKR at <strong>IICS 2026</strong> · India International Cargo Show · 04–06 June · Bharat Mandapam, New Delhi · Hall 3 &amp; 4</span>
+  <a class="iics-cta" href="https://www.iicsexpo.com" target="_blank" rel="noopener">Details →</a>
+  <button class="iics-x" aria-label="Dismiss" onclick="document.body.classList.remove('has-iics');try{sessionStorage.setItem('iicsHide','1')}catch(e){}">✕</button>
+</div>
+<script>
+(function(){
+  // Show through 06 Jun 2026 23:59 IST; self-retires after.
+  var ends = new Date('2026-06-06T23:59:00+05:30');
+  var hidden = false;
+  try { hidden = sessionStorage.getItem('iicsHide') === '1'; } catch(e) {}
+  if (new Date() <= ends && !hidden) document.body.classList.add('has-iics');
+})();
+</script>
 
 <!-- NAV -->
 <nav>
@@ -413,86 +454,129 @@
 <section class="hero">
   <div class="hero-rays"></div>
   <div class="hero-grid"></div>
-  <div class="badge"><span class="dot-pulse"></span><span id="i18n-badge">106 Live Services · Powering India's AI Infrastructure</span></div>
-  <h1><span id="i18n-h1a">Enterprise AI,</span><br><span class="g1" id="i18n-h1b">Built for Bharat.</span></h1>
+  <div class="badge"><span class="dot-pulse"></span><span id="i18n-badge">Agentic OS · 9 Engine Lines · 20 Verticals · 231 Services · Zero Hallucination</span></div>
+  <h1><span id="i18n-h1a">The Agentic OS.</span><br><span class="g1" id="i18n-h1b">With Many Domains.</span></h1>
   <p class="hero-p" id="i18n-hero-p">
-    From maritime intelligence to voice AI in 22 Indian languages — we build the full-stack AI operating system powering logistics, compliance, fintech, and education for the common man and enterprise alike.
+    ANKR is an agentic operating system first — kernel-level agent governance, binary-truth capability oracles, domain SLMs — and a portfolio of verticals second. Domain knowledge that took decades to build should not require interpretation: every service declares exactly what it knows, every capability is a 32-bit integer. Either the bit is set or it isn't. AnvilOS vibecodes new services. TraitOS routes intelligence. AEGIS governs every agent. Maritime was vertical #1. Nineteen more followed.
   </p>
   <div class="hero-btns">
-    <a href="#products" class="btn btn-p" id="i18n-cta1">See Live Products ↓</a>
-    <a href="/interact/login" class="btn btn-s" id="i18n-cta2">Open ANKR Interact →</a>
+    <a href="#domain-os" class="btn btn-p" id="i18n-cta1">The Architecture ↓</a>
+    <a href="#research" class="btn btn-s" id="i18n-cta2">84 Zenodo Papers →</a>
   </div>
 </section>
 
 <!-- STATS TICKER -->
 <div class="ticker-wrap">
   <div class="ticker" id="ticker">
-    <div class="ti"><span class="ti-n">694</span><span class="ti-l">Published Packages</span></div>
+    <div class="ti"><span class="ti-n">231</span><span class="ti-l">Production Services</span></div>
+    <div class="ti-sep">·</div>
+    <div class="ti"><span class="ti-n">9</span><span class="ti-l">Agentic Engine Lines</span></div>
+    <div class="ti-sep">·</div>
+    <div class="ti"><span class="ti-n">84</span><span class="ti-l">Zenodo Research Papers</span></div>
+    <div class="ti-sep">·</div>
+    <div class="ti"><span class="ti-n">Forja Protocol</span><span class="ti-l">Open on npm</span></div>
+    <div class="ti-sep">·</div>
+    <div class="ti"><span class="ti-n">800+</span><span class="ti-l">Published Packages</span></div>
     <div class="ti-sep">·</div>
     <div class="ti"><span class="ti-n">79+</span><span class="ti-l">Applications</span></div>
     <div class="ti-sep">·</div>
-    <div class="ti"><span class="ti-n">106</span><span class="ti-l">Live Services</span></div>
+    <div class="ti"><span class="ti-n">1,600</span><span class="ti-l">irRegularAI Subscribers</span></div>
     <div class="ti-sep">·</div>
-    <div class="ti"><span class="ti-n">11</span><span class="ti-l">Verticals</span></div>
+    <div class="ti"><span class="ti-n">19.5M+</span><span class="ti-l">AIS Positions</span></div>
     <div class="ti-sep">·</div>
-    <div class="ti"><span class="ti-n">22+</span><span class="ti-l">Indian Languages</span></div>
+    <div class="ti"><span class="ti-n">231</span><span class="ti-l">Trust Bitmasks</span></div>
     <div class="ti-sep">·</div>
-    <div class="ti"><span class="ti-n">71</span><span class="ti-l">BFC Banking Tables</span></div>
-    <div class="ti-sep">·</div>
-    <div class="ti"><span class="ti-n">11.6M+</span><span class="ti-l">AIS Positions</span></div>
-    <div class="ti-sep">·</div>
-    <div class="ti"><span class="ti-n">27</span><span class="ti-l">Trading Algorithms</span></div>
-    <div class="ti-sep">·</div>
-    <div class="ti"><span class="ti-n">6</span><span class="ti-l">Maritime Regulations</span></div>
-    <div class="ti-sep">·</div>
-    <div class="ti"><span class="ti-n">282</span><span class="ti-l">MCP Tools</span></div>
-    <div class="ti-sep">·</div>
-    <div class="ti"><span class="ti-n">28</span><span class="ti-l">Banking MCP Tools</span></div>
+    <div class="ti"><span class="ti-n">32-bit</span><span class="ti-l">Capability Proof</span></div>
     <div class="ti-sep">·</div>
     <div class="ti"><span class="ti-n">&lt;100ms</span><span class="ti-l">API Response p95</span></div>
     <div class="ti-sep">·</div>
-    <div class="ti"><span class="ti-n">99.9%</span><span class="ti-l">SLA Uptime</span></div>
+    <div class="ti"><span class="ti-n">21</span><span class="ti-l">Years at Sea</span></div>
     <div class="ti-sep">·</div>
-    <div class="ti"><span class="ti-n">500M+</span><span class="ti-l">Student TAM</span></div>
+    <div class="ti"><span class="ti-n">44</span><span class="ti-l">Years Maritime + Tech</span></div>
+    <div class="ti-sep">·</div>
+    <div class="ti"><span class="ti-n">3</span><span class="ti-l">Bankruptcies Before This</span></div>
+    <div class="ti-sep">·</div>
+    <div class="ti"><span class="ti-n">Zero</span><span class="ti-l">Hallucination Possible</span></div>
     <div class="ti-sep">·</div>
     <!-- Duplicate for seamless loop -->
-    <div class="ti"><span class="ti-n">694</span><span class="ti-l">Published Packages</span></div>
+    <div class="ti"><span class="ti-n">231</span><span class="ti-l">Production Services</span></div>
+    <div class="ti-sep">·</div>
+    <div class="ti"><span class="ti-n">9</span><span class="ti-l">Agentic Engine Lines</span></div>
+    <div class="ti-sep">·</div>
+    <div class="ti"><span class="ti-n">84</span><span class="ti-l">Zenodo Research Papers</span></div>
+    <div class="ti-sep">·</div>
+    <div class="ti"><span class="ti-n">Forja Protocol</span><span class="ti-l">Open on npm</span></div>
+    <div class="ti-sep">·</div>
+    <div class="ti"><span class="ti-n">800+</span><span class="ti-l">Published Packages</span></div>
     <div class="ti-sep">·</div>
     <div class="ti"><span class="ti-n">79+</span><span class="ti-l">Applications</span></div>
     <div class="ti-sep">·</div>
-    <div class="ti"><span class="ti-n">106</span><span class="ti-l">Live Services</span></div>
+    <div class="ti"><span class="ti-n">1,600</span><span class="ti-l">irRegularAI Subscribers</span></div>
     <div class="ti-sep">·</div>
-    <div class="ti"><span class="ti-n">11</span><span class="ti-l">Verticals</span></div>
+    <div class="ti"><span class="ti-n">19.5M+</span><span class="ti-l">AIS Positions</span></div>
     <div class="ti-sep">·</div>
-    <div class="ti"><span class="ti-n">22+</span><span class="ti-l">Indian Languages</span></div>
+    <div class="ti"><span class="ti-n">231</span><span class="ti-l">Trust Bitmasks</span></div>
     <div class="ti-sep">·</div>
-    <div class="ti"><span class="ti-n">71</span><span class="ti-l">BFC Banking Tables</span></div>
-    <div class="ti-sep">·</div>
-    <div class="ti"><span class="ti-n">11.6M+</span><span class="ti-l">AIS Positions</span></div>
-    <div class="ti-sep">·</div>
-    <div class="ti"><span class="ti-n">27</span><span class="ti-l">Trading Algorithms</span></div>
-    <div class="ti-sep">·</div>
-    <div class="ti"><span class="ti-n">6</span><span class="ti-l">Maritime Regulations</span></div>
-    <div class="ti-sep">·</div>
-    <div class="ti"><span class="ti-n">282</span><span class="ti-l">MCP Tools</span></div>
-    <div class="ti-sep">·</div>
-    <div class="ti"><span class="ti-n">28</span><span class="ti-l">Banking MCP Tools</span></div>
+    <div class="ti"><span class="ti-n">32-bit</span><span class="ti-l">Capability Proof</span></div>
     <div class="ti-sep">·</div>
     <div class="ti"><span class="ti-n">&lt;100ms</span><span class="ti-l">API Response p95</span></div>
     <div class="ti-sep">·</div>
-    <div class="ti"><span class="ti-n">99.9%</span><span class="ti-l">SLA Uptime</span></div>
+    <div class="ti"><span class="ti-n">21</span><span class="ti-l">Years at Sea</span></div>
     <div class="ti-sep">·</div>
-    <div class="ti"><span class="ti-n">500M+</span><span class="ti-l">Student TAM</span></div>
+    <div class="ti"><span class="ti-n">44</span><span class="ti-l">Years Maritime + Tech</span></div>
+    <div class="ti-sep">·</div>
+    <div class="ti"><span class="ti-n">3</span><span class="ti-l">Bankruptcies Before This</span></div>
+    <div class="ti-sep">·</div>
+    <div class="ti"><span class="ti-n">Zero</span><span class="ti-l">Hallucination Possible</span></div>
   </div>
 </div>
+
+<!-- DOMAIN OS THESIS -->
+<section id="domain-os" style="padding:5rem 1.5rem;background:linear-gradient(180deg,var(--bg1) 0%,var(--bg) 100%);">
+  <div class="wrap">
+    <div class="fi" style="max-width:720px;margin:0 auto;text-align:center;">
+      <span class="sec-tag">The Founding Invariant</span>
+      <h2 class="sec-h" style="margin-top:.75rem;">At 200 services,<br>interpretation equals hallucination.</h2>
+      <p class="sec-p" style="max-width:600px;margin:.875rem auto 0;">The only solution is binary truth. Every service in ANKR declares exactly what it knows and can do. Every capability encoded as a 32-bit integer. One query across 231 services. Sub-millisecond. Zero inference. Zero hallucination possible.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-top:3rem;" class="fi">
+      <!-- Card 1 -->
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.75rem;border-top:2px solid var(--accent);">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.75rem;">Layer 1 · Declaration</div>
+        <div style="font-size:1rem;font-weight:700;color:var(--white);margin-bottom:.5rem;">Forja Protocol</div>
+        <p style="font-size:.8125rem;color:var(--muted);line-height:1.7;margin-bottom:1rem;">STATE + TRUST + SENSE + PROOF. Every service self-declares at boot. No docs needed. AnkrCodex crawls Forja, not documentation.</p>
+        <a href="https://www.npmjs.com/package/ankr-forja" target="_blank" style="font-size:.75rem;font-weight:600;color:var(--accent);text-decoration:none;">ankr-forja on npm →</a>
+      </div>
+      <!-- Card 2 -->
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.75rem;border-top:2px solid var(--accent2);">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--accent2);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.75rem;">Layer 2 · Index</div>
+        <div style="font-size:1rem;font-weight:700;color:var(--white);margin-bottom:.5rem;">AnkrCodex</div>
+        <p style="font-size:.8125rem;color:var(--muted);line-height:1.7;margin-bottom:1rem;">Centralised capability registry. Crawled from Forja STATE, not from documents. One query returns the full universe map. 231 services. One source of truth.</p>
+        <span style="font-size:.75rem;font-weight:600;color:var(--accent2);">231 services indexed</span>
+      </div>
+      <!-- Card 3 -->
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.75rem;border-top:2px solid var(--accent3);">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--accent3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.75rem;">Layer 3 · Encoding</div>
+        <div style="font-size:1rem;font-weight:700;color:var(--white);margin-bottom:.5rem;">Trust Bitmask</div>
+        <p style="font-size:.8125rem;color:var(--muted);line-height:1.7;margin-bottom:1rem;">32-bit integer per service. <code style="background:rgba(16,185,129,.1);color:var(--accent3);padding:.1rem .3rem;border-radius:3px;font-size:.75rem;">(mask & BOOK) !== 0</code> is a proof, not a lookup. Either the bit is set or it isn't.</p>
+        <span style="font-size:.75rem;font-weight:600;color:var(--accent3);">Binary truth</span>
+      </div>
+    </div>
+    <div style="margin-top:1.5rem;background:rgba(0,212,255,.04);border:1px solid rgba(0,212,255,.15);border-radius:12px;padding:1.25rem 1.75rem;" class="fi">
+      <p style="font-size:.8125rem;color:var(--muted);line-height:1.7;margin:0;">Maritime was Proof of Concept #1. The pattern repeats for any domain where practitioners carry knowledge in their heads that has never been formally codified — aviation, logistics, rocket engineering, any field with domain warriors. <strong style="color:var(--text);">ANKR is Domain OS, not a maritime platform.</strong></p>
+    </div>
+  </div>
+</section>
+
+<div class="glow"></div>
 
 <!-- VERTICALS -->
 <section id="verticals">
   <div class="wrap">
     <div class="fi">
-      <span class="sec-tag" id="i18n-vert-tag">Core Specialisations</span>
-      <h2 class="sec-h" id="i18n-vert-h">Eleven Verticals. One Platform.<br>For Every Indian.</h2>
-      <p class="sec-p" id="i18n-vert-p">From fishermen to fund managers, truck drivers to ship captains, rural students to algo traders — our AI speaks your language and solves real problems.</p>
+      <span class="sec-tag" id="i18n-vert-tag">Domain Coverage</span>
+      <h2 class="sec-h" id="i18n-vert-h">One Agentic OS.<br>Twenty Verticals.</h2>
+      <p class="sec-p" id="i18n-vert-p">Maritime proved the model. The same engines — AnvilOS, TraitOS, VajraStack, Forja Protocol, Trust Bitmask, AnkrCodex, AEGIS — now run across 20 verticals: logistics, compliance, cybersecurity, energy, healthcare, banking, education, agriculture, and more. Each domain self-declares. The OS scales — any near-ready vertical reaches service-ready in about a week. Verticals prove the engines; the engines define us.</p>
     </div>
     <div class="vert-grid">
 
@@ -520,7 +604,7 @@
       <div class="vc fi" style="--va:linear-gradient(90deg,#f59e0b,#d97706)">
         <span class="vc-icon">🤖</span>
         <h3 class="vc-h">Complete AI Build</h3>
-        <p class="vc-p">694 published npm packages across 20 scopes — backend generators, AI routers, memory engines, and code generation frameworks. We don't just use AI; we build the infra others deploy AI on.</p>
+        <p class="vc-p">800+ published npm packages across 20 scopes — backend generators, AI routers, memory engines, and code generation frameworks. We don't just use AI; we build the infra others deploy AI on.</p>
         <div class="tags"><span class="tag">@ankr/brain</span><span class="tag">EON Memory</span><span class="tag">Devbrain</span><span class="tag">MCP Server</span><span class="tag">282 MCP Tools</span></div>
       </div>
 
@@ -555,7 +639,7 @@
       <div class="vc fi" style="--va:linear-gradient(90deg,#0ea5e9,#0284c7)">
         <span class="vc-icon">🖥️</span>
         <h3 class="vc-h">Software & AI Dev Platform</h3>
-        <p class="vc-p">ANKR Command Center — AI-powered control, search, and observability in one. Compass Autopilot for self-healing infrastructure, Captain RAG for AI code generation, Google-style hybrid search, Prometheus stack monitoring, and ANKR CTL orchestrating 106 services — all AI-driven.</p>
+        <p class="vc-p">ANKR Command Center — AI-powered control, search, and observability in one. Compass Autopilot for self-healing infrastructure, Captain RAG for AI code generation, Google-style hybrid search, Prometheus stack monitoring, and ANKR CTL orchestrating 231 services — all AI-driven.</p>
         <div class="tags"><span class="tag">ANKR Command</span><span class="tag">AI Compass</span><span class="tag">Captain RAG</span><span class="tag">ANKR CTL v5</span><span class="tag">Hybrid Search</span><span class="tag">Stack Monitor</span><span class="tag">Devbrain</span></div>
       </div>
 
@@ -571,6 +655,34 @@
         <h3 class="vc-h">Warehouse Management — WarexAI</h3>
         <p class="vc-p">AI-powered enterprise WMS with real-time inventory tracking, inbound/outbound operations, putaway optimisation, and full GraphQL API. Purpose-built for India's $30B third-party logistics and warehousing market.</p>
         <div class="tags"><span class="tag">WarexAI</span><span class="tag">AnkrWMS</span><span class="tag">3PL</span><span class="tag">AI Putaway</span><span class="tag">warexai.com</span></div>
+      </div>
+
+      <div class="vc fi" style="--va:linear-gradient(90deg,#ef4444,#dc2626)">
+        <span class="vc-icon">🛡️</span>
+        <h3 class="vc-h">Cybersecurity — xShieldAI + AEGIS</h3>
+        <p class="vc-p">AI Posture Suite for the agent era. Three siblings: LakshmanRekha (LLM endpoint posture), HanumanG (agent delegation posture), Vishvakarma (developer environment posture). Published CA-006 sockpuppet defense on Zenodo. LIVE at xshieldai.com. <strong>AEGIS / KAVACH</strong> — open-source kill-switch for AI agents: budget caps, destructive-action gate (DAN Gate), PreToolUse hooks, agent sandbox. <a href="https://github.com/rocketlang/aegis" target="_blank">github.com/rocketlang/aegis</a>.</p>
+        <div class="tags"><span class="tag">xShieldAI</span><span class="tag">LakshmanRekha</span><span class="tag">HanumanG</span><span class="tag">STIX/TAXII</span><span class="tag">CA-006</span><span class="tag">AEGIS</span><span class="tag">KAVACH</span><span class="tag">DAN Gate</span><span class="tag">xshieldai.com</span></div>
+      </div>
+
+      <div class="vc fi" style="--va:linear-gradient(90deg,#eab308,#ca8a04)">
+        <span class="vc-icon">⚡</span>
+        <h3 class="vc-h">Energy — PowerP Box</h3>
+        <p class="vc-p">Energy AI platform — DISCOM copilot, carbon compliance tracking, RAPL attestation, core-group scheduling, PUE settlement. ankrGrid protocol powers the compute. Two Zenodo papers published. Born from a 6-year-old idea, now running on ankrGrid/power.</p>
+        <div class="tags"><span class="tag">PowerP Box</span><span class="tag">ankrGrid/power</span><span class="tag">DISCOM AI</span><span class="tag">RAPL</span><span class="tag">CarbonX</span></div>
+      </div>
+
+      <div class="vc fi" style="--va:linear-gradient(90deg,#ec4899,#be185d)">
+        <span class="vc-icon">🏥</span>
+        <h3 class="vc-h">Healthcare — HospOS</h3>
+        <p class="vc-p">24-engine hospital operating system built on VajraStack MDSI architecture. 92% cross-domain transferability. GuruG/Saathi/Trait routing. DiagnosisSaathi, MedicationSafety, ICU monitoring, surgical scheduling — all trait-driven with domain rules.</p>
+        <div class="tags"><span class="tag">HospOS</span><span class="tag">metaOS</span><span class="tag">DiagnosisSaathi</span><span class="tag">VajraStack</span><span class="tag">24 Engines</span></div>
+      </div>
+
+      <div class="vc fi" style="--va:linear-gradient(90deg,#22c55e,#15803d)">
+        <span class="vc-icon">🌾</span>
+        <h3 class="vc-h">Agriculture — AnnaPurna</h3>
+        <p class="vc-p">Khet Sakshi verified clean-food supply chain. Farmer enrollment, residue testing, premium buyer matching, farm-to-table traceability. Plus Parali Power: agricultural waste to sodium-ion battery anode manufacturing — waste remediation at LONI scale.</p>
+        <div class="tags"><span class="tag">AnnaPurna</span><span class="tag">Khet Sakshi</span><span class="tag">Parali Power</span><span class="tag">LONI</span><span class="tag">Clean Food</span></div>
       </div>
 
     </div>
@@ -683,6 +795,44 @@
             <div><div class="sm-v">99.9%</div><div class="sm-k">Uptime SLA</div></div>
           </div>
           <a href="https://mari8x.com" class="sc-link" data-frame="https://mari8x.com" data-title="Mari8X — Maritime Platform">Visit mari8x.com →</a>
+        </div>
+      </div>
+
+      <!-- GRANTHX -->
+      <div class="sc fi">
+        <div class="sc-screen" style="--sc-bg:linear-gradient(135deg,#0d0520,#1a0a3e); --sc-glow:rgba(167,139,250,.25)">
+          <div class="sc-glow"></div>
+          <div class="sc-screen-inner">
+            <div class="sc-logo-big" style="color:#a78bfa">GRANTHX</div>
+            <div class="sc-tagline">Universal Document OS</div>
+          </div>
+          <div class="sc-bars">
+            <div class="sc-bar" style="height:70%;background:#a78bfa"></div>
+            <div class="sc-bar" style="height:90%;background:#7c3aed"></div>
+            <div class="sc-bar" style="height:55%;background:#a78bfa"></div>
+            <div class="sc-bar" style="height:75%;background:#7c3aed"></div>
+            <div class="sc-bar" style="height:45%;background:#a78bfa"></div>
+            <div class="sc-bar" style="height:85%;background:#7c3aed"></div>
+            <div class="sc-bar" style="height:60%;background:#a78bfa"></div>
+            <div class="sc-bar" style="height:80%;background:#7c3aed"></div>
+          </div>
+        </div>
+        <div class="sc-body">
+          <div class="sc-head">
+            <div><div class="sc-name">📖 GRANTHX</div><div class="sc-cat">Document OS · Quiz · Flashcards · AI</div></div>
+            <span class="badge-live">LIVE</span>
+          </div>
+          <p class="sc-desc">Upload any PDF, Word doc, or Markdown — auto-generates quiz, SM-2 flashcards, and a doc-grounded AI tutor. Open-source .ib format. Offline mobile app. Share links with one click.</p>
+          <div class="sc-metrics">
+            <div><div class="sm-v">OSS</div><div class="sm-k">Apache 2.0</div></div>
+            <div><div class="sm-v">SM-2</div><div class="sm-k">Spaced Repetition</div></div>
+            <div><div class="sm-v">Offline</div><div class="sm-k">Mobile App</div></div>
+            <div><div class="sm-v">AI Ask</div><div class="sm-k">Doc-grounded</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:1rem;margin-top:1rem;flex-wrap:wrap">
+            <a href="https://granthx.in" class="sc-link" data-frame="https://granthx.in" data-title="GRANTHX — Document OS">Visit granthx.in →</a>
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=72x72&data=https://granthx.in&bgcolor=1a1d27&color=a78bfa&qzone=0" style="border-radius:6px;opacity:.85" width="72" height="72" alt="QR granthx.in" title="Scan to open GRANTHX" />
+          </div>
         </div>
       </div>
 
@@ -863,18 +1013,18 @@
         </div>
       </div>
 
-      <!-- PowerPbox -->
+      <!-- PowerP Box -->
       <div class="sc fi">
         <div class="sc-screen" style="--sc-bg:linear-gradient(135deg,#0d1400,#1e2a00); --sc-glow:rgba(245,158,11,.2)">
           <div class="sc-glow"></div>
           <div class="sc-screen-inner">
-            <div class="sc-logo-big" style="color:#fbbf24;font-size:1.625rem">PowerPbox</div>
+            <div class="sc-logo-big" style="color:#fbbf24;font-size:1.625rem">PowerP Box</div>
             <div class="sc-tagline">Energy & Infrastructure AI</div>
           </div>
         </div>
         <div class="sc-body">
           <div class="sc-head">
-            <div><div class="sc-name">⚡ PowerPbox</div><div class="sc-cat">Energy AI Platform</div></div>
+            <div><div class="sc-name">⚡ PowerP Box</div><div class="sc-cat">Energy AI Platform</div></div>
             <span class="badge-live">LIVE</span>
           </div>
           <p class="sc-desc">AI-powered energy infrastructure management and optimisation platform. Powering smart grids, DISCOMs, and renewable energy compliance for India's power sector.</p>
@@ -885,8 +1035,8 @@
             <div><div class="sm-v">India</div><div class="sm-k">Power sector</div></div>
           </div>
           <div style="display:flex;gap:.5rem;flex-wrap:wrap">
-            <a href="https://powerpbox.net" class="sc-link" data-frame="https://powerpbox.net" data-title="PowerPbox — Energy AI">powerpbox.net →</a>
-            <a href="https://powerpbox.org" class="sc-link" data-frame="https://powerpbox.org" data-title="PowerPbox — Open Energy">powerpbox.org →</a>
+            <a href="https://powerpbox.net" class="sc-link" data-frame="https://powerpbox.net" data-title="PowerP Box — Energy AI">powerpbox.net →</a>
+            <a href="https://powerpbox.org" class="sc-link" data-frame="https://powerpbox.org" data-title="PowerP Box — Open Energy">powerpbox.org →</a>
           </div>
         </div>
       </div>
@@ -1032,7 +1182,7 @@
             <div><div class="sc-name">🖥️ ANKR Command</div><div class="sc-cat">Control, Search & Observability</div></div>
             <span class="badge-live">LIVE</span>
           </div>
-          <p class="sc-desc">AI Command Center with Google-style instant search (inverted index + hybrid search), <strong style="color:var(--white)">AI Compass</strong> for self-healing infrastructure, <strong style="color:var(--white)">Captain RAG</strong> for AI code generation, Prometheus stack monitoring, and ANKR CTL orchestrating 106 services — all driven by AI.</p>
+          <p class="sc-desc">AI Command Center with Google-style instant search (inverted index + hybrid search), <strong style="color:var(--white)">AI Compass</strong> for self-healing infrastructure, <strong style="color:var(--white)">Captain RAG</strong> for AI code generation, Prometheus stack monitoring, and ANKR CTL orchestrating 231 services — all driven by AI.</p>
           <div class="sc-metrics">
             <div><div class="sm-v">106</div><div class="sm-k">Services managed</div></div>
             <div><div class="sm-v">Instant</div><div class="sm-k">Search latency</div></div>
@@ -1049,13 +1199,57 @@
 
 <div class="glow"></div>
 
+<!-- RESEARCH & PUBLICATIONS -->
+<section id="research" style="padding:5rem 1.5rem;background:linear-gradient(180deg,var(--bg) 0%,var(--bg1) 100%);">
+  <div class="wrap">
+    <div class="fi">
+      <span class="sec-tag">Open Research</span>
+      <h2 class="sec-h">84 Papers.<br>All on Zenodo.</h2>
+      <p class="sec-p" style="max-width:660px;">Zenodo is CERN's open research repository — the same platform used by physicists, biologists, and computer scientists worldwide to timestamp and publish research permanently. Every ANKR paper has a DOI and is freely accessible. This is not marketing. This is citable science.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-top:2.5rem;" class="fi">
+      <!-- Paper 1 -->
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.5rem;transition:all .3s;" onmouseenter="this.style.borderColor='rgba(124,58,237,.4)'" onmouseleave="this.style.borderColor='var(--border)'">
+        <div style="font-size:.65rem;font-weight:700;color:var(--accent2);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.625rem;">Verification · 2026</div>
+        <div style="font-size:.9375rem;font-weight:700;color:var(--white);margin-bottom:.5rem;line-height:1.4;">PRAMANA Self-Verification Protocol</div>
+        <p style="font-size:.78rem;color:var(--muted);line-height:1.65;margin-bottom:1rem;">A self-verifying cognition protocol for AI systems. Proposes a structured method for AI outputs to carry their own verification trail.</p>
+        <a href="https://zenodo.org/records/19273330" target="_blank" style="font-size:.72rem;font-weight:600;color:var(--accent2);text-decoration:none;">DOI: 10.5281/zenodo.19273330 →</a>
+      </div>
+      <!-- Paper 2 -->
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.5rem;transition:all .3s;" onmouseenter="this.style.borderColor='rgba(0,212,255,.4)'" onmouseleave="this.style.borderColor='var(--border)'">
+        <div style="font-size:.65rem;font-weight:700;color:var(--accent);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.625rem;">Architecture · 2026</div>
+        <div style="font-size:.9375rem;font-weight:700;color:var(--white);margin-bottom:.5rem;line-height:1.4;">Hidden Intelligence Thesis</div>
+        <p style="font-size:.78rem;color:var(--muted);line-height:1.65;margin-bottom:1rem;">In the maze of 231 repos, a hidden intelligence is emerging. Each service was an attempt to surface it. The paper names the observation before the proof — Benford-style.</p>
+        <a href="https://zenodo.org/records/19413614" target="_blank" style="font-size:.72rem;font-weight:600;color:var(--accent);text-decoration:none;">DOI: 10.5281/zenodo.19413614 →</a>
+      </div>
+      <!-- Browse all -->
+      <div style="background:var(--card);border:1px solid rgba(0,212,255,.18);border-radius:14px;padding:1.5rem;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;min-height:180px;transition:all .3s;" onmouseenter="this.style.borderColor='rgba(0,212,255,.45)'" onmouseleave="this.style.borderColor='rgba(0,212,255,.18)'">
+        <div style="font-size:2rem;font-weight:900;font-family:'JetBrains Mono',monospace;color:var(--accent);line-height:1;">84</div>
+        <div style="font-size:.8rem;color:var(--muted);margin:.375rem 0 1.25rem;">papers on Zenodo</div>
+        <a href="https://zenodo.org/search?q=powerpbox&f=resource_type%3Apublication" target="_blank" style="display:inline-flex;align-items:center;gap:.4rem;padding:.625rem 1.1rem;background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.25);color:var(--accent);text-decoration:none;border-radius:8px;font-size:.8rem;font-weight:600;">Browse all papers →</a>
+        <p style="font-size:.68rem;color:var(--muted);margin-top:.75rem;margin-bottom:0;line-height:1.5;">Zenodo is CERN's permanent open repository. Every paper has a DOI — freely citable, permanently archived.</p>
+      </div>
+    </div>
+    <!-- irRegularAI crosslink -->
+    <div style="margin-top:1.5rem;background:rgba(124,58,237,.05);border:1px solid rgba(124,58,237,.2);border-radius:12px;padding:1.25rem 1.75rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;" class="fi">
+      <div>
+        <div style="font-weight:700;color:var(--white);font-size:.9375rem;">irRegularAI</div>
+        <p style="font-size:.8rem;color:var(--muted);margin:.25rem 0 0;">Newsletter for domain builders on AI that actually works. Builder-first. Evidence-based. 1,600 subscribers from Issue 0.</p>
+      </div>
+      <a href="https://www.linkedin.com/newsletters/irregularai" target="_blank" style="display:inline-flex;align-items:center;gap:.4rem;padding:.6rem 1.25rem;background:rgba(124,58,237,.12);border:1px solid rgba(124,58,237,.3);color:#a78bfa;text-decoration:none;border-radius:8px;font-size:.8rem;font-weight:600;white-space:nowrap;">Subscribe →</a>
+    </div>
+  </div>
+</section>
+
+<div class="glow"></div>
+
 <!-- AI PLATFORM -->
 <section id="platform">
   <div class="wrap">
     <div class="fi">
       <span class="sec-tag" id="i18n-plat-tag">AI Platform</span>
       <h2 class="sec-h" id="i18n-plat-h">The Engine Room.</h2>
-      <p class="sec-p" id="i18n-plat-p">Multi-provider AI backbone, persistent memory, and 694 published npm packages powering every product in the ecosystem.</p>
+      <p class="sec-p" id="i18n-plat-p">Multi-provider AI backbone, persistent memory, and 800+ published npm packages powering every product across 16+ verticals.</p>
     </div>
     <div class="bento">
 
@@ -1082,9 +1276,9 @@
       </div>
 
       <div class="bc fi">
-        <div class="bc-tag">Live Services</div>
-        <div class="bc-val">106</div>
-        <p class="bc-sub">ANKR CTL managed services — all monitored, auto-recovered, metrics-collected. Banking, Trading, Maritime, Logistics, AI Officers, Voice, Compliance & more.</p>
+        <div class="bc-tag">Production Services</div>
+        <div class="bc-val">231</div>
+        <p class="bc-sub">ANKR CTL managed services across 16+ verticals — all production-grade, monitored, auto-recovered. Maritime, Cybersecurity, Energy, Healthcare, Banking, Logistics, Compliance, AI Officers, Voice & more.</p>
       </div>
 
       <div class="bc wide fi">
@@ -1264,8 +1458,8 @@
   <div class="wrap">
     <div class="fi">
       <span class="sec-tag" id="i18n-svc-tag">ANKR CTL · COMPASS</span>
-      <h2 class="sec-h" id="i18n-svc-h">106 Live Services.<br>All Monitored. All Managed.</h2>
-      <p class="sec-p" id="i18n-svc-p">From AI Officers to maritime intelligence — every service is live, monitored by COMPASS, and reachable. <span id="plat-health-txt" style="color:var(--accent3);font-weight:600"></span></p>
+      <h2 class="sec-h" id="i18n-svc-h">231 Services.<br>All Forja-Native. All Monitored.</h2>
+      <p class="sec-p" id="i18n-svc-p">Every service declares its capabilities via Forja Protocol. Monitored by COMPASS. Zero interpretation needed — one bitmask AND query returns the full capability map. <span id="plat-health-txt" style="color:var(--accent3);font-weight:600"></span></p>
       <div style="margin-top:.875rem;height:4px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden;max-width:360px">
         <div id="plat-hbar" style="height:100%;background:var(--accent3);width:0;transition:width 1.2s ease;border-radius:2px"></div>
       </div>
@@ -1528,15 +1722,19 @@
 <!-- CONTACT / CTA -->
 <div class="cta-wrap" id="contact">
   <h2 id="i18n-cta-h">Let's Build Together.</h2>
-  <p id="i18n-cta-p">We're building India's AI infrastructure — one vertical at a time. From maritime intelligence to voice AI in 22 Indian languages, ANKR Labs is your full-stack AI operating system. Reach out to explore a partnership, demo, or pilot.</p>
+  <p id="i18n-cta-p">We're building an AI OS that runs every domain — 231 production services across 16+ verticals, from maritime to cybersecurity to healthcare. AnvilOS vibecodes new services. TraitOS routes intelligence. 84 Zenodo papers prove the research. Built in India for the world. Reach out to explore a partnership, demo, or pilot.</p>
   <div class="contact-cards">
+    <a href="mailto:captain@ankr.in" class="cc">
+      <span class="cc-icon">✉️</span>
+      <div><div class="cc-label">Email</div><div class="cc-val">captain@ankr.in</div></div>
+    </a>
     <a href="mailto:capt.anil.sharma@powerpbox.org" class="cc">
       <span class="cc-icon">✉️</span>
       <div><div class="cc-label">Email</div><div class="cc-val">capt.anil.sharma@powerpbox.org</div></div>
     </a>
     <a href="tel:+917506926394" class="cc">
       <span class="cc-icon">📱</span>
-      <div><div class="cc-label">Mobile</div><div class="cc-val">+91 7506 926 394</div></div>
+      <div><div class="cc-label">Mobile</div><div class="cc-val">+91 7506926394</div></div>
     </a>
     <a href="tel:+919818726394" class="cc">
       <span class="cc-icon">📞</span>
@@ -1546,7 +1744,7 @@
   <div style="display:flex;gap:.875rem;justify-content:center;flex-wrap:wrap">
     <a href="/interact/login" class="btn btn-p" style="font-size:1rem;padding:.8rem 1.875rem">Open ANKR Interact →</a>
     <a href="https://mari8x.com" target="_blank" class="btn btn-s" style="font-size:1rem;padding:.8rem 1.875rem">Visit Mari8X →</a>
-    <a href="https://powerpbox.net" target="_blank" class="btn btn-s" style="font-size:1rem;padding:.8rem 1.875rem">PowerPbox →</a>
+    <a href="https://powerpbox.net" target="_blank" class="btn btn-s" style="font-size:1rem;padding:.8rem 1.875rem">PowerP Box →</a>
   </div>
   <p style="margin-top:2rem;font-size:.75rem;color:rgba(255,255,255,.15)">
     ankr.in &nbsp;·&nbsp; mari8x.com &nbsp;·&nbsp; powerpbox.net &nbsp;·&nbsp; powerpbox.org &nbsp;·&nbsp; vyomo.in &nbsp;·&nbsp; fr8x.org
@@ -1556,11 +1754,12 @@
 <!-- FOOTER -->
 <footer>
   <div class="fl">ANKR Labs</div>
-  <div class="fc" id="i18n-footer-copy">© 2026 ANKR Labs · Built in India 🇮🇳 · Making AI work for every Indian</div>
+  <div class="fc" id="i18n-footer-copy">© 2026 ANKR Labs · AI OS · 231 Services · 16+ Verticals · 84 Zenodo Papers · Forja Protocol · Trust Bitmask</div>
   <div class="flinks">
     <a href="/interact/login">Interact</a>
+    <a href="https://zenodo.org/search?q=powerpbox" target="_blank">Research</a>
     <a href="https://mari8x.com" target="_blank">Mari8X</a>
-    <a href="https://powerpbox.net" target="_blank">PowerPbox</a>
+    <a href="https://powerpbox.net" target="_blank">PowerP Box</a>
     <a href="mailto:capt.anil.sharma@powerpbox.org">Email</a>
   </div>
 </footer>
