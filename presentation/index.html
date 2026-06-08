@@ -472,7 +472,7 @@
       </div>
       <div class="layer">
         <div class="l-name" style="color:var(--cyan)">Real depth, real economics<span>vs Veson Nautical</span></div>
-        <div class="l-body">151k vessels · 1.07M AIS positions · 12,686 ports · 212 GraphQL schema domains under the surface. Competes with Veson Nautical ($150K–$600K/yr) at <strong>$999–$35K/mo</strong> — the cost structure of an AI-built OS, passed to the customer.</div>
+        <div class="l-body"><span id="m8x-vessels">155K+</span> vessels · <span id="m8x-positions">20M+</span> AIS positions · <span id="m8x-ports">12,688</span> ports under the surface — live AIS, refreshed continuously. Competes with Veson Nautical ($150K–$600K/yr) at <strong>$999–$35K/mo</strong> — the cost structure of an AI-built OS, passed to the customer.</div>
       </div>
     </div>
     <p class="lead"><small class="src">The films on the next slides are these agents running — nothing staged. The demo <em>is</em> the product, gated and recorded.</small></p>
@@ -639,6 +639,9 @@
       set('m8x-caps', g.capabilities);
       set('m8x-writes', g.writes_enumerated);
       set('m8x-errors', g.errors);
+      set('m8x-vessels', g.vessels_human);     // substrate (maritime-stats.json)
+      set('m8x-positions', g.positions_human);
+      set('m8x-ports', g.ports);
       if (g.generated_at) set('m8x-gatedate', g.generated_at.replace('T', ' ').replace(/:\d\d\.\d+Z$/, 'Z'));
     })
     .catch(() => {}); // floor stays
