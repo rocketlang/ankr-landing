@@ -314,7 +314,7 @@
     <div class="stats stats-3">
       <div class="stat"><div class="num cyan">9</div><div class="lbl">horizontal agentic engine lines — the product</div></div>
       <div class="stat"><div class="num violet">~20</div><div class="lbl">vertical domains where the OS proves itself</div></div>
-      <div class="stat"><div class="num emerald">~290</div><div class="lbl">real services · 360 registry entries, one queryable universe</div></div>
+      <div class="stat"><div class="num emerald">~<span data-stat="services">290</span></div><div class="lbl">real services · <span data-stat="registry">360</span> registry entries, one queryable universe</div></div>
     </div>
   </div>
 </div>
@@ -345,7 +345,7 @@
     <div class="equation">
 <span class="e-eng">ANKR</span> = <span class="e-eng">9 horizontal agentic engine lines</span>   <span class="e-cmt">← the product (value multiplies)</span>
        × <span class="e-ver">~20 vertical domains</span>          <span class="e-cmt">← the proof grounds (value adds)</span>
-       = ~29 domains · ~290 real services · 360 registry entries
+       = ~29 domains · ~<span data-stat="services">290</span> real services · <span data-stat="registry">360</span> registry entries
     </div>
     <p class="lead"><strong>An engine is worth <code style="font-family:var(--mono);color:var(--cyan)">engine × N verticals × external market</code> — multiplicative.</strong> A vertical is worth domain&nbsp;TAM × share — linear. Every engine is already proven against 20 live verticals internally. No horizontal-only startup has that.</p>
   </div>
@@ -364,7 +364,7 @@
       </div>
       <div class="layer">
         <div class="l-name">AnkrCodex<span>Index</span></div>
-        <div class="l-body">A centralised capability registry. One query returns the full map of ~290 services across the universe.</div>
+        <div class="l-body">A centralised capability registry. One query returns the full map of ~<span data-stat="services">290</span> services across the universe.</div>
       </div>
       <div class="layer">
         <div class="l-name">Trust Bitmask<span>Encoding</span></div>
@@ -385,10 +385,10 @@
       <div class="engine"><div class="e-id">E3 · PROOF</div><div class="e-name">Proof &amp; Trust Infra</div><div class="e-desc">"Interpretation = hallucination" productized. Binary truth as a service.</div><div class="e-svc">Forja · Pramana · Mudra · SDGE</div></div>
       <div class="engine"><div class="e-id">E4 · CHANNELS</div><div class="e-name">Orchestration &amp; Channels</div><div class="e-desc">Agents reachable anywhere a human already is.</div><div class="e-svc">ANCHOR · AnkrClaw · AI360 · StackPilot</div></div>
       <div class="engine"><div class="e-id">E5 · KNOWLEDGE</div><div class="e-name">ankr Viewer / Knowledge OS</div><div class="e-desc">Obsidian + NotebookLM + Affine in one agentic surface.</div><div class="e-svc">ankr-interact · GRANTHX · EON · Wiki</div></div>
-      <div class="engine"><div class="e-id">E6 · DEVTOOLS</div><div class="e-name">DevTools / Builder Platform</div><div class="e-desc">The tooling that built 290 services is itself the product.</div><div class="e-svc">ankr-ctl · AnkrGuru IDE · RocketLang · Atlas</div></div>
+      <div class="engine"><div class="e-id">E6 · DEVTOOLS</div><div class="e-name">DevTools / Builder Platform</div><div class="e-desc">The tooling that built <span data-stat="services">290</span> services is itself the product.</div><div class="e-svc">ankr-ctl · AnkrGuru IDE · RocketLang · Atlas</div></div>
       <div class="engine"><div class="e-id">E7 · SLM</div><div class="e-name">SLM Product Line</div><div class="e-desc">SLM as a product, not infra. LoRA per domain — methodology proven.</div><div class="e-svc">ShipSLM · MedSLM · GalaxyCodex-SLM</div></div>
       <div class="engine"><div class="e-id">E8 · DOMAIN</div><div class="e-name">Domain Intelligence Layer</div><div class="e-desc">The Capability Oracle pattern itself, replicable per domain.</div><div class="e-svc">SuperDomain · Axiom · GalaxyCodex</div></div>
-      <div class="engine"><div class="e-id">E9 · COGNITION</div><div class="e-name">Cognition Layers</div><div class="e-desc">What makes 290 services behave like one organism.</div><div class="e-svc">JAAL · CHETNA · ankr-brain · Darshan</div></div>
+      <div class="engine"><div class="e-id">E9 · COGNITION</div><div class="e-name">Cognition Layers</div><div class="e-desc">What makes <span data-stat="services">290</span> services behave like one organism.</div><div class="e-svc">JAAL · CHETNA · ankr-brain · Darshan</div></div>
     </div>
   </div>
 </div>
@@ -642,6 +642,9 @@
       set('m8x-vessels', g.vessels_human);     // substrate (maritime-stats.json)
       set('m8x-positions', g.positions_human);
       set('m8x-ports', g.ports);
+      // Platform counts (services.json registry) — every occurrence across the deck.
+      if (g.services != null) document.querySelectorAll('[data-stat="services"]').forEach(el => el.textContent = g.services);
+      if (g.registry != null) document.querySelectorAll('[data-stat="registry"]').forEach(el => el.textContent = g.registry);
       if (g.generated_at) set('m8x-gatedate', g.generated_at.replace('T', ' ').replace(/:\d\d\.\d+Z$/, 'Z'));
     })
     .catch(() => {}); // floor stays
