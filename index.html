@@ -469,7 +469,7 @@
 <!-- STATS TICKER -->
 <div class="ticker-wrap">
   <div class="ticker" id="ticker">
-    <div class="ti"><span class="ti-n">296</span><span class="ti-l">Production Services</span></div>
+    <div class="ti"><span class="ti-n" data-stat="services">296</span><span class="ti-l">Production Services</span></div>
     <div class="ti-sep">·</div>
     <div class="ti"><span class="ti-n">9</span><span class="ti-l">Agentic Engine Lines</span></div>
     <div class="ti-sep">·</div>
@@ -485,7 +485,7 @@
     <div class="ti-sep">·</div>
     <div class="ti"><span class="ti-n">19.5M+</span><span class="ti-l">AIS Positions</span></div>
     <div class="ti-sep">·</div>
-    <div class="ti"><span class="ti-n">296</span><span class="ti-l">Trust Bitmasks</span></div>
+    <div class="ti"><span class="ti-n" data-stat="services">296</span><span class="ti-l">Trust Bitmasks</span></div>
     <div class="ti-sep">·</div>
     <div class="ti"><span class="ti-n">32-bit</span><span class="ti-l">Capability Proof</span></div>
     <div class="ti-sep">·</div>
@@ -500,7 +500,7 @@
     <div class="ti"><span class="ti-n">Zero</span><span class="ti-l">Hallucination Possible</span></div>
     <div class="ti-sep">·</div>
     <!-- Duplicate for seamless loop -->
-    <div class="ti"><span class="ti-n">296</span><span class="ti-l">Production Services</span></div>
+    <div class="ti"><span class="ti-n" data-stat="services">296</span><span class="ti-l">Production Services</span></div>
     <div class="ti-sep">·</div>
     <div class="ti"><span class="ti-n">9</span><span class="ti-l">Agentic Engine Lines</span></div>
     <div class="ti-sep">·</div>
@@ -516,7 +516,7 @@
     <div class="ti-sep">·</div>
     <div class="ti"><span class="ti-n">19.5M+</span><span class="ti-l">AIS Positions</span></div>
     <div class="ti-sep">·</div>
-    <div class="ti"><span class="ti-n">296</span><span class="ti-l">Trust Bitmasks</span></div>
+    <div class="ti"><span class="ti-n" data-stat="services">296</span><span class="ti-l">Trust Bitmasks</span></div>
     <div class="ti-sep">·</div>
     <div class="ti"><span class="ti-n">32-bit</span><span class="ti-l">Capability Proof</span></div>
     <div class="ti-sep">·</div>
@@ -1278,7 +1278,7 @@
 
       <div class="bc fi">
         <div class="bc-tag">Production Services</div>
-        <div class="bc-val">296</div>
+        <div class="bc-val" data-stat="services">296</div>
         <p class="bc-sub">ANKR CTL managed services across 9 verticals — all production-grade, monitored, auto-recovered. Maritime, Cybersecurity, Energy, Healthcare, Banking, Logistics, Compliance, AI Officers, Voice & more.</p>
       </div>
 
@@ -1936,7 +1936,7 @@
 </script>
 
 <script src="/assets/theme.js"></script>
-<script src="/assets/i18n.js?v=20260227"></script>
+<script src="/assets/i18n.js?v=20260615"></script>
 
 <!-- ── ANKR Ask Bot ──────────────────────────────────────────────── -->
 <style>
@@ -2303,6 +2303,27 @@ document.addEventListener('mouseup', () => {
   sdgeDragging = false;
   document.getElementById('sdge-window').style.transition = '';
 });
+</script>
+
+<!-- Live stat tiles — FP-010: derived from the Tree Officer breath via the same
+     gate-totals.json the presentation deck reads. The baked numbers are the FLOOR
+     (always render); this fetch is a BEST-EFFORT overlay. Fail → floor stays, never blank.
+     Numeric tiles (.ti-n / .bc-val) are outside i18n/AI-translate, so the binding is
+     stable across every language. -->
+<script>
+(function () {
+  fetch('/presentation/gate-totals.json', { cache: 'no-store' })
+    .then(r => r.ok ? r.json() : null)
+    .then(g => {
+      if (!g) return;
+      // services / registry / verticals / agentic_os — all derived, none typed.
+      document.querySelectorAll('[data-stat]').forEach(el => {
+        const v = g[el.dataset.stat];
+        if (v != null && v !== '') el.textContent = v;
+      });
+    })
+    .catch(() => {}); // floor stays
+})();
 </script>
 </body>
 </html>
