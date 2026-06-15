@@ -25,14 +25,14 @@ const T = {
   // handled by restoreOriginals() via data-orig snapshots, not this dict.
   en: {},
   hi: {
-    badge:     'एजेंटिक OS · 9 इंजन लाइनें · 9 वर्टिकल · 296 सेवाएं · शून्य हैलुसिनेशन',
+    badge:     'एजेंटिक OS · {engines} इंजन लाइनें · {verticals} वर्टिकल · {services} सेवाएं · शून्य हैलुसिनेशन',
     h1a:       'एजेंटिक OS।',
     h1b:       'अनेक डोमेन के साथ।',
     hero_p:    'ANKR पहले एक एजेंटिक ऑपरेटिंग सिस्टम है — कर्नेल-स्तर एजेंट गवर्नेंस, बाइनरी-ट्रुथ कैपेबिलिटी ओरेकल, डोमेन SLM — और उसके बाद वर्टिकल्स का पोर्टफोलियो। हर सेवा घोषित करती है कि वह क्या जानती है — बिट सेट है या नहीं।',
     cta1:      'आर्किटेक्चर देखें ↓',
     cta2:      '84 Zenodo पेपर →',
     vert_tag:  'डोमेन कवरेज',
-    vert_h:    'एक एजेंटिक OS।\nबीस वर्टिकल।',
+    vert_h:    'एक एजेंटिक OS।\nनौ वर्टिकल।',
     vert_p:    'मछुआरे से फंड मैनेजर तक, ट्रक ड्राइवर से जहाज कप्तान तक — हमारा AI आपकी भाषा बोलता है और असली समस्याएं सुलझाता है।',
     prod_tag:  'लाइव उत्पाद',
     prod_h:    'अभी चल रहे हैं।',
@@ -53,7 +53,7 @@ const T = {
     live_platform:'लाइव प्लेटफ़ॉर्म →',
   },
   ta: {
-    badge:     'ஏஜெண்டிக் OS · 9 இன்ஜின் லைன்கள் · 9 வெர்டிகல்கள் · 296 சேவைகள்',
+    badge:     'ஏஜெண்டிக் OS · {engines} இன்ஜின் லைன்கள் · {verticals} வெர்டிகல்கள் · {services} சேவைகள்',
     h1a:       'ஏஜெண்டிக் OS.',
     h1b:       'பல டொமைன்களுடன்.',
     hero_p:    'ANKR முதலில் ஒரு ஏஜெண்டிக் இயக்க முறைமை — கர்னல்-நிலை ஏஜெண்ட் நிர்வாகம், பைனரி-உண்மை திறன் ஆரக்கிள்கள், டொமைன் SLM-கள் — பிறகே வெர்டிகல்களின் தொகுப்பு. ஒவ்வொரு சேவையும் தான் அறிந்ததை அறிவிக்கிறது.',
@@ -81,7 +81,7 @@ const T = {
     live_platform:'நேரடி தளம் →',
   },
   te: {
-    badge:     'ఏజెంటిక్ OS · 9 ఇంజిన్ లైన్లు · 9 వర్టికల్స్ · 296 సేవలు',
+    badge:     'ఏజెంటిక్ OS · {engines} ఇంజిన్ లైన్లు · {verticals} వర్టికల్స్ · {services} సేవలు',
     h1a:       'ఏజెంటిక్ OS.',
     h1b:       'అనేక డొమైన్‌లతో.',
     hero_p:    'ANKR ముందుగా ఒక ఏజెంటిక్ ఆపరేటింగ్ సిస్టమ్ — కెర్నల్-స్థాయి ఏజెంట్ గవర్నెన్స్, బైనరీ-ట్రూత్ కెపాబిలిటీ ఒరాకిల్స్, డొమైన్ SLMలు — ఆ తర్వాతే వర్టికల్స్ పోర్ట్‌ఫోలియో. ప్రతి సేవ తనకు తెలిసింది ప్రకటిస్తుంది.',
@@ -109,7 +109,7 @@ const T = {
     live_platform:'లైవ్ వేదిక →',
   },
   kn: {
-    badge:     'ಏಜೆಂಟಿಕ್ OS · 9 ಇಂಜಿನ್ ಲೈನ್‌ಗಳು · 9 ವರ್ಟಿಕಲ್‌ಗಳು · 296 ಸೇವೆಗಳು',
+    badge:     'ಏಜೆಂಟಿಕ್ OS · {engines} ಇಂಜಿನ್ ಲೈನ್‌ಗಳು · {verticals} ವರ್ಟಿಕಲ್‌ಗಳು · {services} ಸೇವೆಗಳು',
     h1a:       'ಏಜೆಂಟಿಕ್ OS.',
     h1b:       'ಹಲವು ಡೊಮೇನ್‌ಗಳೊಂದಿಗೆ.',
     hero_p:    'ANKR ಮೊದಲು ಒಂದು ಏಜೆಂಟಿಕ್ ಆಪರೇಟಿಂಗ್ ಸಿಸ್ಟಮ್ — ಕರ್ನಲ್-ಮಟ್ಟದ ಏಜೆಂಟ್ ಆಡಳಿತ, ಬೈನರಿ-ಸತ್ಯ ಸಾಮರ್ಥ್ಯ ಒರಾಕಲ್‌ಗಳು, ಡೊಮೇನ್ SLMಗಳು — ನಂತರ ವರ್ಟಿಕಲ್‌ಗಳ ಪೋರ್ಟ್‌ಫೋಲಿಯೊ. ಪ್ರತಿ ಸೇವೆಯೂ ತನಗೆ ತಿಳಿದದ್ದನ್ನು ಘೋಷಿಸುತ್ತದೆ.',
@@ -137,7 +137,7 @@ const T = {
     live_platform:'ನೇರ ವೇದಿಕೆ →',
   },
   mr: {
-    badge:     'एजेंटिक OS · 9 इंजिन लाइन्स · 9 व्हर्टिकल्स · 296 सेवा',
+    badge:     'एजेंटिक OS · {engines} इंजिन लाइन्स · {verticals} व्हर्टिकल्स · {services} सेवा',
     h1a:       'एजेंटिक OS.',
     h1b:       'अनेक डोमेनसह.',
     hero_p:    'ANKR आधी एक एजेंटिक ऑपरेटिंग सिस्टम आहे — कर्नल-स्तरीय एजंट गव्हर्नन्स, बायनरी-ट्रुथ कॅपेबिलिटी ओरॅकल्स, डोमेन SLM — आणि नंतर व्हर्टिकल्सचा पोर्टफोलिओ. प्रत्येक सेवा स्वतःला काय माहीत आहे ते जाहीर करते.',
@@ -168,7 +168,8 @@ const T = {
 
 // Map data-i18n attributes to their DOM queries
 const SELECTORS = {
-  badge:        '#i18n-badge',
+  // badge is OWNED by the live-stat system (STAT_TPL + renderStats) so its numbers
+  // stay derived from the breath in every language — applyLang must NOT touch it.
   h1a:          '#i18n-h1a',
   h1b:          '#i18n-h1b',
   hero_p:       '#i18n-hero-p',
@@ -196,6 +197,56 @@ const SELECTORS = {
   live_platform:'#i18n-live-platform',
 };
 
+// ─── Live stats — derived by the Tree Officer breath via gate-totals.json ─────
+// FP-010: the baked numbers in the HTML are the FLOOR (always render). These tokens
+// get overlaid with the live derived counts; a failed fetch leaves the floor. The
+// founder names the verticals, the tree derives the count — nothing here is typed.
+const STATS = { engines: 9, verticals: 9, services: 296, registry: 374, agentic_os: 168 };
+
+// Per-language token templates the live system OWNS end-to-end. The badge is owned in
+// every language (removed from SELECTORS + marked data-no-translate); the footer is an
+// English-only overlay (curated footers carry no stats, so renderStats skips them).
+const STAT_TPL = {
+  badge: {
+    en: 'Agentic OS · {engines} Engine Lines · {verticals} Verticals · {services} Services · Zero Hallucination',
+    hi: 'एजेंटिक OS · {engines} इंजन लाइनें · {verticals} वर्टिकल · {services} सेवाएं · शून्य हैलुसिनेशन',
+    ta: 'ஏஜெண்டிக் OS · {engines} இன்ஜின் லைன்கள் · {verticals} வெர்டிகல்கள் · {services} சேவைகள்',
+    te: 'ఏజెంటిక్ OS · {engines} ఇంజిన్ లైన్లు · {verticals} వర్టికల్స్ · {services} సేవలు',
+    kn: 'ಏಜೆಂಟಿಕ್ OS · {engines} ಇಂಜಿನ್ ಲೈನ್‌ಗಳು · {verticals} ವರ್ಟಿಕಲ್‌ಗಳು · {services} ಸೇವೆಗಳು',
+    mr: 'एजेंटिक OS · {engines} इंजिन लाइन्स · {verticals} व्हर्टिकल्स · {services} सेवा',
+  },
+  footer: {
+    en: '© 2026 ANKR Labs · AI OS · {services} Services · {verticals} Verticals · 84 Zenodo Papers · Forja Protocol · Trust Bitmask',
+  },
+};
+
+function fillTokens(s) {
+  return s.replace(/\{(\w+)\}/g, (m, k) => (STATS[k] != null ? STATS[k] : m));
+}
+
+// Re-render every owned stat string from its template (so it survives the async fetch
+// AND every language switch) + the numeric stat tiles (.ti-n / .bc-val, outside i18n).
+function renderStats(lang) {
+  lang = lang || document.documentElement.lang || 'en';
+  document.querySelectorAll('[data-i18n-stats]').forEach(el => {
+    const tpls = STAT_TPL[el.dataset.i18nStats];
+    const tpl = tpls && tpls[lang];
+    if (tpl) el.textContent = fillTokens(tpl);   // no template for this lang → leave applyLang's text
+  });
+  document.querySelectorAll('[data-stat]').forEach(el => {
+    const v = STATS[el.dataset.stat];
+    if (v != null && v !== '') el.textContent = v;
+  });
+}
+
+function loadLiveStats() {
+  return fetch('/presentation/gate-totals.json', { cache: 'no-store' })
+    .then(r => r.ok ? r.json() : null)
+    .then(g => { if (g) ['services', 'registry', 'verticals', 'agentic_os'].forEach(k => { if (g[k] != null) STATS[k] = g[k]; }); })
+    .catch(() => {})
+    .finally(() => renderStats(document.documentElement.lang || 'en'));
+}
+
 function applyLang(lang) {
   const strings = T[lang] || T.en;
   Object.entries(SELECTORS).forEach(([key, sel]) => {
@@ -210,6 +261,7 @@ function applyLang(lang) {
   });
   document.documentElement.lang = lang;
   localStorage.setItem('ankr-lang', lang);
+  renderStats(lang);   // owned stat strings + tiles, derived not typed
 }
 
 // ─── AI Full-Page Translate (powered by @ankr/ai-translate) ──────────────────
@@ -252,6 +304,7 @@ function restoreOriginals() {
   aiLang = null;
   setAiBadge(false);
   setAiBtn('🤖', false);
+  renderStats(document.documentElement.lang || 'en');   // re-overlay derived counts on the EN floor
 }
 
 async function fetchBatch(texts, to) {
@@ -363,6 +416,9 @@ function setAiBtn(text, active) {
     applyLang(saved);
     // Auto-translate on startup if non-English saved
     if (saved !== 'en') aiTranslatePage(saved);
+
+    // Overlay the breath-derived counts (badge in every language, footer EN, tiles).
+    loadLiveStats();
 
     document.querySelectorAll('.lang-btn:not(.ai-translate-btn)').forEach(btn => {
       btn.addEventListener('click', () => {

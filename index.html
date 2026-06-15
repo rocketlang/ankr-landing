@@ -455,7 +455,7 @@
 <section class="hero">
   <div class="hero-rays"></div>
   <div class="hero-grid"></div>
-  <div class="badge"><span class="dot-pulse"></span><span id="i18n-badge">Agentic OS · 9 Engine Lines · 9 Verticals · 296 Services · Zero Hallucination</span></div>
+  <div class="badge"><span class="dot-pulse"></span><span id="i18n-badge" data-no-translate data-i18n-stats="badge">Agentic OS · 9 Engine Lines · 9 Verticals · 296 Services · Zero Hallucination</span></div>
   <h1><span id="i18n-h1a">The Agentic OS.</span><br><span class="g1" id="i18n-h1b">With Many Domains.</span></h1>
   <p class="hero-p" id="i18n-hero-p">
     ANKR is an agentic operating system first — kernel-level agent governance, binary-truth capability oracles, domain SLMs — and a portfolio of verticals second. Domain knowledge that took decades to build should not require interpretation: every service declares exactly what it knows, every capability is a 32-bit integer. Either the bit is set or it isn't. AnvilOS vibecodes new services. TraitOS routes intelligence. AEGIS governs every agent. Maritime was vertical #1. Nineteen more followed.
@@ -1755,7 +1755,7 @@
 <!-- FOOTER -->
 <footer>
   <div class="fl">ANKR Labs</div>
-  <div class="fc" id="i18n-footer-copy">© 2026 ANKR Labs · AI OS · 296 Services · 9 Verticals · 84 Zenodo Papers · Forja Protocol · Trust Bitmask</div>
+  <div class="fc" id="i18n-footer-copy" data-i18n-stats="footer">© 2026 ANKR Labs · AI OS · 296 Services · 9 Verticals · 84 Zenodo Papers · Forja Protocol · Trust Bitmask</div>
   <div class="flinks">
     <a href="/interact/login">Interact</a>
     <a href="https://zenodo.org/search?q=powerpbox" target="_blank">Research</a>
@@ -1936,7 +1936,7 @@
 </script>
 
 <script src="/assets/theme.js"></script>
-<script src="/assets/i18n.js?v=20260615"></script>
+<script src="/assets/i18n.js?v=20260615b"></script>
 
 <!-- ── ANKR Ask Bot ──────────────────────────────────────────────── -->
 <style>
@@ -2305,25 +2305,8 @@ document.addEventListener('mouseup', () => {
 });
 </script>
 
-<!-- Live stat tiles — FP-010: derived from the Tree Officer breath via the same
-     gate-totals.json the presentation deck reads. The baked numbers are the FLOOR
-     (always render); this fetch is a BEST-EFFORT overlay. Fail → floor stays, never blank.
-     Numeric tiles (.ti-n / .bc-val) are outside i18n/AI-translate, so the binding is
-     stable across every language. -->
-<script>
-(function () {
-  fetch('/presentation/gate-totals.json', { cache: 'no-store' })
-    .then(r => r.ok ? r.json() : null)
-    .then(g => {
-      if (!g) return;
-      // services / registry / verticals / agentic_os — all derived, none typed.
-      document.querySelectorAll('[data-stat]').forEach(el => {
-        const v = g[el.dataset.stat];
-        if (v != null && v !== '') el.textContent = v;
-      });
-    })
-    .catch(() => {}); // floor stays
-})();
-</script>
+<!-- Live stats (badge in every language, footer, and numeric tiles) are owned by
+     /assets/i18n.js → loadLiveStats() / renderStats(), reading /presentation/gate-totals.json
+     (the same breath-derived source the deck uses). FP-010: baked numbers are the floor. -->
 </body>
 </html>
