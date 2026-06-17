@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>VIVECHANA V2 — SLM Knowledge Proof-Demo · location</title>
+<style>
+  :root{
+    --bg:#0b0e14; --panel:#121724; --panel2:#0f1420; --ink:#e8edf6; --dim:#9aa7bd;
+    --gold:#e7b94e; --gold2:#f4d180; --green:#56d196; --red:#f06a6a; --blue:#6ab7ff;
+    --line:#1e2636; --shadow:0 8px 30px rgba(0,0,0,.4);
+    --mono:"SFMono-Regular",ui-monospace,"JetBrains Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(1200px 600px at 50% -10%,#161d2e 0%,var(--bg) 60%);color:var(--ink);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1040px;margin:0 auto;padding:48px 24px 80px}
+  .kicker{letter-spacing:.32em;text-transform:uppercase;font-size:11px;color:var(--gold);font-weight:700}
+  h1{font-size:clamp(30px,5.4vw,52px);margin:.18em 0 .1em;font-weight:800;letter-spacing:-.02em;
+     background:linear-gradient(180deg,#fff,#cdd6e6);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{color:var(--dim);font-size:17px;max-width:720px}
+  .pill{display:inline-block;border:1px solid var(--line);background:var(--panel);border-radius:999px;
+        padding:5px 13px;font-size:12px;color:var(--dim);margin:5px 6px 0 0}
+  .pill b{color:var(--gold2)}
+  section{margin-top:46px}
+  h2{font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--dim);font-weight:700;border-bottom:1px solid var(--line);padding-bottom:10px}
+  .formula{background:linear-gradient(180deg,#141a28,#0f1420);border:1px solid var(--line);border-radius:18px;
+           padding:34px;text-align:center;box-shadow:var(--shadow);margin-top:18px}
+  .formula .big{font-family:var(--mono);font-size:clamp(22px,4.4vw,38px);font-weight:700;letter-spacing:.02em}
+  .formula .big .k{color:var(--gold2)} .formula .big .v{color:var(--green)} .formula .op{color:var(--dim)}
+  .formula .small{color:var(--dim);font-family:var(--mono);font-size:15px;margin-top:14px}
+  .formula .small .v{color:var(--green)}
+  .grid{display:grid;gap:14px;margin-top:18px}
+  .g5{grid-template-columns:repeat(5,1fr)} .g4{grid-template-columns:repeat(4,1fr)} .g3{grid-template-columns:repeat(3,1fr)}
+  @media(max-width:880px){.g5,.g4,.g3{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:520px){.g5,.g4,.g3{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
+  .card .ax{font-family:var(--mono);font-size:26px;font-weight:800;color:var(--gold2)}
+  .card .nm{font-weight:700;margin-top:2px}
+  .card .ds{color:var(--dim);font-size:13px;margin-top:6px}
+  .anchors{margin-top:12px;border-top:1px dashed var(--line);padding-top:10px;font-size:12px}
+  .anchors div{display:flex;justify-content:space-between;gap:8px;margin:3px 0}
+  .anchors .lab{color:var(--dim)} .anchors .hi{color:var(--green)} .anchors .lo{color:var(--red)}
+  .callout{margin-top:18px;background:linear-gradient(100deg,#1a1530,#121724);border:1px solid #3a2d12;
+           border-left:3px solid var(--gold);border-radius:12px;padding:20px 22px}
+  .callout b{color:var(--gold2)}
+  .callout .math{font-family:var(--mono);color:var(--ink);font-size:14px;margin-top:8px;display:block}
+  .callout code{font-family:var(--mono);color:var(--green);font-size:13px}
+  .guard{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:18px;position:relative}
+  .guard .id{font-family:var(--mono);font-size:12px;color:var(--blue);font-weight:700}
+  .guard .t{font-weight:700;margin:4px 0 6px} .guard .d{color:var(--dim);font-size:13px}
+  table{width:100%;border-collapse:collapse;margin-top:16px;font-size:14px}
+  th,td{padding:11px 12px;text-align:center;border-bottom:1px solid var(--line)}
+  th{color:var(--dim);font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:700}
+  td.opt{text-align:left;font-weight:600}
+  td.k{font-family:var(--mono);color:var(--gold2)} td.v{font-family:var(--mono);color:var(--green);font-weight:700}
+  tr.win{background:linear-gradient(90deg,rgba(86,209,150,.12),transparent)}
+  tr.win td.opt{color:var(--green)}
+  tr.null td{color:var(--dim)}
+  sup.m{color:var(--green)} sup.e{color:var(--gold)} sup.g{color:var(--red)}
+  .note{color:var(--dim);font-size:13px;margin-top:12px}
+  .foot{margin-top:54px;border-top:1px solid var(--line);padding-top:18px;color:var(--dim);font-size:12.5px}
+  .foot a{color:var(--blue);text-decoration:none}
+  .lead{color:var(--ink);font-size:15px;border-left:2px solid var(--gold);padding-left:14px;margin:18px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="kicker">ANKR · Founding Principle R (FP-011) · Decision Record</div>
+  <h1>SLM Knowledge Proof-Demo — where does it live?</h1>
+  <div class="sub">A Mode-2 crossroads: standalone in <code style="color:var(--green)">slm-proof</code>, a 5th act inside the <code style="color:var(--green)">gtp</code> proof-demo, or defer. At a crossroads you do not argue — you <b style="color:var(--gold2)">score</b>, and read the ranking.</div>
+  <div>
+    <span class="pill">Mode <b>2</b> · Option Ranking</span>
+    <span class="pill">Date <b>2026-06-17</b></span>
+    <span class="pill">Protocol <b>v2</b> (guards 012–015)</span>
+    <span class="pill">Decision <b>SHIP A</b></span>
+  </div>
+
+  <section>
+    <h2>The Canonical Formula (LOCKED)</h2>
+    <div class="formula">
+      <div class="big"><span class="k">K</span> <span class="op">=</span> I <span class="op">×</span> L <span class="op">×</span> R <span class="op">×</span> Rep&nbsp;&nbsp;&nbsp;&nbsp;<span class="v">V</span> <span class="op">=</span> <span class="k">K</span> <span class="op">×</span> F</div>
+      <div class="small"><span class="k">K</span> = intrinsic worth [1–10,000] &nbsp;·&nbsp; <span class="v">V</span> = deliverable today = K × feasibility [1–100,000]</div>
+    </div>
+    <div class="lead">Multiplicative, never additive — a single low multiplicand dominates. That is the whole point.</div>
+  </section>
+
+  <section>
+    <h2>The Five Axes &nbsp;·&nbsp; scored against fixed anchors, not by feel (Guard 013)</h2>
+    <div class="grid g5">
+      <div class="card"><div class="ax">I</div><div class="nm">Impact</div><div class="ds">Users / services directly affected.</div>
+        <div class="anchors"><div><span class="lab">9–10</span><span class="hi">GRANTHX (225 svc)</span></div><div><span class="lab">5</span><span>one desk's ops</span></div><div><span class="lab">1–2</span><span class="lo">one script</span></div></div></div>
+      <div class="card"><div class="ax">L</div><div class="nm">Leverage</div><div class="ds">New capabilities unlocked.</div>
+        <div class="anchors"><div><span class="lab">9–10</span><span class="hi">the bitmask</span></div><div><span class="lab">5</span><span>a new desk view</span></div><div><span class="lab">1–2</span><span class="lo">UI colour</span></div></div></div>
+      <div class="card"><div class="ax">R</div><div class="nm">Reach</div><div class="ds">Propagation breadth.</div>
+        <div class="anchors"><div><span class="lab">9–10</span><span class="hi">Forja STATE</span></div><div><span class="lab">5</span><span>one svc surface</span></div><div><span class="lab">1–2</span><span class="lo">one DB seed</span></div></div></div>
+      <div class="card" style="border-color:#3a2d12"><div class="ax">Rep</div><div class="nm">Replicability</div><div class="ds">Auto-propagation. 10 = no-code · 1 = manual.</div>
+        <div class="anchors"><div><span class="lab">9–10</span><span class="hi">bitmask trie/hook</span></div><div><span class="lab">5</span><span>vector embeds</span></div><div><span class="lab">1–2</span><span class="lo">per-svc jugaad</span></div></div></div>
+      <div class="card"><div class="ax">F</div><div class="nm">Feasibility</div><div class="ds">Buildable now? Volatile; always recomputed.</div>
+        <div class="anchors"><div><span class="lab">9–10</span><span class="hi">exists / trivial</span></div><div><span class="lab">5</span><span>2–3 weeks</span></div><div><span class="lab">1–2</span><span class="lo">needs new infra</span></div></div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>The Guards Layer (v2)</h2>
+    <div class="grid g4">
+      <div class="guard"><div class="id">VIVECHANA-012</div><div class="t">Reversibility Veto</div><div class="d">Classify worst case first. An <b style="color:var(--red)">irreversible</b> option cannot rank #1 on V alone.</div></div>
+      <div class="guard"><div class="id">VIVECHANA-013</div><div class="t">Calibration Anchors</div><div class="d">Score against the fixed card above — not by mood. Same card every session.</div></div>
+      <div class="guard"><div class="id">VIVECHANA-014</div><div class="t">Evidence Grade</div><div class="d">Tag each axis <sup class="m">M</sup>·<sup class="e">E</sup>·<sup class="g">G</sup>. Verify the highest-axis guess before banking.</div></div>
+      <div class="guard"><div class="id">VIVECHANA-015</div><div class="t">Null Baseline</div><div class="d">Every ranking includes a scored do-nothing row. "Not yet" competes on the scale.</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Worked Example — 2026-06-17 · SLM Knowledge Proof-Demo: location</h2>
+    <p class="note">Mode 2 (Option Ranking). <b>Guard 012:</b> both build options are REVERSIBLE (a new file / an additive act — trivially removed); null is reversible by definition. None vetoed → V-rank stands. Evidence grades: <sup class="m">M</sup>easured · <sup class="e">E</sup>stimated · <sup class="g">G</sup>uessed. I=2 — this is a <i>one-service</i> decision (anchor "one script / 2 services"); the buyer audience is Reach, not Impact.</p>
+    <table>
+      <thead><tr><th>Option</th><th>I</th><th>L</th><th>R</th><th>Rep</th><th>F</th><th>K</th><th>V</th></tr></thead>
+      <tbody>
+        <tr class="win"><td class="opt">★ A · standalone in <code>slm-proof</code></td><td>2<sup class="e">E</sup></td><td>4<sup class="e">E</sup></td><td>3<sup class="e">E</sup></td><td>3<sup class="e">E</sup></td><td>9<sup class="m">M</sup></td><td class="k">72</td><td class="v">648 ★</td></tr>
+        <tr><td class="opt">B · 5th act in gtp proof-demo</td><td>2<sup class="e">E</sup></td><td>4<sup class="e">E</sup></td><td>3<sup class="e">E</sup></td><td>3<sup class="e">E</sup></td><td>7<sup class="m">M</sup></td><td class="k">72</td><td class="v">504</td></tr>
+        <tr class="null"><td class="opt">D · null / defer (banner only)</td><td>2<sup class="m">M</sup></td><td>1</td><td>2<sup class="e">E</sup></td><td>1</td><td>10<sup class="m">M</sup></td><td class="k">4</td><td class="v">40</td></tr>
+      </tbody>
+    </table>
+    <div class="callout">
+      <b>A value-equal pair, settled on feasibility — and the settling axis was measured.</b> A and B <b>tie on intrinsic worth (K = 72 = 72)</b>: identical Impact, Leverage, Reach, Replicability. V separates <i>only</i> on Feasibility (9 vs 7) — so this is not "standalone is more valuable," it is "<b>gtp's proof surface is mid-evolution</b>" (a verdict-wall another session is building), so entangling the knowledge proof now risks design incoherence + substrate-mix.
+      <span class="math">The decisive axis is the one <b>Guard 014</b> made honest: B's F began <sup class="g">G</sup>uessed (founder's "gtp enhanced"), verified <sup class="g">G</sup>→<sup class="m">M</sup> before banking — git: <code>proof-demo.mjs</code> 3-day cold, but <code>verdict-stream.mjs</code> + <code>wall.html</code> untracked &amp; in flight.</span>
+      Null (V=40) lost by a clear margin → building wins, but we are <i>not forced</i>. → <b>SHIP A</b> (built, <code>a9ac74ae</code>). B held <b>NARROW</b>: promote when ≥3 buyers pull for one omnibus proof, or gtp's verdict-wall settles (F→9, V→648 tie → re-decide on I/L/R).
+    </div>
+  </section>
+
+  <section>
+    <h2>What Must Never Change</h2>
+    <div class="grid g3">
+      <div class="card"><div class="ds"><b style="color:var(--ink)">Multiplicative, never additive.</b> The 40× Jugaad gap stands. K and V are always two separate numbers.</div></div>
+      <div class="card"><div class="ds"><b style="color:var(--ink)">Always dated.</b> V is a snapshot; re-run at disruption — the delta is the map.</div></div>
+      <div class="card"><div class="ds"><b style="color:var(--ink)">The veto precedes V.</b> A score never authorizes the unrecoverable. Guards never enter the multiplication.</div></div>
+    </div>
+  </section>
+
+  <div class="foot">
+    Canonical protocol: <a href="#">vivechana--protocol-v2--formal--2026-06-07.md</a> · technical note <a href="#">vivechana--protocol-v2--technical-note--formal--2026-06-08.md</a> · render template <a href="#">vivechana--render--formal--2026-06-08.html</a><br>
+    IP / prior-art anchor: v1 (2026-04-06) — Zenodo <b>10.5281/zenodo.19248146</b> (3-axis) · <b>10.5281/zenodo.19456053</b> (5-axis) · v2 Guards <b>10.5281/zenodo.20589218</b>.<br>
+    Decision record: <a href="#">slm-knowledge-proof--vivechana--formal--2026-06-17.md</a> · built artifact: <code>slm-proof/bin/knowledge-proof-demo.mjs</code> (<code>a9ac74ae</code>).<br>
+    Founding Principle R (FP-011) — <i>Score the Crossroads</i>.
+  </div>
+
+</div>
+</body>
+</html>
