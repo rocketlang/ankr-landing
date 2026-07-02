@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Aangan — Operations Pack</title>
+<style>
+  :root{
+    --paper:#EFEADD; --paper2:#F7F3E9; --card:#FBF8F0;
+    --ink:#23281F; --ink2:#585C4C; --muted:#8A8D7C; --line:#DBD5C4;
+    --pine:#243A2B; --pine2:#33503B; --garden:#3E7A5A;
+    --marigold:#CE8617; --clay:#B4552F; --cream:#F1ECDD;
+    --red:#BB3E2E; --amber:#9C7016;
+    --serif:'Iowan Old Style','Palatino Linotype','Book Antiqua',Georgia,serif;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:var(--garden)}
+  .num{font-variant-numeric:tabular-nums}
+  h1,h2,h3,h4{font-family:var(--serif);font-weight:600;letter-spacing:-.01em;text-wrap:balance}
+
+  /* header + nav */
+  header.top{background:linear-gradient(160deg,#1C2E22,#243A2B);color:var(--cream);padding:clamp(26px,5vw,44px) 0 0}
+  .wrap{max-width:900px;margin:0 auto;padding:0 clamp(16px,4vw,30px)}
+  .brand{font-family:var(--serif);font-size:clamp(30px,5vw,44px);color:#F6EFDD;margin:0}
+  .brand .dev{display:block;font-family:var(--sans);font-size:11px;letter-spacing:.34em;text-transform:uppercase;color:#E8B75E;font-weight:700;margin-bottom:8px}
+  .tagline{color:#DCE2CE;margin:8px 0 0;font-size:15px}
+  nav.docs{display:flex;gap:6px;flex-wrap:wrap;margin-top:26px;padding-bottom:2px}
+  nav.docs button, nav.docs a{background:transparent;border:0;color:#C9CFBB;font:inherit;font-size:13.5px;font-weight:600;
+    padding:11px 15px;border-radius:9px 9px 0 0;cursor:pointer;text-decoration:none;white-space:nowrap}
+  nav.docs button.active{background:var(--paper);color:var(--pine)}
+  nav.docs a.ext{color:#E8B75E}
+  nav.docs a.ext:hover{color:#fff}
+
+  main{padding:clamp(30px,5vw,52px) 0 80px}
+  .doc{display:none} .doc.active{display:block;animation:fade .3s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  @media(prefers-reduced-motion:reduce){.doc.active{animation:none}}
+
+  .eyebrow{font-size:11.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--marigold);font-weight:700;margin:0 0 12px}
+  h2{font-size:clamp(25px,4vw,34px);color:var(--pine);margin:0 0 8px;line-height:1.1}
+  h3{font-size:19px;color:var(--pine);margin:30px 0 10px}
+  h4{font-size:15px;color:var(--pine2);margin:20px 0 6px}
+  p{max-width:70ch}
+  .lead{font-size:17px;color:var(--ink2);max-width:66ch}
+  .muted{color:var(--ink2)}
+  blockquote{border-left:3px solid var(--marigold);margin:18px 0;padding:6px 0 6px 18px;color:var(--pine2);font-style:italic;background:var(--paper2);border-radius:0 8px 8px 0}
+  ul,ol{padding-left:20px;max-width:70ch} li{margin:5px 0}
+  code{background:var(--paper2);border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:13px}
+  hr{border:0;border-top:1px solid var(--line);margin:26px 0}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0}
+  @media(max-width:640px){.grid2{grid-template-columns:1fr}}
+  .kv{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+  .kv .k{font-size:11px;letter-spacing:.03em;text-transform:uppercase;color:var(--muted)}
+  .kv .v{font-family:var(--serif);font-size:18px;color:var(--pine);margin-top:3px}
+
+  .tbl{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--card);margin:16px 0}
+  table{border-collapse:collapse;width:100%;min-width:440px}
+  th,td{padding:10px 15px;text-align:left;font-size:13.5px;vertical-align:top}
+  th{font-size:11px;letter-spacing:.03em;text-transform:uppercase;color:var(--muted);font-weight:700;background:var(--paper2);border-bottom:1px solid var(--line)}
+  tbody tr+tr td{border-top:1px solid var(--line)}
+
+  .cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0}
+  @media(max-width:700px){.cards3{grid-template-columns:1fr}}
+  .hub{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;text-decoration:none;color:inherit;display:block;transition:transform .15s,border-color .15s}
+  .hub:hover{transform:translateY(-3px);border-color:var(--garden)}
+  .hub h3{margin:0 0 6px;font-size:18px} .hub p{margin:0;font-size:13.5px;color:var(--ink2)}
+  .hub .go{color:var(--garden);font-weight:700;font-size:13px;margin-top:12px;display:inline-block}
+
+  .fill{border-bottom:1px dashed var(--muted);min-width:80px;display:inline-block}
+  .box{display:inline-block;width:15px;height:15px;border:1.5px solid var(--pine2);border-radius:3px;vertical-align:-2px;margin-right:6px}
+
+  /* emergency card styling */
+  .emerg h3{color:var(--clay)}
+  .scn{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--clay);border-radius:8px;padding:13px 16px;margin:10px 0}
+  .scn.orange{border-left-color:var(--amber)} .scn.yellow{border-left-color:var(--marigold)}
+  .scn b{color:var(--pine)}
+  .golden{background:linear-gradient(160deg,#33503B,#243A2B);color:var(--cream);border-radius:12px;padding:18px 22px;margin:16px 0}
+  .golden b{color:#EBD9A6}
+  .warnbox{background:#F6EEDD;border:1px solid #E4D3A6;border-radius:10px;padding:14px 18px;color:#6b551d;font-size:13.5px;margin:16px 0}
+
+  footer{background:var(--pine);color:#AEB6A0;padding:36px 0;font-size:12.5px;margin-top:40px}
+  footer b{color:#E8B75E}
+  .printbtn{background:var(--marigold);color:#2A1E06;border:0;font:inherit;font-weight:700;font-size:13px;padding:9px 16px;border-radius:20px;cursor:pointer;margin-top:8px}
+  @media print{header.top,nav.docs,footer,.printbtn{display:none}.doc{display:block!important}.wrap{max-width:none}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <h1 class="brand"><span class="dev">Operations Pack · Concept in development</span>Aangan</h1>
+    <p class="tagline">The courtyard where generations meet · Dhauj, in the Aravallis</p>
+    <nav class="docs" id="nav">
+      <button data-doc="overview" class="active">Overview</button>
+      <button data-doc="blueprint">Pilot Blueprint</button>
+      <button data-doc="agreement">Admission Agreement</button>
+      <button data-doc="carefile">Care File</button>
+      <button data-doc="emergency">Emergency Card</button>
+      <a class="ext" href="concept.html">Concept ↗</a>
+      <a class="ext" href="model.html">Financial Model ↗</a>
+      <a class="ext" href="plan.html">Launch Plan ↗</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- ============ OVERVIEW ============ -->
+<section class="doc active" id="overview">
+  <p class="eyebrow">The pack</p>
+  <h2>Everything for Aangan, in one place.</h2>
+  <p class="lead">A small memory-care day club and home on the family farm at Dhauj — starting as a day club, growing into respite and residential care. This pack holds the operating documents; the three linked pages hold the concept, the numbers, and the launch plan.</p>
+
+  <div class="cards3">
+    <a class="hub" href="concept.html"><h3>The Concept</h3><p>What Aangan is — the vision, the day, the intergenerational programme, the setting.</p><span class="go">Open ↗</span></a>
+    <a class="hub" href="model.html"><h3>Financial Model</h3><p>Interactive P&amp;L and 5-year cash-flow — minimum, realistic and maximum builds.</p><span class="go">Open ↗</span></a>
+    <a class="hub" href="plan.html"><h3>Launch Plan</h3><p>Track A to open now, Track B build-up, and the 60–90 day checklist &amp; budget.</p><span class="go">Open ↗</span></a>
+  </div>
+
+  <h3>Operating documents in this pack</h3>
+  <ul>
+    <li><b><a href="#" data-jump="blueprint">Pilot Blueprint</a></b> — the 2-bed model, site layout, staffing, the medical net (Al-Falah &amp; Amrita), and the legal must-haves.</li>
+    <li><b><a href="#" data-jump="agreement">Admission &amp; Care Agreement</a></b> — the family contract skeleton for any outside resident (for a lawyer to finalise).</li>
+    <li><b><a href="#" data-jump="carefile">Care File</a></b> — the folder that lives in a resident's room: medical summary, routine, dementia care notes, contacts.</li>
+    <li><b><a href="#" data-jump="emergency">Emergency Protocol Card</a></b> — the wall card: what to do, in order, for every emergency.</li>
+  </ul>
+  <button class="printbtn" onclick="window.print()">Print the whole pack</button>
+
+  <div class="warnbox" style="margin-top:26px"><b>Note.</b> These are working drafts for a concept in development. Medical, legal, staffing and licensing details must be finalised with qualified professionals (an eldercare lawyer, the Doctor of Record, licensed contractors) before Aangan opens or takes any resident.</div>
+</section>
+
+<!-- ============ BLUEPRINT ============ -->
+<section class="doc" id="blueprint">
+  <p class="eyebrow">Operating document</p>
+  <h2>Pilot Blueprint</h2>
+  <p class="muted">A 2-bed residential memory-care home + clinical backup — the pilot before any scale. Mom is resident zero; that is the quality gate.</p>
+
+  <h3>1. The model</h3>
+  <p><b>A residential memory-care home + clinical backup — NOT an on-site hospital.</b> Residential care keeps Aangan in the lightly-regulated senior-care lane. On-site medical is a nursing room to <em>stabilise</em>, not treatment beds. Acute care happens at <b>Al-Falah (5 km, ~10 min)</b>; serious/tertiary at <b>Amrita Faridabad (24 km)</b>. Treatment beds on-site would trigger the Clinical Establishments Act — avoided by design.</p>
+
+  <h3>2. Site layout</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Zone</th><th>What</th></tr></thead>
+    <tbody>
+      <tr><td>Resident rooms (ground floor)</td><td>No stairs, ensuite, grab bars, non-slip, night-lights, no inside bolt, familiar furniture</td></tr>
+      <tr><td>Secured safe garden</td><td>~1,500–3,000 sq ft enclosed loop path, unclimbable fence, one childproof-latch gate, shade, benches, sensory planting</td></tr>
+      <tr><td>Nursing room</td><td>O₂ concentrator, monitors, emergency meds, first-aid — stabilise &amp; transfer only</td></tr>
+      <tr><td>Exit security</td><td>Door chimes/alarms + high latches on all exits from the safe zone; gas-knob covers; meds locked</td></tr>
+      <tr><td>Wider farm</td><td>Companion-only access; she roams the safe zone freely, the land only hand-in-hand</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>3. Staffing roster</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Role</th><th>Coverage</th><th>Source (NCR)</th></tr></thead>
+    <tbody>
+      <tr><td>Resident nurse</td><td>24/7 shifts</td><td>HCAH / Portea / agency</td></tr>
+      <tr><td>Dementia attendant</td><td>Day + night (night non-negotiable)</td><td>HCAH / Emoha / Samarth</td></tr>
+      <tr><td>Cook / housekeeping</td><td>Daytime</td><td>Farm staff already in place</td></tr>
+      <tr><td>Visiting geriatric doctor</td><td>Weekly + on-call</td><td>Al-Falah faculty / home-visit geriatrician</td></tr>
+      <tr><td>Physiotherapist</td><td>2–3×/week</td><td>Portea / local</td></tr>
+    </tbody>
+  </table></div>
+  <p class="muted">Hire &amp; onboard 1–2 weeks before any travel, shadowing family + resident together. Every hire police-verified. Keep a named backup for every core role.</p>
+
+  <h3>4. Medical net — tie-ups to lock</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Layer</th><th>Provider</th><th>The ask</th></tr></thead>
+    <tbody>
+      <tr><td>Primary / ER</td><td>Al-Falah (5 km)</td><td>Priority ER access · home-visit doctor · ambulance on call — <b>verify the ER is 24/7 in person</b></td></tr>
+      <tr><td>Tertiary</td><td>Amrita, Faridabad (24 km)</td><td>Pre-register residents · referral pathway (neuro / cardiac / ICU)</td></tr>
+      <tr><td>Transport</td><td>Standby car + driver · private ambulance</td><td>Backup to hospital ambulance (response to Dhauj can be slow)</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>5. Four legal must-haves before any outside resident</h3>
+  <ul>
+    <li><span class="box"></span><b>Doctor of Record</b> — a registered physician responsible for resident care.</li>
+    <li><span class="box"></span><b>Liability / professional indemnity insurance</b> — the #1 risk is elder injury/death.</li>
+    <li><span class="box"></span><b>Registration</b> — senior citizens' residential/care home under Haryana rules.</li>
+    <li><span class="box"></span><b>Signed admission &amp; care agreement</b> with each resident's family (in this pack).</li>
+  </ul>
+
+  <h3>6. Phased sequence</h3>
+  <ol>
+    <li><b>Medical net first</b> — Al-Falah meeting, Amrita pre-registration, ambulance + standby car, nursing room kit. Before any travel.</li>
+    <li><b>Site prep</b> — fence the safe garden, hazard-proof rooms, set up the nursing room.</li>
+    <li><b>Staff</b> — hire &amp; onboard nurse + attendants early, shadowing family.</li>
+    <li><b>Trial run</b> with family present — live the full routine for a few days.</li>
+    <li><b>Care file</b> assembled (medical summary, routine, emergency protocol, ID).</li>
+    <li><b>Only then</b> — legal must-haves in place → invite one carefully-chosen outside resident.</li>
+    <li><b>Review at 3–6 months</b> → decide whether to scale.</li>
+  </ol>
+</section>
+
+<!-- ============ AGREEMENT ============ -->
+<section class="doc" id="agreement">
+  <p class="eyebrow">Operating document</p>
+  <h2>Admission &amp; Care Agreement</h2>
+  <div class="warnbox"><b>Draft skeleton — not legal advice.</b> A starting point for discussion with a qualified healthcare/eldercare lawyer in Haryana. Must be reviewed and finalised by a licensed advocate before use. Fields in <code>[brackets]</code> to be filled in.</div>
+
+  <p>This Agreement is made on <span class="fill"></span> at <span class="fill"></span>, between:</p>
+  <ol>
+    <li><b>The Care Home / Operator</b> — <code>[legal name]</code>, at the farm, PO Dhauj, Faridabad, Haryana (the "Home");</li>
+    <li><b>The Resident</b> — <code>[name, age]</code> (the "Resident"); and</li>
+    <li><b>The Responsible Family Member / Next of Kin</b> — <code>[name, relationship, contact]</code>, who signs on behalf of and as guarantor for the Resident (the "Family Representative").</li>
+  </ol>
+
+  <h4>Recitals</h4>
+  <p>The Home operates a small residential memory-care facility providing supervised, <b>non-hospital</b> residential care, including for persons living with dementia. It provides supervision, assistance and coordination of medical care, and does <b>not</b> provide in-patient medical treatment on its premises.</p>
+
+  <h4>1. The Resident</h4>
+  <p>Particulars, medical history, cognitive status, allergies, medications, mobility and diet are in <b>Annexure A (Care Plan)</b> and <b>Annexure B (Medication Schedule)</b>. The Family Representative warrants the information is true and complete and will promptly notify changes.</p>
+
+  <h4>2. Scope of care PROVIDED</h4>
+  <ul>
+    <li>Room, meals, drinking water, housekeeping.</li>
+    <li>24-hour supervision by trained care staff, including <b>dementia-trained attendants (day and night)</b>.</li>
+    <li>Assistance with activities of daily living.</li>
+    <li><b>Medication management</b> per the prescribing doctor's orders, with a signed dosage log.</li>
+    <li><b>Supervised mobility</b> within a secured garden/safe zone; companion-accompanied access elsewhere.</li>
+    <li>On-site nursing cover and a nursing room for first-aid and stabilisation.</li>
+    <li>Coordination of a visiting doctor, physiotherapy, and emergency hospital transfer.</li>
+    <li>Reasonable notification of significant changes in the Resident's condition.</li>
+  </ul>
+
+  <h4>3. Scope of care NOT provided (Limitations)</h4>
+  <ul>
+    <li>No in-patient medical or surgical <b>treatment</b>, ICU, ventilation, or hospital-level service on premises.</li>
+    <li>No continuous one-to-one nursing unless separately contracted (Annexure C).</li>
+    <li>No care for conditions beyond stated capacity (see Clause 9, Discharge).</li>
+    <li>No guarantee against illness, deterioration, falls or injury inherent to age and dementia (see Clause 7).</li>
+  </ul>
+
+  <h4>4. Medical care &amp; emergencies</h4>
+  <p>Doctor of Record: <code>[name, reg. no.]</code>. The Family Representative <b>authorises the Home</b>, in an emergency where they cannot be reached in time, to (a) summon help and transfer the Resident to <b>Al-Falah</b> (acute) or <b>Amrita</b> (tertiary) or the nearest appropriate hospital; and (b) consent to necessary emergency treatment on medical advice. The Home will notify the Family Representative as soon as practicable. Advance directive / DNR: <code>[specify or "none provided"]</code>. Hospital, ambulance, diagnostic and specialist costs are borne by the Resident/Family.</p>
+
+  <h4>5. Medication</h4>
+  <p>Only medication prescribed by a registered practitioner is administered, per written orders; supplied by <code>[Home/Family]</code>; a signed log is maintained and available to the Family Representative.</p>
+
+  <h4>6. Fees &amp; payment</h4>
+  <ul>
+    <li>Monthly fee: ₹<span class="fill"></span>, payable in advance by the <span class="fill"></span> of each month.</li>
+    <li>Security deposit: ₹<span class="fill"></span> (refundable, less dues/damages).</li>
+    <li>Included: accommodation, meals, housekeeping, supervision, attendant care, routine nursing.</li>
+    <li>Extra: medicines, physiotherapy, doctor/specialist visits, diagnostics, ambulance, hospital charges, consumables, one-to-one care.</li>
+    <li>Fee revision on <span class="fill"></span> days' written notice.</li>
+  </ul>
+
+  <h4>7. Liability, risk &amp; indemnity</h4>
+  <ul>
+    <li>The Family Representative <b>acknowledges the inherent risks of age and dementia</b> — falls, wandering, choking, sudden illness, deterioration — which reasonable care cannot eliminate.</li>
+    <li>The Home exercises reasonable professional care and maintains professional indemnity/liability insurance (<code>[policy ref]</code>).</li>
+    <li>The Home is not liable for outcomes arising despite reasonable care, pre-existing conditions, or third-party acts (hospitals, ambulance, visiting doctors).</li>
+    <li>Aggregate liability, save gross negligence or wilful misconduct, limited to <code>[e.g. last (n) months' fees]</code>. Nothing excludes liability that cannot be excluded by law.</li>
+  </ul>
+
+  <h4>8. Wandering &amp; safety acknowledgment</h4>
+  <p>The Family Representative understands the Resident may attempt to wander and <b>consents</b> to the Home's safety measures — secured garden, door alarms, latched exits — and to the Resident wearing <b>identification</b> (name, "memory impairment", contact numbers).</p>
+
+  <h4>9. Term, notice &amp; discharge</h4>
+  <p>From <code>[start date]</code>, month-to-month. Notice by Family: <span class="fill"></span> days. The Home may discharge on <span class="fill"></span> days' notice (or immediately in emergency) if the Resident's needs <b>exceed the Home's stated capacity</b> (e.g. requires continuous hospital-level care), or on material breach / non-payment, supporting a safe transition.</p>
+
+  <h4>10–13. Belongings · Privacy &amp; images · Visitors · Governing law</h4>
+  <ul>
+    <li>Belongings inventory at Annexure E; the Home isn't liable for valuables not deposited for safekeeping.</li>
+    <li>Care records kept confidential; use of the Resident's images needs separate written consent.</li>
+    <li>Visiting hours: <span class="fill"></span>.</li>
+    <li>Governed by the laws of India; courts at <b>Faridabad, Haryana</b>; mediation first, then <code>[arbitration / courts]</code>.</li>
+  </ul>
+
+  <h4>Signatures</h4>
+  <p>Resident (or thumb impression): <span class="fill"></span> &nbsp; Family Representative/Guarantor: <span class="fill"></span> &nbsp; For the Home: <span class="fill"></span> &nbsp; Witness 1: <span class="fill"></span> &nbsp; Witness 2: <span class="fill"></span></p>
+  <p class="muted"><b>Annexures:</b> A — Care Plan · B — Medication Schedule · C — Fee Schedule · D — Emergency Contacts &amp; Consents · E — Belongings Inventory.</p>
+</section>
+
+<!-- ============ CARE FILE ============ -->
+<section class="doc" id="carefile">
+  <p class="eyebrow">Operating document</p>
+  <h2>Resident Care File</h2>
+  <p class="muted">Keep this in the resident's room; give every attendant a copy. Update whenever anything changes. The Doctor of Record signs the medical sections.</p>
+
+  <h3>1. At a glance</h3>
+  <div class="grid2">
+    <div class="kv"><div class="k">Name / preferred name</div><div class="v">[name] / "[…]"</div></div>
+    <div class="kv"><div class="k">Age / DOB</div><div class="v">[…]</div></div>
+    <div class="kv"><div class="k">Blood group</div><div class="v">[…]</div></div>
+    <div class="kv"><div class="k">Languages</div><div class="v">[…]</div></div>
+    <div class="kv"><div class="k">Key conditions</div><div class="v">Dementia ([stage]); […]</div></div>
+    <div class="kv"><div class="k">Mobile?</div><div class="v">Yes — wandering risk</div></div>
+    <div class="kv"><div class="k">Allergies</div><div class="v">[…]</div></div>
+    <div class="kv"><div class="k">ID worn at all times</div><div class="v">Band: name + "memory impairment" + [phone]</div></div>
+  </div>
+
+  <h3>2. Medical summary</h3>
+  <ul>
+    <li>Diagnoses · allergies · current issues to watch (BP, sugar, swallowing, continence).</li>
+    <li>Recent hospitalisations / surgeries · vaccinations · vision/hearing · dentures / mobility aids.</li>
+    <li>Health insurance: <code>[insurer, policy, TPA]</code> · Doctor of Record: <code>[name, reg, phone]</code>.</li>
+  </ul>
+
+  <h3>3. Medication schedule</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Medicine</th><th>Dose</th><th>Timing</th><th>Food</th><th>For</th></tr></thead>
+    <tbody>
+      <tr><td>[drug]</td><td>[mg]</td><td>Morning</td><td>[ ]</td><td>[BP]</td></tr>
+      <tr><td>[drug]</td><td>[mg]</td><td>Night</td><td>[ ]</td><td>[…]</td></tr>
+      <tr><td>PRN / SOS [e.g. paracetamol]</td><td>[dose]</td><td>if [fever/pain]</td><td>—</td><td>—</td></tr>
+    </tbody>
+  </table></div>
+  <p class="muted">Stored: <code>[locked location]</code>. Sign the dose log at every round. Never double a missed dose without calling the doctor.</p>
+
+  <h3>4. Daily routine (keep times consistent)</h3>
+  <div class="tbl"><table>
+    <tbody>
+      <tr><td>7:00</td><td>Wake, wash, dress, morning meds</td></tr>
+      <tr><td>8:00</td><td>Breakfast</td></tr>
+      <tr><td>9:30</td><td>Walk in the safe garden (supervised)</td></tr>
+      <tr><td>11:00</td><td>Rest / activity / [music, prayer]</td></tr>
+      <tr><td>13:00</td><td>Lunch + meds</td></tr>
+      <tr><td>14:00</td><td>Nap</td></tr>
+      <tr><td>16:00</td><td>Physio / tea / walk</td></tr>
+      <tr><td>17:30</td><td>Video call with family abroad</td></tr>
+      <tr><td>19:30</td><td>Dinner + meds</td></tr>
+      <tr><td>21:00</td><td>Wind-down, bed · night watch, night-light on</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>5. Food &amp; hydration</h3>
+  <p>Likes / dislikes · texture (normal / soft / cut / thickened) · diet rules (diabetic / low-salt / veg) · <b>offer water every [interval]</b> — she may not ask · feeding help: [independent / prompting / assisted].</p>
+
+  <h3>6. Dementia care notes (how to be with her)</h3>
+  <ul>
+    <li>How she communicates · what distress looks like · known triggers (rushing, strangers, noise, darkness) · what comforts her (a blanket, a photo, a hymn, tea).</li>
+    <li><b>Sundowning:</b> restless from ~[time]? plan a calm activity then.</li>
+    <li><b>Golden rules:</b> don't argue or correct — <b>redirect</b>. If she wants to "go home," acknowledge the feeling and walk with her; don't say "you are home." Approach from the front, eye level, calm voice, one instruction at a time. Never scold, hurry or force.</li>
+  </ul>
+
+  <h3>7. Mobility &amp; fall safety</h3>
+  <p>Walks independently / with [aid] · fall history [when] · non-slip closed shoes always · free in the secured garden, wider farm hand-in-hand only · night floor-lights, assist to bathroom.</p>
+
+  <h3>8. Who she is (life story)</h3>
+  <p>Her life &amp; work · proudest of / loved doing · faith &amp; practices · music/prayers she loves (powerful for calming) · names dear to her · <b>topics NOT to raise</b> (bereavements that distress her). <em>Carers connect better with the person than the patient.</em></p>
+
+  <h3>9. Contacts (call in order)</h3>
+  <div class="tbl"><table>
+    <tbody>
+      <tr><td>Family Rep (primary)</td><td>[…]</td></tr>
+      <tr><td>Family (secondary) / abroad</td><td>[…] (note time zone)</td></tr>
+      <tr><td>Doctor of Record</td><td>[…]</td></tr>
+      <tr><td>Al-Falah Hospital (5 km)</td><td>[…]</td></tr>
+      <tr><td>Amrita, Faridabad (24 km)</td><td>[…]</td></tr>
+      <tr><td>Ambulance (private / national)</td><td>[…] / 108</td></tr>
+      <tr><td>Emergency</td><td>112</td></tr>
+      <tr><td>Driver on standby / farm help</td><td>[…]</td></tr>
+    </tbody>
+  </table></div>
+  <p class="muted"><b>Consents on file:</b> emergency treatment &amp; transfer ☐ · photograph use ☐ · advance directive/DNR [none/details]. <b>Belongings:</b> glasses, hearing aid, jewellery… valuables deposited: [ ].</p>
+</section>
+
+<!-- ============ EMERGENCY ============ -->
+<section class="doc emerg" id="emergency">
+  <p class="eyebrow" style="color:var(--clay)">Operating document · print, laminate, mount on the wall</p>
+  <h2 style="color:var(--clay)">🚨 Emergency Protocol Card</h2>
+  <div class="warnbox">The Doctor of Record must review, customise for this resident's conditions, and sign before use. This supports trained caregivers; it does not replace professional medical judgement.</div>
+
+  <div class="grid2">
+    <div class="kv"><div class="k">Resident</div><div class="v">[name] · [age] · blood [ ]</div></div>
+    <div class="kv"><div class="k">Conditions / allergies</div><div class="v">[dementia; heart; diabetes] / [ ]</div></div>
+  </div>
+  <div class="tbl"><table>
+    <thead><tr><th>Call, in order</th><th>Number</th></tr></thead>
+    <tbody>
+      <tr><td>Ambulance (private)</td><td>[ ]</td></tr>
+      <tr><td>National ambulance / Emergency</td><td>108 / 112</td></tr>
+      <tr><td>Al-Falah Hospital — 5 km / ~10 min</td><td>[ ]</td></tr>
+      <tr><td>Amrita, Faridabad — 24 km (tertiary)</td><td>[ ]</td></tr>
+      <tr><td>Doctor of Record</td><td>[ ]</td></tr>
+      <tr><td>Family (primary)</td><td>[ ]</td></tr>
+      <tr><td>Driver on standby</td><td>[ ]</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="golden"><b>⭐ Golden rule.</b> When in doubt, GO. Al-Falah is 10 minutes away — transfer EARLY, don't "wait and see." If an ambulance will be slow to Dhauj, the standby car may be faster — use it. Always send someone who knows her + the Care File + medicines.</div>
+
+  <h3>If this happens → do this</h3>
+  <div class="scn"><b>🔴 Unconscious / not breathing normally</b> — Call ambulance + Al-Falah NOW. Lay flat, tilt head, check breathing. If trained &amp; no breathing → start CPR. Nothing by mouth. Call family + doctor.</div>
+  <div class="scn"><b>🔴 Chest pain / breathlessness / blue lips</b> — Ambulance + Al-Falah NOW. Sit upright, loosen clothing, calm her. Oxygen if trained. [Aspirin ONLY if doctor pre-authorised]. Don't let her walk.</div>
+  <div class="scn"><b>🔴 Stroke — sudden F.A.S.T.</b> — Face droop · Arm weakness · Speech slurred · Time: call ambulance now, note the <b>time symptoms started</b>. Nothing by mouth. → Al-Falah / Amrita.</div>
+  <div class="scn"><b>🔴 Choking</b> — Can't cough/speak → 5 back blows between shoulder blades, then 5 abdominal thrusts, repeat. If she collapses → CPR + ambulance.</div>
+  <div class="scn"><b>🔴 Seizure</b> — Protect head, clear space, turn on side, do NOT restrain or put anything in mouth. Time it. &gt;5 min or repeated → ambulance. Call doctor.</div>
+  <div class="scn"><b>🔴 Fall</b> — Don't yank her up. Check pain, head injury, deformity, bleeding. If head hit / can't move a limb / severe pain / on blood thinners → don't move her, call ambulance. If clearly minor → help up slowly, watch for hours, log it.</div>
+  <div class="scn orange"><b>🟠 Missing / wandered off</b> — Search safe zone, house, every room, vehicles, gate, any water body. Note last-seen time + clothing. Call family + neighbours + farm help at once. Search outward toward [nearest road / a place she talks about]. <b>Call police / 112 quickly — do NOT wait hours.</b> Grab her recent photo from the Care File.</div>
+  <div class="scn orange"><b>🟠 High fever / vomiting / diarrhoea / not passing urine</b> — Call doctor (teleconsult after hours). Sip fluids if conscious. New confusion / drowsiness / dehydration → Al-Falah. Log temperature.</div>
+  <div class="scn orange"><b>🟠 Won't eat / drink / sudden confusion worse than usual</b> — In dementia this often signals infection, dehydration or pain. Call the doctor the same day. Offer fluids. Drowsy/very confused → Al-Falah.</div>
+  <div class="scn yellow"><b>🟡 Agitation / sundowning</b> — Not a medical emergency. Don't argue or restrain. Lower noise, dim harsh light, redirect: comfort item, familiar song, tea, a garden walk, calm voice. Never force or scold.</div>
+  <div class="scn yellow"><b>🟡 Minor bleeding / cut</b> — Clean, apply pressure, dress. Watch (thin skin / blood thinners). Deep/won't stop → Al-Falah. Log it.</div>
+
+  <h4>Every call: have ready</h4>
+  <p>Her name, age, condition, allergies · what happened &amp; when it started · the Care File + medicines list · her ID · send the standby car if the ambulance is slow.</p>
+  <h4>Don't</h4>
+  <p>✗ No food/water to an unconscious or choking person · ✗ don't move a bad fall · ✗ no new medicine not prescribed for her · ✗ don't argue with or restrain a confused resident · ✗ don't wait to "see if it improves" for red-flag symptoms — GO.</p>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <b>Aangan</b> — Operations Pack · a concept in development, Dhauj, in the Aravallis.<br>
+    Working drafts only. Finalise medical, legal, staffing and licensing details with qualified professionals before opening or admitting any resident.
+  </div>
+</footer>
+
+<script>
+  const nav=document.getElementById('nav');
+  const docs=[...document.querySelectorAll('.doc')];
+  const btns=[...nav.querySelectorAll('button')];
+  function show(id){
+    docs.forEach(d=>d.classList.toggle('active',d.id===id));
+    btns.forEach(b=>b.classList.toggle('active',b.dataset.doc===id));
+    if(location.hash.slice(1)!==id) history.replaceState(null,'','#'+id);
+    window.scrollTo({top:0,behavior:'instant' in window?'instant':'auto'});
+  }
+  nav.addEventListener('click',e=>{const b=e.target.closest('button[data-doc]');if(b){show(b.dataset.doc);}});
+  document.addEventListener('click',e=>{const j=e.target.closest('[data-jump]');if(j){e.preventDefault();show(j.dataset.jump);}});
+  const start=location.hash.slice(1); if(start&&document.getElementById(start))show(start);
+</script>
+</body>
+</html>

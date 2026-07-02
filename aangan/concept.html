@@ -1,0 +1,254 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Aangan — a senior day club in the Aravallis</title>
+<style>
+  :root{
+    --paper:#EFEADD; --paper2:#F7F3E9; --card:#FBF8F0;
+    --ink:#23281F; --ink2:#585C4C; --muted:#8A8D7C; --line:#DBD5C4;
+    --pine:#243A2B; --pine2:#33503B; --garden:#3E7A5A;
+    --marigold:#CE8617; --clay:#B4552F; --cream:#F1ECDD;
+    --serif:'Iowan Old Style','Palatino Linotype','Book Antiqua',Georgia,serif;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+    line-height:1.62;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:940px;margin:0 auto;padding:0 clamp(18px,4vw,34px)}
+  h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:-.01em;text-wrap:balance}
+  p{max-width:64ch}
+  .eyebrow{font-size:12px;letter-spacing:.18em;text-transform:uppercase;font-weight:600}
+
+  /* ---------- HERO ---------- */
+  .hero{position:relative;background:linear-gradient(180deg,#1C2E22 0%,#243A2B 46%,#31492F 72%,#5A5A2E 100%);
+    color:var(--cream);overflow:hidden;isolation:isolate}
+  .hero-in{max-width:940px;margin:0 auto;padding:clamp(56px,10vw,110px) clamp(18px,4vw,34px) clamp(150px,20vw,210px);
+    position:relative;z-index:2}
+  .hero .eyebrow{color:#E8B75E;margin:0 0 22px;opacity:0}
+  .hero h1{font-size:clamp(58px,15vw,132px);line-height:.9;margin:0;color:#F6EFDD;
+    font-weight:600;letter-spacing:-.02em;opacity:0}
+  .hero h1 .dev{display:block;font-size:clamp(15px,2.4vw,20px);letter-spacing:.42em;font-weight:600;
+    color:#E8B75E;margin-bottom:14px;font-family:var(--sans);text-transform:uppercase}
+  .hero .tag{font-family:var(--serif);font-style:italic;font-size:clamp(21px,3.6vw,33px);
+    color:#EBD9A6;margin:26px 0 20px;max-width:22ch;opacity:0}
+  .hero .lede{font-size:clamp(16px,2vw,18.5px);color:#DCE2CE;max-width:52ch;margin:0;opacity:0}
+  .hills{position:absolute;left:0;right:0;bottom:-1px;width:100%;height:auto;z-index:1;display:block}
+  .fadein{animation:fade .9s cubic-bezier(.2,.6,.2,1) forwards}
+  .d1{animation-delay:.05s}.d2{animation-delay:.18s}.d3{animation-delay:.34s}.d4{animation-delay:.5s}
+  @keyframes fade{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  @media(prefers-reduced-motion:reduce){.fadein{animation:none;opacity:1!important}}
+
+  /* ---------- SECTIONS ---------- */
+  section{padding:clamp(48px,8vw,88px) 0}
+  .lab{color:var(--marigold);margin:0 0 16px}
+  h2{font-size:clamp(28px,4.4vw,42px);line-height:1.08;margin:0 0 20px;color:var(--pine)}
+  .big{font-size:clamp(19px,2.4vw,23px);line-height:1.55;color:var(--ink);max-width:60ch}
+  .big em{font-style:italic;color:var(--garden)}
+  .muted{color:var(--ink2)}
+
+  .rule{height:1px;background:var(--line);border:0;margin:0}
+  .cream-band{background:var(--paper2)}
+  .pine-band{background:var(--pine);color:var(--cream)}
+  .pine-band h2{color:#F3ECD9} .pine-band .lab{color:#E8B75E}
+  .pine-band p{color:#D8DECB}
+
+  /* day timeline */
+  .day{display:grid;gap:2px;margin-top:34px;border-radius:14px;overflow:hidden;border:1px solid var(--line)}
+  .slot{display:grid;grid-template-columns:118px 1fr;gap:20px;background:var(--card);padding:18px 22px;align-items:baseline}
+  .slot .t{font-family:var(--serif);font-size:16px;color:var(--marigold);font-variant-numeric:tabular-nums;font-weight:600}
+  .slot .w h3{font-size:18px;margin:0 0 3px;color:var(--pine)}
+  .slot .w p{margin:0;font-size:14.5px;color:var(--ink2)}
+  @media(max-width:560px){.slot{grid-template-columns:1fr;gap:4px}}
+
+  /* activities grid */
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:34px}
+  .act{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 20px}
+  .act .leaf{width:26px;height:26px;margin-bottom:12px}
+  .act h3{font-size:18px;margin:0 0 6px;color:var(--pine)}
+  .act p{font-size:14px;color:var(--ink2);margin:0}
+  @media(max-width:760px){.grid{grid-template-columns:1fr 1fr}}
+  @media(max-width:480px){.grid{grid-template-columns:1fr}}
+
+  /* intergenerational feature */
+  .feature{display:grid;grid-template-columns:1.1fr .9fr;gap:44px;align-items:center}
+  @media(max-width:760px){.feature{grid-template-columns:1fr;gap:26px}}
+  .kidcard{background:linear-gradient(160deg,#33503B,#243A2B);border-radius:18px;padding:30px;color:var(--cream)}
+  .kidcard h3{color:#EBD9A6;font-size:21px;margin:0 0 14px}
+  .kidcard ul{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+  .kidcard li{display:flex;gap:12px;font-size:14.5px;color:#DCE2CE;align-items:flex-start}
+  .kidcard li b{color:#F3ECD9;font-weight:600}
+  .kidcard .mk{color:#E8B75E;flex:none;font-weight:700}
+
+  /* setting facts */
+  .facts{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:32px}
+  .fact{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+  .fact .n{font-family:var(--serif);font-size:30px;color:var(--garden);font-weight:600;line-height:1}
+  .fact .l{font-size:12.5px;color:var(--ink2);margin-top:8px}
+  @media(max-width:680px){.facts{grid-template-columns:1fr 1fr}}
+
+  /* roadmap */
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:34px}
+  .step{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px 22px;position:relative}
+  .step .ph{font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--marigold);font-weight:700}
+  .step.now{border-color:var(--garden);box-shadow:0 0 0 1px var(--garden)}
+  .step .now-tag{position:absolute;top:16px;right:16px;font-size:10.5px;font-weight:700;letter-spacing:.08em;
+    text-transform:uppercase;background:var(--garden);color:#fff;padding:3px 9px;border-radius:20px}
+  .step h3{font-size:19px;margin:10px 0 8px;color:var(--pine)}
+  .step p{font-size:14px;color:var(--ink2);margin:0}
+  @media(max-width:680px){.steps{grid-template-columns:1fr}}
+
+  .cta{display:inline-flex;align-items:center;gap:10px;background:var(--marigold);color:#2A1E06;
+    font-weight:700;font-size:15px;text-decoration:none;padding:13px 22px;border-radius:30px;margin-top:8px;
+    transition:transform .15s,background .15s}
+  .cta:hover{transform:translateY(-2px);background:#E0951F}
+  .cta:focus-visible{outline:3px solid var(--pine);outline-offset:3px}
+
+  footer{background:var(--pine);color:#C9CFBB;padding:52px 0 44px;font-size:14px}
+  footer .name{font-family:var(--serif);font-size:26px;color:#F3ECD9;margin:0 0 8px}
+  footer .note{max-width:60ch;color:#AEB6A0;font-size:13px;margin:18px 0 0}
+</style>
+
+<!-- ================= HERO ================= -->
+<header class="hero">
+  <div class="hero-in">
+    <p class="eyebrow fadein d1">A senior day club · Dhauj, in the Aravallis</p>
+    <h1 class="fadein d2"><span class="dev">Concept</span>Aangan</h1>
+    <p class="tag fadein d3">The courtyard where generations meet.</p>
+    <p class="lede fadein d4">A place for our elders to spend the day — gardens to walk, music to share, children's laughter, an unhurried lunch, and the plain dignity of feeling at home. Ten minutes from a hospital, held by the hills.</p>
+  </div>
+  <svg class="hills" viewBox="0 0 1440 260" preserveAspectRatio="none" aria-hidden="true">
+    <defs>
+      <radialGradient id="sun" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#F4C15E"/><stop offset="55%" stop-color="#E4A63A"/>
+        <stop offset="100%" stop-color="#E4A63A" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+    <circle cx="1090" cy="150" r="150" fill="url(#sun)" opacity=".8"/>
+    <path d="M0,150 Q240,96 480,132 T960,120 T1440,140 L1440,260 L0,260 Z" fill="#4A5A2E" opacity=".85"/>
+    <path d="M0,180 Q300,128 620,166 T1180,158 T1440,172 L1440,260 L0,260 Z" fill="#39512F"/>
+    <path d="M0,214 Q360,176 760,206 T1440,204 L1440,260 L0,260 Z" fill="#243A2B"/>
+  </svg>
+</header>
+
+<!-- ================= THE IDEA ================= -->
+<section>
+  <div class="wrap">
+    <p class="eyebrow lab">Why Aangan</p>
+    <h2>The courtyard, built again.</h2>
+    <p class="big"><em>Aangan</em> is the courtyard at the centre of an old Indian home — where grandparents sat in the morning sun, where children played at their feet, where the whole day gathered and no one was in a hurry. We are building that courtyard again, on a farm in the Aravallis.</p>
+    <p class="big muted" style="margin-top:22px">Not a facility at the end of a narrow lane, but a green, open, gentle place where an elder's day is <b>spent well</b> — with company, with things to do at their own pace, and with the quiet respect of being somewhere beautiful. A day club first; a second home when a family needs one.</p>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- ================= A DAY AT AANGAN ================= -->
+<section class="cream-band">
+  <div class="wrap">
+    <p class="eyebrow lab">A day at Aangan</p>
+    <h2>An unhurried rhythm.</h2>
+    <p class="muted big" style="font-size:18px">Elders arrive after breakfast and are home by dusk. The day moves at their pace — nothing is compulsory, everything is offered.</p>
+    <div class="day">
+      <div class="slot"><span class="t">9:00</span><div class="w"><h3>Arrival & a garden walk</h3><p>Welcomed by name, a slow loop of the secured garden in the morning cool.</p></div></div>
+      <div class="slot"><span class="t">10:30</span><div class="w"><h3>Morning activity</h3><p>Music and bhajan, art and clay, or hands in the kitchen garden — whatever calls to them.</p></div></div>
+      <div class="slot"><span class="t">12:00</span><div class="w"><h3>The little ones visit</h3><p>On some days, school children arrive for stories, songs and gardening together. <em>(For elders who wish.)</em></p></div></div>
+      <div class="slot"><span class="t">13:00</span><div class="w"><h3>A proper sit-down lunch</h3><p>Fresh, home-style, at a laid table — a meal, not a tray.</p></div></div>
+      <div class="slot"><span class="t">14:30</span><div class="w"><h3>Rest & gentle physio</h3><p>A nap, a chair-yoga session, a physiotherapist's careful attention.</p></div></div>
+      <div class="slot"><span class="t">16:30</span><div class="w"><h3>Evening circle & home</h3><p>Tea, a story circle, a little music — then home to family by dusk.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- ================= WHAT WE DO ================= -->
+<section>
+  <div class="wrap">
+    <p class="eyebrow lab">The days, filled gently</p>
+    <h2>Things to do — at their own pace.</h2>
+    <p class="muted">Every activity is memory-friendly, unhurried, and entirely optional. The point is engagement and joy, never a schedule to keep up with.</p>
+    <div class="grid" id="acts"></div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- ================= INTERGENERATIONAL ================= -->
+<section class="pine-band">
+  <div class="wrap">
+    <div class="feature">
+      <div>
+        <p class="eyebrow lab">Aangan & the little ones</p>
+        <h2>Where children keep elders young.</h2>
+        <p>The heart of Aangan is a simple, powerful idea: bring the generations back together. We partner with <b>local schools</b> so children visit to read, sing, garden and celebrate festivals — and the elders who wish become storytellers, teachers, and grandparents-in-residence.</p>
+        <p>For an elder living with memory loss, a child's visit does what no medicine can — it brings <b>purpose, laughter, and a reason to light up.</b> And the children grow up knowing their elders. It is offered, never obligatory — <em>for those who can, and those who want to.</em></p>
+      </div>
+      <div class="kidcard">
+        <h3>How it works — gently</h3>
+        <ul>
+          <li><span class="mk">◦</span><span><b>Opt-in, both sides.</b> Elders choose to join; families and schools consent.</span></li>
+          <li><span class="mk">◦</span><span><b>Always supervised.</b> Short, joyful, staff-led sessions — reading, songs, planting.</span></li>
+          <li><span class="mk">◦</span><span><b>At the elder's pace.</b> A wave from a bench counts as much as a story told.</span></li>
+          <li><span class="mk">◦</span><span><b>Health-aware.</b> Gentle screening so visits are safe for everyone.</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= THE SETTING ================= -->
+<section>
+  <div class="wrap">
+    <p class="eyebrow lab">The setting</p>
+    <h2>1.5 acres of Aravalli calm — with a hospital close.</h2>
+    <p class="muted big" style="font-size:18px">A farm between Faridabad and Sohna at Dhauj: green, open, quiet, and safe to walk. The one thing families fear about a rural setting — distance to care — is already answered here.</p>
+    <div class="facts">
+      <div class="fact"><div class="n">1.5</div><div class="l">acres of secured, walkable garden</div></div>
+      <div class="fact"><div class="n">~10<span style="font-size:15px"> min</span></div><div class="l">to Al-Falah Hospital (5 km)</div></div>
+      <div class="fact"><div class="n">24<span style="font-size:15px"> km</span></div><div class="l">to Amrita, Faridabad — tertiary care</div></div>
+      <div class="fact"><div class="n">10</div><div class="l">residents max, once a home — small by design</div></div>
+    </div>
+  </div>
+</section>
+
+<hr class="rule">
+
+<!-- ================= ROADMAP ================= -->
+<section class="cream-band">
+  <div class="wrap">
+    <p class="eyebrow lab">The plan</p>
+    <h2>Start as a day club. Grow with care.</h2>
+    <p class="muted">Dignity over scale. We begin with the day club — light, joyful, and safe — and add overnight care only as we prove we can do it beautifully.</p>
+    <div class="steps">
+      <div class="step now"><span class="now-tag">Start here</span><span class="ph">Phase 1</span><h3>The Day Club</h3><p>Elders spend their days at Aangan — gardens, activities, lunch, the children's programme — and home by evening.</p></div>
+      <div class="step"><span class="ph">Phase 2</span><h3>Respite stays</h3><p>Overnight and short stays for families who travel — the calm, cared-for answer to "who looks after them while we're away."</p></div>
+      <div class="step"><span class="ph">Phase 3</span><h3>A memory-care home</h3><p>A small, secured residential home for elders with dementia — the estate, the company, the care, as a permanent home.</p></div>
+    </div>
+    <p style="margin-top:34px" class="muted">Curious about the economics behind the home?
+      <a class="cta" href="model.html">See the 10-bed financial model →</a></p>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer>
+  <div class="wrap">
+    <p class="name">Aangan</p>
+    <p style="margin:0;color:#D8DECB">The courtyard where generations meet · Dhauj, in the Aravallis.</p>
+    <p class="note">Aangan is a concept in development — a family's vision for a better kind of place for our elders. Name subject to trademark availability. Medical, staffing and licensing details to be finalised with qualified professionals before opening.</p>
+  </div>
+</footer>
+
+<script>
+  const ACTS=[
+    {t:'Garden & kitchen therapy',d:'Planting, watering, picking herbs — the oldest, most grounding joy there is.'},
+    {t:'Music & bhajan',d:'The songs of a lifetime — the memories that music reaches when words cannot.'},
+    {t:'Art, clay & craft',d:'Colour, texture and making — gentle, expressive, no skill required.'},
+    {t:'Chair yoga & physio',d:'Careful movement to keep bodies steady and spirits light.'},
+    {t:'Story & memory circles',d:'Telling, remembering, listening — an elder’s stories, honoured.'},
+    {t:'Festivals & celebration',d:'Every festival marked with food, colour and company, the way it should be.'}
+  ];
+  const leaf='<svg class="leaf" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 21c0-6 3-11 9-13-1 8-4 12-9 13Z" fill="#3E7A5A"/><path d="M12 21C12 15 9 10 3 8c1 8 4 12 9 13Z" fill="#CE8617" opacity=".85"/><path d="M12 21v-8" stroke="#243A2B" stroke-width="1.4" stroke-linecap="round"/></svg>';
+  document.getElementById('acts').innerHTML=ACTS.map(a=>
+    `<div class="act">${leaf}<h3>${a.t}</h3><p>${a.d}</p></div>`).join('');
+</script>

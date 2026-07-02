@@ -1,0 +1,198 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Aangan — Launch Plan & Opening Budget</title>
+<style>
+  :root{
+    --paper:#EFEADD; --paper2:#F7F3E9; --card:#FBF8F0;
+    --ink:#23281F; --ink2:#585C4C; --muted:#8A8D7C; --line:#DBD5C4;
+    --pine:#243A2B; --pine2:#33503B; --garden:#3E7A5A;
+    --marigold:#CE8617; --clay:#B4552F; --cream:#F1ECDD;
+    --pos:#2E7D5B;
+    --serif:'Iowan Old Style','Palatino Linotype','Book Antiqua',Georgia,serif;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:900px;margin:0 auto;padding:clamp(28px,5vw,60px) clamp(16px,4vw,32px) 72px}
+  h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:-.01em;text-wrap:balance}
+  .num{font-variant-numeric:tabular-nums}
+  .eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--marigold);font-weight:700;margin:0 0 14px}
+  h1{font-size:clamp(30px,5vw,44px);line-height:1.06;margin:0 0 14px;color:var(--pine)}
+  .lede{font-size:clamp(16px,2vw,18px);color:var(--ink2);margin:0;max-width:64ch}
+  .lede b{color:var(--ink)}
+
+  section{margin-top:clamp(38px,6vw,60px)}
+  h2{font-size:clamp(23px,3.4vw,30px);color:var(--pine);margin:0 0 6px;display:flex;align-items:baseline;gap:12px}
+  h2 .tag{font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
+    padding:4px 10px;border-radius:20px;position:relative;top:-3px}
+  .tag.now{background:var(--garden);color:#fff} .tag.next{background:var(--paper2);color:var(--ink2);border:1px solid var(--line)}
+  .sec-p{color:var(--ink2);font-size:14.5px;margin:0 0 18px;max-width:66ch}
+
+  .callout{background:linear-gradient(160deg,#33503B,#243A2B);color:var(--cream);border-radius:16px;
+    padding:24px 26px;margin-top:24px}
+  .callout h3{color:#EBD9A6;font-size:18px;margin:0 0 8px}
+  .callout p{margin:0;color:#DCE2CE;font-size:14.5px;max-width:70ch}
+  .callout b{color:#F3ECD9}
+
+  .tbl{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  table{border-collapse:collapse;width:100%}
+  th,td{padding:12px 18px;font-size:14px;text-align:left;vertical-align:top}
+  th{font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);font-weight:700;
+    background:var(--paper2);border-bottom:1px solid var(--line)}
+  td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  tbody tr+tr td{border-top:1px solid var(--line)}
+  td .d{color:var(--ink2);font-size:12.5px;margin-top:2px}
+  tfoot td{border-top:2px solid var(--pine);font-weight:700;background:var(--paper2)}
+  tfoot .lbl{font-family:var(--serif);font-size:16px;color:var(--pine)}
+  .sub{font-weight:600}
+
+  .summary{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px}
+  .sc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+  .sc.hl{border-color:var(--garden);box-shadow:0 0 0 1px var(--garden)}
+  .sc .k{font-size:12px;color:var(--ink2)} .sc .v{font-family:var(--serif);font-size:26px;color:var(--pine);font-weight:600;margin-top:4px;font-variant-numeric:tabular-nums}
+  .sc .s{font-size:12px;color:var(--muted);margin-top:6px}
+  @media(max-width:640px){.summary{grid-template-columns:1fr}}
+
+  /* checklist */
+  .streams{display:grid;gap:16px;margin-top:24px}
+  .stream{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px}
+  .stream h3{font-size:16px;color:var(--pine);margin:0 0 4px;display:flex;align-items:center;gap:10px}
+  .stream .when{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--marigold)}
+  ul.checks{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:9px}
+  ul.checks li{display:flex;gap:11px;align-items:flex-start;font-size:14px;color:var(--ink);cursor:pointer}
+  ul.checks li .box{width:18px;height:18px;border:2px solid var(--garden);border-radius:5px;flex:none;margin-top:2px;
+    display:grid;place-items:center;transition:background .12s}
+  ul.checks li .box svg{width:11px;height:11px;opacity:0;transition:opacity .12s}
+  ul.checks li.done .box{background:var(--garden)} ul.checks li.done .box svg{opacity:1}
+  ul.checks li.done .t{text-decoration:line-through;color:var(--muted)}
+
+  .note{font-size:12.5px;color:var(--ink2);border-top:1px solid var(--line);padding-top:20px;margin-top:44px}
+  .note b{color:var(--ink)}
+</style>
+
+<div class="wrap">
+  <p class="eyebrow">Aangan · Dhauj · Launch plan & opening budget</p>
+  <h1>Open the day club now. Build the rooms as it grows.</h1>
+  <p class="lede">Two tracks. <b>Track A</b> opens the Day Club on the house and garden you already have — a modest, mostly-no-construction spend. <b>Track B</b> is the frugal build-up — the 2nd-floor rooms, the nurse's room, remodelling and solar — that turns Aangan into a place that can also keep elders overnight. Every figure is a planning range in ₹ lakh; get 2–3 local quotes before committing.</p>
+
+  <div class="callout">
+    <h3>One design rule first — residents stay on the ground floor</h3>
+    <p>For mobile elders with memory loss, stairs are a fall, wandering and evacuation risk. So <b>care rooms stay downstairs</b> (2 existing bedrooms + adapted drawing room), and the <b>new 2nd floor is for you (the family room) and the live-in nurse + storage</b>. The farmer-quarter add-on room also serves staff. This keeps the people who need protecting at ground level, and the build serves them without endangering them.</p>
+  </div>
+
+  <!-- TRACK A -->
+  <section>
+    <h2>Track A — Open the Day Club <span class="tag now">Do now</span></h2>
+    <p class="sec-p">The verandah is the activity hall, the drawing room the wet-weather + lunch room, the garden the walking zone. The maid, driver and staff quarters already exist. You are buying safety, comfort, activity and one carer — not a building.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Item</th><th class="n">₹ lakh</th></tr></thead>
+      <tbody>
+        <tr><td>Secure the garden zone<div class="d">Unclimbable fence, self-latching gate, looped non-slip path, shade, benches</div></td><td class="n">3.0 – 5.0</td></tr>
+        <tr><td>Ground-floor safety retrofit<div class="d">Grab bars, ramp, non-slip flooring, door chimes/alarms, motion night-lights, gas-knob covers</div></td><td class="n">1.5 – 3.0</td></tr>
+        <tr><td>Verandah + drawing-room fit-out<div class="d">Comfortable seating, activity tables, a laid dining setup, fans/coolers</div></td><td class="n">1.5 – 3.0</td></tr>
+        <tr><td>Activity kit<div class="d">Music system, art & craft supplies, garden tools, books, games, TV</div></td><td class="n">1.0 – 2.0</td></tr>
+        <tr><td>Nursing / first-aid corner<div class="d">O₂ concentrator, BP monitor, glucometer, pulse-ox, first-aid, lockable meds cabinet</div></td><td class="n">1.5 – 3.0</td></tr>
+        <tr><td>Kitchen upgrade for daily lunches</td><td class="n">1.0 – 2.0</td></tr>
+        <tr><td>Licences, registration, indemnity insurance (initial)</td><td class="n">0.5 – 1.5</td></tr>
+        <tr><td>Signage, soft-launch, contingency</td><td class="n">0.5 – 1.5</td></tr>
+      </tbody>
+      <tfoot><tr><td class="lbl">Track A — to open</td><td class="n sub">₹10.5 – 21 L</td></tr></tfoot>
+    </table></div>
+    <p class="sec-p" style="margin-top:14px"><b>Monthly running (incremental):</b> ~₹1.0–2.0 L — one carer/coordinator, a part-time activity facilitator, physio visits, lunches and utilities. The maid, driver and existing staff are already covered.</p>
+  </section>
+
+  <!-- TRACK B -->
+  <section>
+    <h2>Track B — The frugal build-up <span class="tag next">Phase 2</span></h2>
+    <p class="sec-p">The rooms that let Aangan keep elders overnight — for respite while you travel, and eventually as a small home. Built up on the existing single floor, so you skip land and a shell.</p>
+    <div class="tbl"><table>
+      <thead><tr><th>Item</th><th class="n">₹ lakh</th></tr></thead>
+      <tbody>
+        <tr><td>2nd floor — 4 comfortable rooms + baths + circulation<div class="d">Frugal build ~1,200–1,600 sq ft @ ₹2,000–2,500/sq ft (staff/family/flexible use)</div></td><td class="n">26 – 40</td></tr>
+        <tr><td>Family room (yours) on the new floor</td><td class="n">6 – 9</td></tr>
+        <tr><td>Farmer-quarter renewal + add-on room on top<div class="d">The live-in nurse's room — two rooms isn't enough once she joins</div></td><td class="n">6 – 10</td></tr>
+        <tr><td>Remodel + full paint + repair, existing ground floor<div class="d">Care-ready bathrooms, flooring, doors — the resident rooms</div></td><td class="n">8 – 15</td></tr>
+        <tr><td>Solar plant + battery backup<div class="d">5–10 kW; covers the ~4-hr daily outage — safety-critical for O₂ & medical</div></td><td class="n">6 – 12</td></tr>
+        <tr><td>Furnishing + safety, all new rooms<div class="d">Beds, rails, wardrobes, night-lights</div></td><td class="n">5 – 9</td></tr>
+        <tr><td>Water / plumbing / ramp access</td><td class="n">3 – 8</td></tr>
+        <tr><td>Contingency (~12%)</td><td class="n">8 – 12</td></tr>
+      </tbody>
+      <tfoot><tr><td class="lbl">Track B — build-up</td><td class="n sub">₹68 – 115 L</td></tr></tfoot>
+    </table></div>
+  </section>
+
+  <!-- SUMMARY -->
+  <section>
+    <h2>What it adds up to</h2>
+    <div class="summary">
+      <div class="sc hl"><div class="k">Open the Day Club</div><div class="v">₹10–21 L</div><div class="s">Track A · few weeks out</div></div>
+      <div class="sc"><div class="k">Frugal build-up</div><div class="v">₹0.7–1.15 Cr</div><div class="s">Track B · when demand is proven</div></div>
+      <div class="sc"><div class="k">Everything, done well</div><div class="v">₹0.8–1.35 Cr</div><div class="s">A + B, phased over time</div></div>
+    </div>
+    <p class="sec-p" style="margin-top:18px">You never spend it all at once. <b>Track A opens the club</b> and starts building reputation and a waitlist. <b>Track B follows only when the demand is real.</b> Note the build-up lands a little above the model's bare <b>₹0.50 Cr Minimum</b> — because you're adding a family room, the nurse's room and solar — but still comfortably under the <b>₹1.4 Cr Realistic</b> build. That's the honest frugal middle.</p>
+  </section>
+
+  <!-- POWER -->
+  <section>
+    <h2>On power — this is safety, not comfort</h2>
+    <p class="sec-p">At ~20 hours of grid a day, you have a <b>~4-hour daily outage</b>. For an ordinary home that's an inconvenience; for elders on an <b>oxygen concentrator</b> or needing reliable night lighting and a water pump, it's a hazard. Size a <b>grid-tied solar system with battery backup</b> to carry the essentials — medical, lights, fans, pump — through the cut, and keep an <b>inverter or small genset as redundancy</b>. Don't treat this as optional; it's part of the care floor.</p>
+  </section>
+
+  <!-- CHECKLIST -->
+  <section>
+    <h2>The 60–90 day checklist</h2>
+    <p class="sec-p">Tap an item to tick it off. Ordered so the club can open while the build-up is still being planned.</p>
+    <div class="streams" id="streams"></div>
+  </section>
+
+  <p class="note"><b>These are planning ranges, not quotes.</b> Construction, solar and staffing costs vary widely — get 2–3 local quotes for the build-up and the solar before committing. Licensing, medical and safety details must be finalised with qualified professionals (a local eldercare lawyer, your Doctor of Record, a licensed electrician for solar) before opening. Track B is reversible and phased — build only as the Day Club proves the demand.</p>
+</div>
+
+<script>
+const STREAMS=[
+  {h:'Legal & licences',when:'Weeks 1–4',items:[
+    'Register as a senior day-care / residential care home under Haryana rules',
+    'Take professional indemnity + public liability insurance',
+    'Confirm the Doctor of Record (registered physician) in writing',
+    'Meet an eldercare lawyer — finalise the admission & care agreement',
+    'Sort the Al-Falah priority-access tie-up + Amrita pre-registration']},
+  {h:'Garden & safety (open-now)',when:'Weeks 1–5',items:[
+    'Fence the secured garden zone + self-latching gate',
+    'Lay the looped non-slip walking path + benches + shade',
+    'Grab bars, ramps, non-slip floors in ground-floor rooms & baths',
+    'Door chimes/alarms + high latches on exits; gas-knob covers',
+    'Motion night-lights bathroom-to-bed']},
+  {h:'Venue fit-out & activity',when:'Weeks 2–6',items:[
+    'Furnish the verandah (activity hall) + drawing room (lunch/wet-weather)',
+    'Kitchen upgrade for daily home-style lunches',
+    'Buy the activity kit — music, art, garden tools, books, games',
+    'Set up the nursing/first-aid corner + O₂ + monitors + meds cabinet',
+    'Signage & a simple name board']},
+  {h:'People',when:'Weeks 3–7',items:[
+    'Hire + police-verify one carer / day coordinator (dementia-trained)',
+    'Line up a part-time activity facilitator & visiting physiotherapist',
+    'Brief the existing maid, driver & farm staff on their new roles',
+    'Assemble the Care File + wall-mount the Emergency Protocol card']},
+  {h:'Intergenerational programme',when:'Weeks 4–8',items:[
+    'Approach 1–2 local schools; agree a monthly visit plan',
+    'Set opt-in consents (elders, families, school) + supervision & health rules',
+    'Plan the first joint session — reading / gardening / songs']},
+  {h:'Build-up planning (parallel)',when:'Weeks 2–10',items:[
+    'Get 2–3 quotes: 2nd-floor 4 rooms + family room + nurse-room add-on',
+    'Get 2–3 quotes: ground-floor remodel + full paint',
+    'Get 2–3 quotes: 5–10 kW solar + battery backup',
+    'Confirm resident rooms stay ground-floor; upstairs = family + nurse',
+    'Sequence the build so the Day Club keeps running through it']},
+  {h:'Soft launch',when:'Weeks 8–12',items:[
+    'Trial days with Mom + 2–3 friendly local elders',
+    'Run a full day end-to-end; fix what the day reveals',
+    'Do a Capt-Kika cold review — would you leave your own mother here?',
+    'Open to the first day-club members']}
+];
+const tick='<svg viewBox="0 0 24 24" fill="none"><path d="M5 12l4 4 10-11" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+document.getElementById('streams').innerHTML=STREAMS.map(s=>
+  `<div class="stream"><h3>${s.h} <span class="when">· ${s.when}</span></h3>
+   <ul class="checks">${s.items.map(i=>`<li><span class="box">${tick}</span><span class="t">${i}</span></li>`).join('')}</ul></div>`).join('');
+document.querySelectorAll('.checks li').forEach(li=>li.addEventListener('click',()=>li.classList.toggle('done')));
+</script>

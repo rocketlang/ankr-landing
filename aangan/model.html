@@ -1,0 +1,372 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>10-Bed Care Home — Financial Model</title>
+<style>
+  :root{
+    --page:#E7E3D8; --surface:#FCFAF5; --surface2:#F3EFE6;
+    --ink:#22261F; --ink2:#5E6155; --muted:#8B8E80; --border:#D9D4C7;
+    --pine:#2C4034; --teal:#0E8A6E; --slate:#3A5BA0; --clay:#B4552F;
+    --pos:#1F7A4D; --neg:#BB3E2E; --amber:#9C7016;
+    --serif:'Iowan Old Style','Palatino Linotype','Book Antiqua',Georgia,serif;
+    --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--page);color:var(--ink);font-family:var(--sans);
+    line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1000px;margin:0 auto;padding:clamp(20px,4vw,52px) clamp(16px,4vw,32px) 72px}
+  .num{font-variant-numeric:tabular-nums}
+
+  .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--clay);
+    font-weight:600;margin:0 0 14px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(28px,5vw,42px);line-height:1.08;
+    letter-spacing:-.01em;margin:0 0 14px;text-wrap:balance;max-width:20ch}
+  .lede{font-size:clamp(16px,2vw,18px);color:var(--ink2);margin:0;max-width:62ch}
+  .lede b{color:var(--ink);font-weight:600}
+
+  .controls{margin:34px 0 30px;background:var(--surface);border:1px solid var(--border);
+    border-radius:14px;padding:22px clamp(18px,3vw,26px)}
+  .occ-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}
+  .occ-head label{font-family:var(--serif);font-size:19px;color:var(--pine)}
+  .occ-read{font-family:var(--serif);font-size:15px;color:var(--ink2)}
+  .occ-read b{font-size:30px;color:var(--ink);font-weight:600}
+  .hint{font-size:12.5px;color:var(--muted);margin:2px 0 0}
+  input[type=range]{width:100%;margin:12px 0 4px;accent-color:var(--pine);height:26px;cursor:pointer}
+  .ticks{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);
+    padding:0 9px;font-variant-numeric:tabular-nums}
+  .fees{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px;
+    border-top:1px solid var(--border);padding-top:20px}
+  .fee{display:flex;flex-direction:column;gap:7px}
+  .fee .lab{font-size:12.5px;color:var(--ink2);display:flex;align-items:center;gap:7px}
+  .chip{width:11px;height:11px;border-radius:3px;flex:none}
+  .chip.min{background:var(--teal)} .chip.real{background:var(--slate)} .chip.max{background:var(--clay)}
+  .fee-in{display:flex;align-items:center;gap:8px;background:var(--surface2);
+    border:1px solid var(--border);border-radius:9px;padding:8px 12px;transition:border-color .15s}
+  .fee-in span{color:var(--muted);font-size:13px}
+  .fee-in input{width:100%;border:0;background:transparent;font:inherit;font-size:20px;
+    color:var(--ink);font-variant-numeric:tabular-nums;font-weight:600}
+  .fee-in input:focus{outline:none}
+  .fee-in:focus-within{border-color:var(--pine)}
+
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:34px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+    padding:20px clamp(15px,1.8vw,20px);position:relative;overflow:hidden}
+  .card::before{content:"";position:absolute;top:0;left:0;right:0;height:3px}
+  .card.min::before{background:var(--teal)} .card.real::before{background:var(--slate)} .card.max::before{background:var(--clay)}
+  .card h2{font-family:var(--serif);font-size:18px;font-weight:600;margin:0;color:var(--pine);
+    display:flex;align-items:center;gap:8px}
+  .card .sub{font-size:12px;color:var(--muted);margin:3px 0 16px;min-height:32px}
+  .setup{display:grid;grid-template-columns:1fr 1fr;gap:9px 12px;
+    padding-bottom:16px;margin-bottom:14px;border-bottom:1px solid var(--border)}
+  .setup div{display:flex;flex-direction:column}
+  .setup .k{font-size:10.5px;letter-spacing:.02em;text-transform:uppercase;color:var(--muted)}
+  .setup .v{font-size:15px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums;margin-top:2px}
+  .plrow{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:13px;padding:3px 0}
+  .plrow .k{color:var(--ink2)} .plrow .v{font-weight:600;font-variant-numeric:tabular-nums}
+  .profit-big{border-top:1px solid var(--border);padding-top:13px;margin-top:9px}
+  .profit-big .k{font-size:12px;color:var(--ink2)}
+  .profit-big .v{font-family:var(--serif);font-size:30px;font-weight:600;line-height:1.05;
+    font-variant-numeric:tabular-nums;display:block;margin-top:2px}
+  .v.pos{color:var(--pos)} .v.neg{color:var(--neg)}
+  .be{display:inline-flex;align-items:center;gap:7px;font-size:11.5px;padding:5px 10px;border-radius:20px;
+    font-weight:600;margin-top:14px;line-height:1.3}
+  .be.warn{background:#F6EEDD;color:var(--amber)}
+  .be.ok{background:#E4F0E7;color:var(--pos)}
+  .be .dot{width:7px;height:7px;border-radius:50%;background:currentColor;flex:none}
+
+  .sec-h{font-family:var(--serif);font-size:22px;color:var(--pine);margin:0 0 4px}
+  .sec-p{color:var(--ink2);font-size:14.5px;margin:0 0 18px;max-width:64ch}
+
+  .chartbox{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+    padding:20px clamp(14px,2vw,22px) 16px}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:6px}
+  .legend span{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--ink2);font-weight:500}
+  .legend i{width:22px;height:3px;border-radius:2px;flex:none}
+  .chart-rel{position:relative}
+  svg{display:block;width:100%;height:auto}
+  .tip{position:absolute;pointer-events:none;opacity:0;transform:translate(-50%,0);
+    background:var(--pine);color:#F4F1E8;font-size:12px;border-radius:8px;padding:8px 11px;
+    white-space:nowrap;transition:opacity .12s;z-index:5;font-variant-numeric:tabular-nums;
+    box-shadow:0 6px 18px rgba(20,30,24,.22)}
+  .tip .t{display:block;font-weight:600;margin-bottom:3px;color:#fff}
+  .tip .r{display:flex;align-items:center;gap:7px}
+  .tip i{width:9px;height:9px;border-radius:2px;display:inline-block}
+
+  .rampbar{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:16px;
+    background:var(--surface2);border:1px solid var(--border);border-radius:11px;padding:12px 16px}
+  .rampbar label{font-size:13px;color:var(--ink2);font-weight:500;white-space:nowrap}
+  .rampbar b{font-family:var(--serif);font-size:17px;color:var(--pine)}
+  .rampbar input{flex:1;min-width:160px;accent-color:var(--slate)}
+
+  .tbl-scroll{overflow-x:auto;border:1px solid var(--border);border-radius:14px;background:var(--surface)}
+  table{border-collapse:collapse;width:100%;min-width:520px}
+  th,td{padding:11px 15px;text-align:right;font-variant-numeric:tabular-nums;font-size:13.5px}
+  th{font-weight:600;font-size:11px;letter-spacing:.03em;text-transform:uppercase;color:var(--muted);
+    border-bottom:1px solid var(--border);background:var(--surface2)}
+  th:first-child,td:first-child{text-align:left}
+  td:first-child{color:var(--ink2);font-weight:500}
+  tbody tr+tr td{border-top:1px solid var(--border)}
+  tbody tr.here td{background:#F1EDE2}
+  .money.pos{color:var(--pos);font-weight:600}
+  .money.neg{color:var(--neg);font-weight:600}
+  .sname{display:inline-flex;align-items:center;gap:7px}
+  .cap{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600;margin-top:10px}
+
+  .readout{background:var(--pine);color:#EAE7DC;border-radius:14px;padding:24px clamp(18px,3vw,28px);
+    margin:34px 0;font-size:15px;line-height:1.6}
+  .readout .sec-h{color:#fff;margin-bottom:10px}
+  .readout b{color:#fff}
+  .readout .live{font-family:var(--serif);font-size:18px;color:#F4EFE0;margin:0 0 14px}
+  .assump{font-size:12.5px;color:var(--ink2);border-top:1px solid var(--border);padding-top:20px;margin-top:8px}
+  .assump h3{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+  .assump ul{margin:0;padding-left:18px} .assump li{margin:4px 0}
+
+  section{margin-bottom:36px}
+  @media(max-width:860px){ .cards{grid-template-columns:1fr} .fees{grid-template-columns:1fr} .card .sub{min-height:0} }
+</style>
+
+<div class="wrap">
+  <p class="eyebrow">Financial model · planning ranges, not quotes</p>
+  <h1>The 10-bed question: at what occupancy — and what year — does it pay?</h1>
+  <p class="lede">A memory-care home on the Dhauj farm, sized to <b>10 residents max</b>, in three builds — a lean <b>minimum</b>, a sensible <b>realistic</b> mid-build, and a luxury <b>maximum</b>. Set the mature occupancy and fees below; the cards show steady-state economics, and the <b>5-year cash-flow</b> further down shows the years it takes to fill beds and earn the build back.</p>
+
+  <!-- CONTROLS -->
+  <div class="controls">
+    <div class="occ-head">
+      <label for="occ">Mature occupancy</label>
+      <span class="occ-read"><b id="occVal">8</b> of 10 &nbsp;·&nbsp; <span id="occPct">80%</span></span>
+    </div>
+    <p class="hint">Beds filled once the home is established. Cards below = steady-state monthly P&amp;L at this level.</p>
+    <input type="range" id="occ" min="0" max="10" step="1" value="8" aria-label="Mature occupancy, beds filled">
+    <div class="ticks"><span>0</span><span>2</span><span>4</span><span>6</span><span>8</span><span>10</span></div>
+    <div class="fees">
+      <div class="fee"><span class="lab"><i class="chip min"></i>Minimum — fee/bed/mo</span>
+        <div class="fee-in"><span>₹</span><input type="number" id="feeMin" value="1.00" min="0.4" max="3" step="0.05"><span>L</span></div></div>
+      <div class="fee"><span class="lab"><i class="chip real"></i>Realistic — fee/bed/mo</span>
+        <div class="fee-in"><span>₹</span><input type="number" id="feeReal" value="1.30" min="0.4" max="3" step="0.05"><span>L</span></div></div>
+      <div class="fee"><span class="lab"><i class="chip max"></i>Maximum — fee/bed/mo</span>
+        <div class="fee-in"><span>₹</span><input type="number" id="feeMax" value="1.80" min="0.4" max="3" step="0.05"><span>L</span></div></div>
+    </div>
+  </div>
+
+  <!-- SCENARIO CARDS -->
+  <div class="cards" id="cards"></div>
+
+  <!-- PROFIT vs BEDS -->
+  <section>
+    <h2 class="sec-h">Steady-state profit as beds fill</h2>
+    <p class="sec-p">Monthly profit in ₹ lakh at each occupancy. Below the zero line is a loss. The marker is your mature-occupancy setting.</p>
+    <div class="chartbox">
+      <div class="legend">
+        <span><i style="background:var(--teal)"></i>Minimum</span>
+        <span><i style="background:var(--slate)"></i>Realistic</span>
+        <span><i style="background:var(--clay)"></i>Maximum</span>
+        <span><i style="background:var(--muted);height:2px;opacity:.7"></i>Break-even (₹0)</span>
+      </div>
+      <div class="chart-rel">
+        <svg id="chart" viewBox="0 0 720 360" role="img" aria-label="Monthly profit versus beds filled"></svg>
+        <div class="tip" id="tip"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5-YEAR CASH FLOW -->
+  <section>
+    <h2 class="sec-h">The 5-year cash-flow (the real picture)</h2>
+    <p class="sec-p">Each line starts underwater — you spend the build up front — then climbs as beds fill over the ramp-up period and the home runs at a profit. Where a line crosses ₹0, the build has fully paid back. This is the honest view: the first years are a hole you climb out of.</p>
+    <div class="rampbar">
+      <label for="ramp">Months to fill to mature occupancy</label>
+      <input type="range" id="ramp" min="6" max="36" step="1" value="18" aria-label="Ramp-up months">
+      <b><span id="rampVal">18</span> months</b>
+    </div>
+    <div class="chartbox">
+      <div class="legend">
+        <span><i style="background:var(--teal)"></i>Minimum</span>
+        <span><i style="background:var(--slate)"></i>Realistic</span>
+        <span><i style="background:var(--clay)"></i>Maximum</span>
+        <span><i style="background:var(--muted);height:2px;opacity:.7"></i>Paid back (₹0)</span>
+      </div>
+      <div class="chart-rel">
+        <svg id="cashchart" viewBox="0 0 720 380" role="img" aria-label="Cumulative cash flow over five years"></svg>
+        <div class="tip" id="tip2"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- YEAR TABLE -->
+  <section>
+    <h2 class="sec-h">Cumulative cash by year-end</h2>
+    <p class="sec-p">Where you stand at the end of each year (build spent, plus profits earned so far), and when each setup first turns cash-positive.</p>
+    <div class="tbl-scroll">
+      <table>
+        <thead><tr><th>Setup</th><th>Yr 1</th><th>Yr 2</th><th>Yr 3</th><th>Yr 4</th><th>Yr 5</th><th>Paid back</th></tr></thead>
+        <tbody id="ytbody"></tbody>
+      </table>
+    </div>
+    <p class="cap">Figures in ₹ Cr · green = cash-positive · red = still underwater</p>
+  </section>
+
+  <!-- READOUT -->
+  <div class="readout">
+    <h2 class="sec-h">What this says</h2>
+    <p class="live" id="live">—</p>
+    <p style="margin:0">Because the <b>house and farm staff already exist</b>, the minimum path needs well under a crore and breaks even at just <b>6–7 of 10 beds</b> — so its cash-flow hole is shallow and pays back fast. The <b>realistic</b> mid-build buys a resident doctor and a first floor without the ₹3.2 Cr bet. Either way the lesson holds: <b>occupancy and reputation</b> are the game, and the <b>day club is the near-zero-capex way to build both</b> — the verandah, drawing room and garden already are the venue. Prove demand there, then let these numbers size the beds.</p>
+  </div>
+
+  <div class="assump">
+    <h3>Assumptions behind the model</h3>
+    <ul>
+      <li><b>Minimum</b> — ₹0.50 Cr build (build up frugally on the existing single-floor house: 2 bedrooms, covered verandah and drawing room already stand) · ₹4.2 L/mo fixed (the farm's <b>maid, driver and staff quarters already exist</b> — you add one resident carer + 24/7 nursing) · ₹0.22 L/bed variable · default fee ₹1.00 L.</li>
+      <li><b>Realistic</b> — ₹1.40 Cr build (upgrade + a frugal first floor on the existing base) · ₹7.5 L/mo fixed (resident doctor, a manager) · ₹0.28 L/bed variable · default fee ₹1.30 L.</li>
+      <li><b>Maximum</b> — ₹3.20 Cr build (new luxury build) · ₹11.0 L/mo fixed · ₹0.35 L/bed variable · default fee ₹1.80 L.</li>
+      <li><b>Existing infrastructure is the biggest lever:</b> because the house, the secured garden potential, and the farm's maid/driver/quarters are already in place, the minimum path avoids most of a normal build's capital and part of its fixed cost — which is why it pays back fast.</li>
+      <li><b>Ramp-up:</b> beds fill roughly linearly from opening to mature occupancy over the months you set, then hold. Fixed costs run in full from day one (you staff to the care ratio immediately) — which is why the early months lose money.</li>
+      <li>Cash-flow = −(build) + running profit each month, no financing/interest, pre-tax. Round planning ranges for the Dhauj / NCR context; confirm with local quotes before committing capital.</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+const S = [
+  {key:'min', name:'Minimum', sub:'Build up frugally on the existing house · the farm’s maid, driver & quarters already there · add one resident carer + nursing', capex:50, fixed:4.2, varc:0.22, color:'#0E8A6E', cls:'min'},
+  {key:'real',name:'Realistic',sub:'Upgrade + a frugal first floor · resident doctor · a manager', capex:140, fixed:7.5, varc:0.28, color:'#3A5BA0', cls:'real'},
+  {key:'max', name:'Maximum', sub:'New luxury build · resident doctor · richer staffing & amenities', capex:320, fixed:11.0, varc:0.35, color:'#B4552F', cls:'max'}
+];
+const fees = {min:1.00, real:1.30, max:1.80};
+let occ=8, ramp=18;
+const $ = id => document.getElementById(id);
+const money = v => (v<0?'−₹':'₹') + Math.abs(v).toFixed(2) + ' L';
+const cr = v => (v<0?'−₹':'₹') + Math.abs(v/100).toFixed(2) + ' Cr';
+
+const calc = (s, o, fee) => {
+  const rev=o*fee, cost=s.fixed+o*s.varc, prof=rev-cost;
+  return {rev,cost,prof,ann:prof*12, be:Math.ceil(s.fixed/(fee-s.varc)),
+    pay: prof>0 ? s.capex/(prof*12) : null};
+};
+// occupancy during ramp: linear from 1 to target over `ramp` months, then hold
+const occAt = (m, target) => target<=0 ? 0 : Math.min(target, Math.max(1, Math.round(target*m/ramp)));
+function cashSeries(s, fee, target){
+  const pts=[-s.capex]; let cum=-s.capex;
+  for(let m=1;m<=60;m++){ const o=occAt(m,target); cum += o*fee-(s.fixed+o*s.varc); pts.push(cum); }
+  return pts; // length 61, index = month 0..60
+}
+const paybackMonth = pts => { for(let m=1;m<=60;m++) if(pts[m]>=0) return m; return null; };
+
+// ---------- cards ----------
+function cards(){
+  $('cards').innerHTML = S.map(s=>{
+    const r=calc(s,occ,fees[s.key]); const ok=occ>=r.be;
+    return `<div class="card ${s.cls}">
+      <h2><i class="chip ${s.cls}"></i>${s.name} setup</h2>
+      <p class="sub">${s.sub}</p>
+      <div class="setup">
+        <div><span class="k">One-time build</span><span class="v">₹${(s.capex/100).toFixed(2)} Cr</span></div>
+        <div><span class="k">Fixed / mo</span><span class="v">₹${s.fixed.toFixed(1)} L</span></div>
+        <div><span class="k">Fee / bed</span><span class="v">₹${fees[s.key].toFixed(2)} L</span></div>
+        <div><span class="k">Variable / bed</span><span class="v">₹${s.varc.toFixed(2)} L</span></div>
+      </div>
+      <div class="plrow"><span class="k">Revenue / mo</span><span class="v">${money(r.rev)}</span></div>
+      <div class="plrow"><span class="k">Running cost / mo</span><span class="v">${money(r.cost)}</span></div>
+      <div class="profit-big">
+        <span class="k">Monthly profit</span>
+        <span class="v ${r.prof>=0?'pos':'neg'}">${money(r.prof)}</span>
+        <div class="plrow" style="margin-top:8px"><span class="k">Per year</span><span class="v ${r.ann>=0?'pos':'neg'}">${(r.ann<0?'−':'')+'₹'+Math.abs(r.ann).toFixed(1)+' L'}</span></div>
+        <div class="plrow"><span class="k">Payback (steady)</span><span class="v">${r.pay?r.pay.toFixed(1)+' yrs':'—'}</span></div>
+      </div>
+      <div class="be ${ok?'ok':'warn'}"><span class="dot"></span><span>${ok?'Profitable — past break-even ('+r.be+' beds)':'Break-even at '+r.be+' beds ('+(r.be*10)+'%)'}</span></div>
+    </div>`;
+  }).join('');
+}
+
+// ---------- generic svg helpers ----------
+const NS='http://www.w3.org/2000/svg';
+function mk(svg,t,a,txt){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(txt!=null)e.textContent=txt;svg.appendChild(e);return e;}
+function niceStep(x){const p=Math.pow(10,Math.floor(Math.log10(x)));const n=x/p;return (n<1.5?1:n<3?2:n<7?5:10)*p;}
+
+// ---------- profit vs beds ----------
+const beds=[0,1,2,3,4,5,6,7,8,9,10];
+function profitChart(){
+  const W=720,H=360,mL=52,mR=48,mT=16,mB=44;
+  const ser=S.map(s=>beds.map(b=>calc(s,b,fees[s.key]).prof));
+  const all=ser.flat().concat([0]); let lo=Math.min(...all),hi=Math.max(...all);
+  const pad=(hi-lo)*0.12||1; lo-=pad; hi+=pad;
+  const xF=b=>mL+(b/10)*(W-mL-mR), yF=v=>mT+(1-(v-lo)/(hi-lo))*(H-mT-mB);
+  const svg=$('chart'); svg.innerHTML='';
+  const step=niceStep((hi-lo)/5);
+  for(let g=Math.ceil(lo/step)*step;g<=hi;g+=step){const y=yF(g),z=Math.abs(g)<1e-9;
+    mk(svg,'line',{x1:mL,y1:y,x2:W-mR,y2:y,stroke:z?'#9aa094':'#E4DFD3','stroke-width':z?1.5:1,'stroke-dasharray':z?'':'2 4'});
+    mk(svg,'text',{x:mL-9,y:y+4,'text-anchor':'end','font-size':11,fill:z?'#5E6155':'#9aa094','font-family':'var(--sans)'},(g<0?'−':'')+Math.abs(g).toFixed(0));}
+  beds.forEach(b=>mk(svg,'text',{x:xF(b),y:H-mB+22,'text-anchor':'middle','font-size':11.5,fill:'#8B8E80','font-family':'var(--sans)'},b));
+  mk(svg,'text',{x:(mL+W-mR)/2,y:H-6,'text-anchor':'middle','font-size':11,fill:'#5E6155','letter-spacing':'.05em'},'BEDS FILLED');
+  mk(svg,'text',{x:14,y:mT+4,'font-size':10.5,fill:'#8B8E80','letter-spacing':'.04em'},'₹L/mo');
+  const gx=xF(occ); mk(svg,'line',{x1:gx,y1:mT,x2:gx,y2:H-mB,stroke:'#2C4034','stroke-width':1,'stroke-dasharray':'3 3',opacity:.35});
+  ser.forEach((arr,i)=>mk(svg,'polyline',{points:beds.map(b=>xF(b)+','+yF(arr[b])).join(' '),fill:'none',stroke:S[i].color,'stroke-width':2.6,'stroke-linejoin':'round','stroke-linecap':'round'}));
+  ser.forEach((arr,i)=>beds.forEach(b=>{const cur=b===occ;mk(svg,'circle',{cx:xF(b),cy:yF(arr[b]),r:cur?5:3.2,fill:cur?S[i].color:'#FCFAF5',stroke:S[i].color,'stroke-width':cur?2.4:2});}));
+  ser.forEach((arr,i)=>mk(svg,'text',{x:xF(10)+8,y:yF(arr[10])+4,'font-size':12.5,fill:S[i].color,'font-weight':600,'font-family':'var(--sans)'},S[i].name.slice(0,4)));
+  const tip=$('tip'),cw=(W-mL-mR)/10;
+  beds.forEach(b=>{const r=mk(svg,'rect',{x:xF(b)-cw/2,y:mT,width:cw,height:H-mT-mB,fill:'transparent',style:'cursor:crosshair'});
+    r.addEventListener('mouseenter',()=>{tip.style.opacity=1;tip.style.left=(xF(b)/W*100)+'%';tip.style.top='6px';
+      tip.innerHTML='<span class="t">'+b+' beds · '+(b*10)+'%</span>'+S.map((s,i)=>'<span class="r"><i style="background:'+s.color+'"></i>'+s.name+' '+fmtL(ser[i][b])+'</span>').join('');});
+    r.addEventListener('mouseleave',()=>tip.style.opacity=0);});
+}
+const fmtL=v=>(v<0?'−₹':'₹')+Math.abs(v).toFixed(2)+'L/mo';
+
+// ---------- 5-year cash flow ----------
+function cashChart(){
+  const W=720,H=380,mL=58,mR=48,mT=16,mB=44;
+  const ser=S.map(s=>cashSeries(s,fees[s.key],occ));
+  const all=ser.flat().concat([0]); let lo=Math.min(...all),hi=Math.max(...all);
+  const pad=(hi-lo)*0.08||1; lo-=pad; hi+=pad;
+  const xF=m=>mL+(m/60)*(W-mL-mR), yF=v=>mT+(1-(v-lo)/(hi-lo))*(H-mT-mB);
+  const svg=$('cashchart'); svg.innerHTML='';
+  const step=niceStep((hi-lo)/5);
+  for(let g=Math.ceil(lo/step)*step;g<=hi;g+=step){const y=yF(g),z=Math.abs(g)<1e-9;
+    mk(svg,'line',{x1:mL,y1:y,x2:W-mR,y2:y,stroke:z?'#9aa094':'#E4DFD3','stroke-width':z?1.5:1,'stroke-dasharray':z?'':'2 4'});
+    mk(svg,'text',{x:mL-9,y:y+4,'text-anchor':'end','font-size':11,fill:z?'#5E6155':'#9aa094','font-family':'var(--sans)'},(g<0?'−':'')+'₹'+Math.abs(g/100).toFixed(1));}
+  for(let yr=0;yr<=5;yr++){const x=xF(yr*12);
+    mk(svg,'line',{x1:x,y1:mT,x2:x,y2:H-mB,stroke:'#EAE5D8','stroke-width':1});
+    mk(svg,'text',{x:x,y:H-mB+22,'text-anchor':'middle','font-size':11.5,fill:'#8B8E80','font-family':'var(--sans)'}, yr===0?'open':'Yr '+yr);}
+  mk(svg,'text',{x:14,y:mT+4,'font-size':10.5,fill:'#8B8E80','letter-spacing':'.04em'},'₹Cr');
+  // ramp-end marker
+  const rx=xF(Math.min(ramp,60)); mk(svg,'line',{x1:rx,y1:mT,x2:rx,y2:H-mB,stroke:'#2C4034','stroke-width':1,'stroke-dasharray':'3 3',opacity:.3});
+  mk(svg,'text',{x:rx,y:mT+12,'text-anchor':'middle','font-size':10,fill:'#5E6155'},'beds full');
+  ser.forEach((pts,i)=>{
+    mk(svg,'polyline',{points:pts.map((v,m)=>xF(m)+','+yF(v)).join(' '),fill:'none',stroke:S[i].color,'stroke-width':2.6,'stroke-linejoin':'round','stroke-linecap':'round'});
+    const pb=paybackMonth(pts);
+    if(pb){mk(svg,'circle',{cx:xF(pb),cy:yF(0),r:4.5,fill:S[i].color,stroke:'#FCFAF5','stroke-width':2});}
+    mk(svg,'text',{x:xF(60)+7,y:yF(pts[60])+4,'font-size':12.5,fill:S[i].color,'font-weight':600,'font-family':'var(--sans)'},S[i].name.slice(0,4));
+  });
+  const tip=$('tip2'); const months=[0,6,12,18,24,30,36,42,48,54,60];
+  const cw=(W-mL-mR)/60;
+  months.forEach(m=>{const r=mk(svg,'rect',{x:xF(m)-cw*3,y:mT,width:cw*6,height:H-mT-mB,fill:'transparent',style:'cursor:crosshair'});
+    r.addEventListener('mouseenter',()=>{tip.style.opacity=1;tip.style.left=(xF(m)/W*100)+'%';tip.style.top='6px';
+      tip.innerHTML='<span class="t">'+(m===0?'Opening':'Month '+m+' · '+(m/12).toFixed(1)+' yr')+'</span>'+S.map((s,i)=>'<span class="r"><i style="background:'+s.color+'"></i>'+s.name+' '+cr(ser[i][m])+'</span>').join('');});
+    r.addEventListener('mouseleave',()=>tip.style.opacity=0);});
+}
+
+// ---------- year table ----------
+function yearTable(){
+  const tb=$('ytbody'); tb.innerHTML='';
+  S.forEach(s=>{
+    const pts=cashSeries(s,fees[s.key],occ); const pb=paybackMonth(pts);
+    let row='<td><span class="sname"><i class="chip '+s.cls+'"></i>'+s.name+'</span></td>';
+    for(let y=1;y<=5;y++){const v=pts[y*12];row+='<td><span class="money '+(v>=0?'pos':'neg')+'">'+cr(v)+'</span></td>';}
+    row+='<td>'+(pb?('Yr '+(pb/12).toFixed(1)):'<span class="money neg">&gt; 5 yrs</span>')+'</td>';
+    const tr=document.createElement('tr'); tr.innerHTML=row; tb.appendChild(tr);
+  });
+}
+
+function render(){
+  $('occVal').textContent=occ; $('occPct').textContent=(occ*10)+'%'; $('rampVal').textContent=ramp;
+  cards(); profitChart(); cashChart(); yearTable();
+  const r=S.map(s=>calc(s,occ,fees[s.key]).prof);
+  $('live').innerHTML='At <b>'+occ+' of 10 beds</b> mature, steady-state monthly profit is — minimum <b>'+money(r[0])+'</b>, realistic <b>'+money(r[1])+'</b>, maximum <b>'+money(r[2])+'</b>. Over 5 years, with a <b>'+ramp+'-month</b> ramp, the realistic build '+ (paybackMonth(cashSeries(S[1],fees.real,occ)) ? 'pays the build back in <b>Yr '+(paybackMonth(cashSeries(S[1],fees.real,occ))/12).toFixed(1)+'</b>.' : 'does <b>not</b> pay back within 5 years at this setting.');
+}
+
+$('occ').addEventListener('input',e=>{occ=+e.target.value;render();});
+$('ramp').addEventListener('input',e=>{ramp=+e.target.value;render();});
+$('feeMin').addEventListener('input',e=>{const v=parseFloat(e.target.value);if(!isNaN(v)&&v>S[0].varc){fees.min=v;render();}});
+$('feeReal').addEventListener('input',e=>{const v=parseFloat(e.target.value);if(!isNaN(v)&&v>S[1].varc){fees.real=v;render();}});
+$('feeMax').addEventListener('input',e=>{const v=parseFloat(e.target.value);if(!isNaN(v)&&v>S[2].varc){fees.max=v;render();}});
+render();
+</script>
