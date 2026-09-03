@@ -30,9 +30,9 @@ const T = {
     h1b:       'अनेक डोमेन के साथ।',
     hero_p:    'ANKR पहले एक एजेंटिक ऑपरेटिंग सिस्टम है — कर्नेल-स्तर एजेंट गवर्नेंस, बाइनरी-ट्रुथ कैपेबिलिटी ओरेकल, डोमेन SLM — और उसके बाद वर्टिकल्स का पोर्टफोलियो। हर सेवा घोषित करती है कि वह क्या जानती है — बिट सेट है या नहीं।',
     cta1:      'आर्किटेक्चर देखें ↓',
-    cta2:      '84 Zenodo पेपर →',
+    cta2:      '{papers} Zenodo पेपर →',
     vert_tag:  'डोमेन कवरेज',
-    vert_h:    'एक एजेंटिक OS।\nनौ वर्टिकल।',
+    vert_h:    'एक एजेंटिक OS।\n{verticals} वर्टिकल।',
     vert_p:    'मछुआरे से फंड मैनेजर तक, ट्रक ड्राइवर से जहाज कप्तान तक — हमारा AI आपकी भाषा बोलता है और असली समस्याएं सुलझाता है।',
     prod_tag:  'लाइव उत्पाद',
     prod_h:    'अभी चल रहे हैं।',
@@ -41,7 +41,7 @@ const T = {
     plat_h:    'इंजन रूम।',
     plat_p:    'मल्टी-प्रोवाइडर AI बैकबोन, पर्सिस्टेंट मेमोरी, और 800+ npm पैकेज हर उत्पाद को शक्ति देते हैं।',
     svc_tag:   'ANKR CTL',
-    svc_h:     '296 सेवाएं।\nसभी Forja-नेटिव। सभी निगरानी में।',
+    svc_h:     '{services} सेवाएं।\nसभी Forja-नेटिव। सभी निगरानी में।',
     svc_p:     'हर सेवा ANKR CTL v5 के तहत AI Compass ऑटोपायलट के साथ चलती है।',
     cta_h:     'आइए साथ मिलकर बनाएं।',
     cta_p:     'हम भारत का AI इन्फ्रास्ट्रक्चर बना रहे हैं — एक-एक क्षेत्र करके। पार्टनरशिप, डेमो या पायलट के लिए संपर्क करें।',
@@ -58,9 +58,9 @@ const T = {
     h1b:       'பல டொமைன்களுடன்.',
     hero_p:    'ANKR முதலில் ஒரு ஏஜெண்டிக் இயக்க முறைமை — கர்னல்-நிலை ஏஜெண்ட் நிர்வாகம், பைனரி-உண்மை திறன் ஆரக்கிள்கள், டொமைன் SLM-கள் — பிறகே வெர்டிகல்களின் தொகுப்பு. ஒவ்வொரு சேவையும் தான் அறிந்ததை அறிவிக்கிறது.',
     cta1:      'கட்டமைப்பைப் பார்க்கவும் ↓',
-    cta2:      '84 Zenodo ஆய்வுக் கட்டுரைகள் →',
+    cta2:      '{papers} Zenodo ஆய்வுக் கட்டுரைகள் →',
     vert_tag:  'டொமைன் கவரேஜ்',
-    vert_h:    'ஒரே ஏஜெண்டிக் OS.\nஇருபது வெர்டிகல்கள்.',
+    vert_h:    'ஒரே ஏஜெண்டிக் OS.\n{verticals} வெர்டிகல்கள்.',
     vert_p:    'மீனவர் முதல் நிதி மேலாளர் வரை, லாரி ஓட்டுனர் முதல் கப்பல் கேப்டன் வரை — எங்கள் AI உங்கள் மொழியில் பேசுகிறது.',
     prod_tag:  'நேரடி தயாரிப்புகள்',
     prod_h:    'இப்போதே இயங்குகிறது.',
@@ -69,7 +69,7 @@ const T = {
     plat_h:    'எஞ்சின் அறை.',
     plat_p:    'பல-வழங்குனர் AI முதுகெலும்பு, நிலையான நினைவகம், மற்றும் 800+ npm தொகுப்புகள்.',
     svc_tag:   'ANKR CTL',
-    svc_h:     '296 சேவைகள்.\nஅனைத்தும் Forja-நேட்டிவ். அனைத்தும் கண்காணிக்கப்படுகின்றன.',
+    svc_h:     '{services} சேவைகள்.\nஅனைத்தும் Forja-நேட்டிவ். அனைத்தும் கண்காணிக்கப்படுகின்றன.',
     svc_p:     'ஒவ்வொரு சேவையும் ANKR CTL v5 கீழ் AI Compass தன்னியக்க வழிகாட்டியுடன் இயங்குகிறது.',
     cta_h:     'ஒன்றாக கட்டுவோம்.',
     cta_p:     'இந்தியாவின் AI உள்கட்டமைப்பை நாங்கள் கட்டுகிறோம். கூட்டாண்மை, செயல்விளக்கம் அல்லது பைலட்டிற்கு தொடர்பு கொள்ளுங்கள்.',
@@ -86,9 +86,9 @@ const T = {
     h1b:       'అనేక డొమైన్‌లతో.',
     hero_p:    'ANKR ముందుగా ఒక ఏజెంటిక్ ఆపరేటింగ్ సిస్టమ్ — కెర్నల్-స్థాయి ఏజెంట్ గవర్నెన్స్, బైనరీ-ట్రూత్ కెపాబిలిటీ ఒరాకిల్స్, డొమైన్ SLMలు — ఆ తర్వాతే వర్టికల్స్ పోర్ట్‌ఫోలియో. ప్రతి సేవ తనకు తెలిసింది ప్రకటిస్తుంది.',
     cta1:      'ఆర్కిటెక్చర్ చూడండి ↓',
-    cta2:      '84 Zenodo పేపర్లు →',
+    cta2:      '{papers} Zenodo పేపర్లు →',
     vert_tag:  'డొమైన్ కవరేజ్',
-    vert_h:    'ఒకే ఏజెంటిక్ OS.\nఇరవై వర్టికల్స్.',
+    vert_h:    'ఒకే ఏజెంటిక్ OS.\n{verticals} వర్టికల్స్.',
     vert_p:    'మత్స్యకారుల నుండి ఫండ్ మేనేజర్ల వరకు, ట్రక్ డ్రైవర్ల నుండి షిప్ కెప్టెన్ల వరకు — మా AI మీ భాషలో మాట్లాడుతుంది.',
     prod_tag:  'లైవ్ ఉత్పత్తులు',
     prod_h:    'ఇప్పుడే నడుస్తున్నాయి.',
@@ -97,7 +97,7 @@ const T = {
     plat_h:    'ఇంజిన్ గది.',
     plat_p:    'మల్టీ-ప్రొవైడర్ AI వెన్నెముక, నిరంతర మెమరీ, మరియు 800+ npm ప్యాకేజీలు ప్రతి ఉత్పత్తికి శక్తినిస్తున్నాయి.',
     svc_tag:   'ANKR CTL',
-    svc_h:     '296 సేవలు.\nఅన్నీ Forja-నేటివ్. అన్నీ పర్యవేక్షణలో.',
+    svc_h:     '{services} సేవలు.\nఅన్నీ Forja-నేటివ్. అన్నీ పర్యవేక్షణలో.',
     svc_p:     'ప్రతి సేవా ANKR CTL v5 కింద AI Compass ఆటోపైలట్‌తో నడుస్తుంది.',
     cta_h:     'కలిసి నిర్మిద్దాం.',
     cta_p:     'భారత్ AI మౌలిక సదుపాయాలు నిర్మిస్తున్నాం — ఒక రంగం ఒక్కొక్కటిగా. భాగస్వామ్యం, డెమో లేదా పైలట్ కోసం సంప్రదించండి.',
@@ -114,9 +114,9 @@ const T = {
     h1b:       'ಹಲವು ಡೊಮೇನ್‌ಗಳೊಂದಿಗೆ.',
     hero_p:    'ANKR ಮೊದಲು ಒಂದು ಏಜೆಂಟಿಕ್ ಆಪರೇಟಿಂಗ್ ಸಿಸ್ಟಮ್ — ಕರ್ನಲ್-ಮಟ್ಟದ ಏಜೆಂಟ್ ಆಡಳಿತ, ಬೈನರಿ-ಸತ್ಯ ಸಾಮರ್ಥ್ಯ ಒರಾಕಲ್‌ಗಳು, ಡೊಮೇನ್ SLMಗಳು — ನಂತರ ವರ್ಟಿಕಲ್‌ಗಳ ಪೋರ್ಟ್‌ಫೋಲಿಯೊ. ಪ್ರತಿ ಸೇವೆಯೂ ತನಗೆ ತಿಳಿದದ್ದನ್ನು ಘೋಷಿಸುತ್ತದೆ.',
     cta1:      'ಆರ್ಕಿಟೆಕ್ಚರ್ ನೋಡಿ ↓',
-    cta2:      '84 Zenodo ಪೇಪರ್‌ಗಳು →',
+    cta2:      '{papers} Zenodo ಪೇಪರ್‌ಗಳು →',
     vert_tag:  'ಡೊಮೇನ್ ಕವರೇಜ್',
-    vert_h:    'ಒಂದೇ ಏಜೆಂಟಿಕ್ OS.\nಇಪ್ಪತ್ತು ವರ್ಟಿಕಲ್‌ಗಳು.',
+    vert_h:    'ಒಂದೇ ಏಜೆಂಟಿಕ್ OS.\n{verticals} ವರ್ಟಿಕಲ್‌ಗಳು.',
     vert_p:    'ಮೀನುಗಾರರಿಂದ ಫಂಡ್ ಮ್ಯಾನೇಜರ್‌ವರೆಗೆ — ನಮ್ಮ AI ನಿಮ್ಮ ಭಾಷೆಯಲ್ಲಿ ಮಾತನಾಡುತ್ತದೆ.',
     prod_tag:  'ನೇರ ಉತ್ಪನ್ನಗಳು',
     prod_h:    'ಈಗ ಚಾಲನೆಯಲ್ಲಿದೆ.',
@@ -125,7 +125,7 @@ const T = {
     plat_h:    'ಇಂಜಿನ್ ಕೋಣೆ.',
     plat_p:    'ಬಹು-ಪೂರೈಕೆದಾರ AI ಬೆನ್ನೆಲುಬು, ನಿರಂತರ ಸ್ಮರಣೆ, ಮತ್ತು 800+ npm ಪ್ಯಾಕೇಜ್‌ಗಳು.',
     svc_tag:   'ANKR CTL',
-    svc_h:     '296 ಸೇವೆಗಳು.\nಎಲ್ಲವೂ Forja-ನೇಟಿವ್. ಎಲ್ಲವೂ ಮೇಲ್ವಿಚಾರಣೆಯಲ್ಲಿ.',
+    svc_h:     '{services} ಸೇವೆಗಳು.\nಎಲ್ಲವೂ Forja-ನೇಟಿವ್. ಎಲ್ಲವೂ ಮೇಲ್ವಿಚಾರಣೆಯಲ್ಲಿ.',
     svc_p:     'ಪ್ರತಿ ಸೇವೆಯೂ ANKR CTL v5 ಅಡಿ AI Compass ಆಟೋಪೈಲಟ್‌ನೊಂದಿಗೆ ಚಾಲನೆಯಲ್ಲಿದೆ.',
     cta_h:     'ಒಟ್ಟಿಗೆ ನಿರ್ಮಿಸೋಣ.',
     cta_p:     'ಭಾರತದ AI ಮೂಲಸೌಕರ್ಯ ನಿರ್ಮಿಸುತ್ತಿದ್ದೇವೆ. ಪಾಲುದಾರಿಕೆ, ಡೆಮೋ ಅಥವಾ ಪೈಲಟ್‌ಗಾಗಿ ಸಂಪರ್ಕಿಸಿ.',
@@ -142,9 +142,9 @@ const T = {
     h1b:       'अनेक डोमेनसह.',
     hero_p:    'ANKR आधी एक एजेंटिक ऑपरेटिंग सिस्टम आहे — कर्नल-स्तरीय एजंट गव्हर्नन्स, बायनरी-ट्रुथ कॅपेबिलिटी ओरॅकल्स, डोमेन SLM — आणि नंतर व्हर्टिकल्सचा पोर्टफोलिओ. प्रत्येक सेवा स्वतःला काय माहीत आहे ते जाहीर करते.',
     cta1:      'आर्किटेक्चर पहा ↓',
-    cta2:      '84 Zenodo पेपर्स →',
+    cta2:      '{papers} Zenodo पेपर्स →',
     vert_tag:  'डोमेन कव्हरेज',
-    vert_h:    'एक एजेंटिक OS.\nवीस व्हर्टिकल्स.',
+    vert_h:    'एक एजेंटिक OS.\n{verticals} व्हर्टिकल्स.',
     vert_p:    'मासेमार ते फंड मॅनेजर, ट्रक चालक ते जहाज कप्तान — आमचा AI तुमच्या भाषेत बोलतो.',
     prod_tag:  'थेट उत्पादने',
     prod_h:    'आत्ता चालू आहे.',
@@ -153,7 +153,7 @@ const T = {
     plat_h:    'इंजिन रूम.',
     plat_p:    'मल्टी-प्रोव्हायडर AI कणा, सतत मेमरी, आणि 800+ npm पॅकेजेस प्रत्येक उत्पादनाला शक्ती देतात.',
     svc_tag:   'ANKR CTL',
-    svc_h:     '296 सेवा.\nसर्व Forja-नेटिव्ह. सर्व निगराणीत.',
+    svc_h:     '{services} सेवा.\nसर्व Forja-नेटिव्ह. सर्व निगराणीत.',
     svc_p:     'प्रत्येक सेवा ANKR CTL v5 अंतर्गत AI Compass ऑटोपायलटसह चालते.',
     cta_h:     'चला एकत्र घडवूया.',
     cta_p:     'भारताची AI पायाभूत सुविधा बांधत आहोत — एका वेळी एक क्षेत्र. भागीदारी, डेमो किंवा पायलटसाठी संपर्क करा.',
@@ -201,7 +201,7 @@ const SELECTORS = {
 // FP-010: the baked numbers in the HTML are the FLOOR (always render). These tokens
 // get overlaid with the live derived counts; a failed fetch leaves the floor. The
 // founder names the verticals, the tree derives the count — nothing here is typed.
-const STATS = { engines: 9, verticals: 9, services: 296, registry: 374, agentic_os: 168 };
+const STATS = { engines: 9, verticals: 9, services: 402, registry: 491, agentic_os: 271, papers: 65, positions: '13M+', compiled: '3 Sep 2026' };  // floor = compile of 2026-09-03; overlaid live below
 
 // Per-language token templates the live system OWNS end-to-end. The badge is owned in
 // every language (removed from SELECTORS + marked data-no-translate); the footer is an
@@ -216,7 +216,7 @@ const STAT_TPL = {
     mr: 'एजेंटिक OS · {engines} इंजिन लाइन्स · {verticals} व्हर्टिकल्स · {services} सेवा',
   },
   footer: {
-    en: '© 2026 ANKR Labs · AI OS · {services} Services · {verticals} Verticals · 84 Zenodo Papers · Forja Protocol · Trust Bitmask',
+    en: '© 2026 ANKR Labs · AI OS · {services} Services · {verticals} Verticals · {papers} Zenodo Papers · Forja Protocol · Trust Bitmask',
   },
 };
 
@@ -239,12 +239,29 @@ function renderStats(lang) {
   });
 }
 
+// The floor baked above is a dated quote (the compile of 2026-09-03); the breath's own file
+// overlays it live, and Zenodo's own API counts the papers. A failed fetch leaves the floor
+// and its date — nothing here is typed, nothing invented.
+function fmtCompiled(iso) {
+  const d = new Date(iso); if (isNaN(d)) return null;
+  const M = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return d.getUTCDate() + ' ' + M[d.getUTCMonth()] + ' ' + d.getUTCFullYear();   // same shape as the baked floor
+}
 function loadLiveStats() {
-  return fetch('/presentation/gate-totals.json', { cache: 'no-store' })
+  const gate = fetch('/presentation/gate-totals.json', { cache: 'no-store' })
     .then(r => r.ok ? r.json() : null)
-    .then(g => { if (g) ['services', 'registry', 'verticals', 'agentic_os'].forEach(k => { if (g[k] != null) STATS[k] = g[k]; }); })
-    .catch(() => {})
-    .finally(() => renderStats(document.documentElement.lang || 'en'));
+    .then(g => {
+      if (!g) return;
+      ['services', 'registry', 'verticals', 'agentic_os'].forEach(k => { if (typeof g[k] === 'number') STATS[k] = g[k]; });
+      if (typeof g.positions_human === 'string' && g.positions_human) STATS.positions = g.positions_human;
+      const c = fmtCompiled(g.refreshed_at); if (c) STATS.compiled = c;
+    })
+    .catch(() => {});
+  const zen = fetch('https://zenodo.org/api/records?q=powerpbox&size=1')
+    .then(r => r.ok ? r.json() : null)
+    .then(j => { const n = j && j.hits && j.hits.total; if (typeof n === 'number') STATS.papers = n; })
+    .catch(() => {});
+  return Promise.all([gate, zen]).finally(() => renderStats(document.documentElement.lang || 'en'));
 }
 
 function applyLang(lang) {
@@ -252,7 +269,7 @@ function applyLang(lang) {
   Object.entries(SELECTORS).forEach(([key, sel]) => {
     const el = document.querySelector(sel);
     if (el && strings[key] !== undefined) {
-      el.textContent = strings[key];
+      el.textContent = fillTokens(strings[key]);   // translations carry {tokens}, never typed counts
     }
   });
   // Update active button
@@ -295,12 +312,12 @@ function getTranslatableEls() {
 // Saves English originals so AI translate always sends English → target, not target → target.
 function snapshotEnglishOriginals() {
   getTranslatableEls().forEach(el => {
-    if (!el.dataset.orig) el.dataset.orig = el.textContent.trim();
+    if (!el.dataset.orig) { el.dataset.orig = el.textContent.trim(); el.dataset.origHtml = el.innerHTML; }   // keep data-stat spans across a language round trip
   });
 }
 
 function restoreOriginals() {
-  document.querySelectorAll('[data-orig]').forEach(el => { el.textContent = el.dataset.orig; });
+  document.querySelectorAll('[data-orig]').forEach(el => { if (el.dataset.origHtml != null) el.innerHTML = el.dataset.origHtml; else el.textContent = el.dataset.orig; });
   aiLang = null;
   setAiBadge(false);
   setAiBtn('🤖', false);
