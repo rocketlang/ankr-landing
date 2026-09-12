@@ -5,12 +5,12 @@
   "harness_files": 16,
   "files": {
     "index.html": {
-      "sha256": "0516e65c0f99ffc7af3d60a220568ebb142cb671f42cdc3e9905f34575a9d6f6",
-      "bytes": 21561
+      "sha256": "12ac78f162be312daa712c500a5588a984c9919a28bc180cc4bcf6853ab8637c",
+      "bytes": 21915
     },
     "install.sh": {
-      "sha256": "2f85c49d8278cdc11e3fdfaeb489bbc67b105234835c9a4fe8c1668ad2077c1c",
-      "bytes": 19074
+      "sha256": "7bf873e98f311ac6fcab9ffcfe4dfde27c322bb20822d2dc16570dbe8ee020bd",
+      "bytes": 19498
     },
     "install.ps1": {
       "sha256": "d38222df6c4370aec6391c8faab5e5a76aefbcfc4fa8f3345ad702de3ccd58fd",

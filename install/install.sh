@@ -265,7 +265,9 @@ else ok "no terminal attached — later: /ankr-byok inside Claude, or just start
 say "6/6 doctor"
 bash "$CLAUDE_HOME/ankr/bin/ankr-doctor.sh"; DOC=$?
 case $DOC in
-  0) printf '\nInstalled and signed in.\n';;
+  0) if [ "$PLATFORM" = macos ] && [ ! -f "$CLAUDE_HOME/.credentials.json" ] && ! grep -q -E '"ANTHROPIC_(API_KEY|AUTH_TOKEN)"' "$S" 2>/dev/null && [ -z "${ANTHROPIC_API_KEY:-}${ANTHROPIC_AUTH_TOKEN:-}" ]; then
+       printf '\nInstalled. macOS keeps a subscription sign-in in the Keychain, so the doctor cannot see it: type   claude   — if it answers, you are signed in; if it opens a browser, sign in there.\n'
+     else printf '\nInstalled and signed in.\n'; fi;;
   3) printf '\nInstalled. Not signed in yet — that is the only open item: type   claude   and sign in when the browser opens, or run /ankr-byok inside Claude.\n';;
   *) printf '\nInstalled with problems — the fix is printed after each ✗ above. Run this line again after doing it.\n';;
 esac
