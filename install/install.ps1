@@ -1,10 +1,10 @@
-# ankr-install — install.ps1 · one line for Windows (PowerShell 5.1+)
+# ankr-install - install.ps1 - one line for Windows (PowerShell 5.1+)
 #   irm https://ankr.in/install/install.ps1 | iex
 #   & ([scriptblock]::Create((irm https://ankr.in/install/install.ps1))) -WSL      (Ubuntu inside Windows + VS Code Remote-WSL)
-# What it does, in order: Git for Windows (so hooks can run through Git Bash) → Claude Code (Anthropic's own installer)
-# → the ANKR harness into %USERPROFILE%\.claude (backed up, merged, never reset) → VS Code + the Claude Code extension
-# → the BYOK page → the doctor. Flags: -WSL -NoIDE -NoByok -Check -NoClaude -HarnessFrom <dir>
-# UNTESTED ON THE BUILD BOX (Linux): the first Windows run is the founder's laptop — every step prints what it did.
+# What it does, in order: Git for Windows (so hooks can run through Git Bash) -> Claude Code (Anthropic's own installer)
+# -> the ANKR harness into %USERPROFILE%\.claude (backed up, merged, never reset) -> VS Code + the Claude Code extension
+# -> the BYOK page -> the doctor. Flags: -WSL -NoIDE -NoByok -Check -NoClaude -HarnessFrom <dir>
+# UNTESTED ON THE BUILD BOX (Linux): the first Windows run is the founder's laptop - every step prints what it did.
 param([switch]$WSL, [switch]$NoIDE, [switch]$NoByok, [switch]$Check, [switch]$NoClaude, [string]$HarnessFrom = '')
 $ErrorActionPreference = 'Stop'
 $ProgressPreference = 'SilentlyContinue'
@@ -13,23 +13,26 @@ $Base = if ($env:ANKR_INSTALL_BASE) { $env:ANKR_INSTALL_BASE } else { 'https://a
 $ClaudeHome = if ($env:CLAUDE_CONFIG_DIR) { $env:CLAUDE_CONFIG_DIR } else { Join-Path $HOME '.claude' }
 $S = Join-Path $ClaudeHome 'settings.json'
 
+# The marks are built from code points so this file stays pure ASCII: Windows PowerShell 5.1 reads a BOM-less file (and an
+# `irm` body without a charset) as cp1252, where a UTF-8 tick or dash turns into curly quotes that break the parser.
+$MK_OK = [string][char]0x2713; $MK_BAD = [string][char]0x2717
 function Say($t) { Write-Host ""; Write-Host "== $t" }
-function Ok($t) { Write-Host "  ✓ $t" }
+function Ok($t) { Write-Host "  $MK_OK $t" }
 function Warn($t) { Write-Host "  ! $t" }
-function Die($t, $fix) { Write-Host ""; Write-Host "  ✗ $t"; if ($fix) { Write-Host "    If not: $fix" }; exit 1 }
+function Die($t, $fix) { Write-Host ""; Write-Host "  $MK_BAD $t"; if ($fix) { Write-Host "    If not: $fix" }; exit 1 }
 function Have($c) { return [bool](Get-Command $c -ErrorAction SilentlyContinue) }
 function Refresh-Path { if ($env:OS -eq 'Windows_NT') { $env:Path = [Environment]::GetEnvironmentVariable('Path', 'Machine') + ';' + [Environment]::GetEnvironmentVariable('Path', 'User') + ';' + (Join-Path $HOME '.local/bin') } }
 $Shell = (Get-Process -Id $PID).Path   # the PowerShell running this script (powershell.exe on Windows, pwsh elsewhere)
 function Write-Utf8NoBom([string]$Path, [string]$Text) { [IO.File]::WriteAllText($Path, $Text, (New-Object System.Text.UTF8Encoding($false))) }
 function Winget-Install($id, $what) {
   if (-not (Have 'winget')) { return $false }
-  Write-Host "  … installing $what with winget (this can take a few minutes)"
+  Write-Host "  ... installing $what with winget (this can take a few minutes)"
   & winget install --id $id -e --source winget --accept-package-agreements --accept-source-agreements --silent | Out-Null
   Refresh-Path
   return $true
 }
 
-Write-Host "ANKR install · windows · home $ClaudeHome"
+Write-Host "ANKR install - windows - home $ClaudeHome"
 Write-Host "Official installers only. Your key stays on this computer. Re-running updates, never resets."
 
 if ($Check) {
@@ -48,18 +51,18 @@ if ($WSL) {
     if (Have 'code') { & code --install-extension ms-vscode-remote.remote-wsl --force | Out-Null; & code --install-extension Anthropic.claude-code --force | Out-Null; Ok 'VS Code: Remote-WSL + Claude Code extensions' }
   }
   if (-not $wslOk) {
-    Write-Host '  … installing WSL with Ubuntu (Windows will ask to restart)'
+    Write-Host '  ... installing WSL with Ubuntu (Windows will ask to restart)'
     & wsl.exe --install -d Ubuntu
     Write-Host ''
     Write-Host 'Restart Windows now. After the restart, open the "Ubuntu" app, choose a username and password when it asks,'
     Write-Host "then paste this line there:   curl -fsSL $Base/install.sh | bash"
-    Write-Host 'Then open VS Code → bottom-left "><" → Connect to WSL → Terminal → type claude.'
+    Write-Host 'Then open VS Code -> bottom-left "><" -> Connect to WSL -> Terminal -> type claude.'
     exit 0
   }
-  Ok 'WSL is present — handing the Linux line to your default distro'
+  Ok 'WSL is present - handing the Linux line to your default distro'
   & wsl.exe -- bash -lc "curl -fsSL $Base/install.sh | bash"
   Write-Host ''
-  Write-Host 'Open VS Code → bottom-left "><" → Connect to WSL → Terminal → type claude.'
+  Write-Host 'Open VS Code -> bottom-left "><" -> Connect to WSL -> Terminal -> type claude.'
   exit $LASTEXITCODE
 }
 
@@ -70,7 +73,7 @@ if (-not (Have 'git')) {
 }
 $GitBash = $null
 foreach ($c in @($env:CLAUDE_CODE_GIT_BASH_PATH, "$env:ProgramFiles\Git\bin\bash.exe", "${env:ProgramFiles(x86)}\Git\bin\bash.exe", "$env:LOCALAPPDATA\Programs\Git\bin\bash.exe")) { if ($c -and (Test-Path $c)) { $GitBash = $c; break } }
-if ($GitBash) { Ok "Git Bash at $GitBash" } else { Warn 'Git Bash not found — the guard hooks will NOT be registered (they need it); permissions.deny still applies. Install Git for Windows and run the line again.' }
+if ($GitBash) { Ok "Git Bash at $GitBash" } else { Warn 'Git Bash not found - the guard hooks will NOT be registered (they need it); permissions.deny still applies. Install Git for Windows and run the line again.' }
 
 # ---------------------------------------------------------------- 2 Claude Code
 if (-not $NoClaude) {
@@ -78,7 +81,7 @@ if (-not $NoClaude) {
   Refresh-Path
   if (Have 'claude') { Ok ("already installed: " + (& claude --version 2>$null | Select-Object -First 1)) }
   else {
-    Write-Host "  … running Anthropic's installer"
+    Write-Host "  ... running Anthropic's installer"
     try { & ([scriptblock]::Create((Invoke-RestMethod -Uri 'https://claude.ai/install.ps1' -UseBasicParsing))) } catch { Die "Anthropic's installer did not finish: $($_.Exception.Message)" 'retry in a new PowerShell window:  irm https://claude.ai/install.ps1 | iex' }
     Refresh-Path
   }
@@ -87,7 +90,7 @@ if (-not $NoClaude) {
 }
 
 # ---------------------------------------------------------------- 3 harness
-Say "3/6 ANKR harness → $ClaudeHome"
+Say "3/6 ANKR harness -> $ClaudeHome"
 $Tmp = $null
 if ($HarnessFrom) { $Payload = $HarnessFrom; if (-not (Test-Path (Join-Path $Payload 'harness.json'))) { Die "no harness.json in $Payload" } }
 else {
@@ -140,7 +143,7 @@ else {
   Write-Utf8NoBom $cm $cur; Ok "CLAUDE.md now imports $Import"
 }
 
-# 3d settings.json merge — hooks (only if Git Bash exists) + permissions.deny, by content
+# 3d settings.json merge - hooks (only if Git Bash exists) + permissions.deny, by content
 $Frag = [IO.File]::ReadAllText((Join-Path $Ankr 'settings.ankr.json')) | ConvertFrom-Json
 $isAnkr = { param($e) foreach ($x in @($e.hooks)) { if (("" + $x.command) -like '*/ankr/hooks/*') { return $true } }; return $false }
 if ($GitBash) {
@@ -159,7 +162,7 @@ $json = ($Settings | ConvertTo-Json -Depth 32) + "`n"
 $tmpS = "$S.tmp-$PID"; Write-Utf8NoBom $tmpS $json
 try { [IO.File]::ReadAllText($tmpS) | ConvertFrom-Json | Out-Null } catch { Remove-Item $tmpS -Force; Die "the merged settings did not parse; $S was not changed" "your copy is at $Bak" }
 Move-Item -Force $tmpS $S
-if ($GitBash) { Ok 'settings.json: guard hook + session brief + permissions.deny merged (yours kept)' } else { Ok 'settings.json: permissions.deny merged (hooks skipped — no Git Bash)' }
+if ($GitBash) { Ok 'settings.json: guard hook + session brief + permissions.deny merged (yours kept)' } else { Ok 'settings.json: permissions.deny merged (hooks skipped - no Git Bash)' }
 if ($Tmp) { Remove-Item -Recurse -Force $Tmp -ErrorAction SilentlyContinue }
 
 # ---------------------------------------------------------------- 4 IDE
@@ -175,10 +178,10 @@ else {
 
 # ---------------------------------------------------------------- 5 BYOK
 Say '5/6 sign-in (your key stays on this computer)'
-if ($NoByok) { Ok 'skipped (-NoByok) — later: /ankr-byok inside Claude' }
+if ($NoByok) { Ok 'skipped (-NoByok) - later: /ankr-byok inside Claude' }
 else {
   & $Shell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $Ankr 'byok/byok.ps1') -Serve
-  if ($LASTEXITCODE -ne 0) { Warn 'the sign-in page did not finish — run /ankr-byok inside Claude any time, or just start claude and sign in' }
+  if ($LASTEXITCODE -ne 0) { Warn 'the sign-in page did not finish - run /ankr-byok inside Claude any time, or just start claude and sign in' }
 }
 
 # ---------------------------------------------------------------- 6 doctor
@@ -187,8 +190,8 @@ Say '6/6 doctor'
 Write-Host ''
 switch ($doc) {
   0 { Write-Host 'Installed and signed in.' }
-  3 { Write-Host 'Installed. Not signed in yet — that is the only open item: type   claude   and sign in when the browser opens, or run /ankr-byok inside Claude.' }
-  default { Write-Host 'Installed with problems — the fix is printed after each ✗ above. Run this line again after doing it.' }
+  3 { Write-Host 'Installed. Not signed in yet - that is the only open item: type   claude   and sign in when the browser opens, or run /ankr-byok inside Claude.' }
+  default { Write-Host "Installed with problems - the fix is printed after each $MK_BAD above. Run this line again after doing it." }
 }
 Write-Host 'Next: open a new PowerShell window in a project folder and type   claude'
 Write-Host 'From your phone: on this computer run   claude remote-control   and scan the code with the Claude app.'

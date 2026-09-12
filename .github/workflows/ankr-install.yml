@@ -57,12 +57,13 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 25
     steps:
-      - name: the Mac / Linux line, expect exit 3 = installed, sign-in open
+      - name: the Mac / Linux line, expect exit 3 = installed, sign-in open (0 on macOS, where the Keychain hides a sign-in)
         shell: bash
         run: |
           set +e
           curl -fsSL https://ankr.in/install/install.sh | bash -s -- --no-byok --no-ide
-          rc=$?; echo "line exit=$rc"; test $rc -eq 3
+          rc=$?; echo "line exit=$rc"
+          if [ "$(uname -s)" = Darwin ]; then test $rc -eq 0 -o $rc -eq 3; else test $rc -eq 3; fi
       - name: claude on PATH (Anthropic's installer, for real)
         shell: bash
         run: export PATH="$HOME/.local/bin:$PATH"; claude --version
@@ -79,7 +80,8 @@ jobs:
         run: |
           set +e
           export PATH="$HOME/.local/bin:$PATH"
-          bash "$HOME/.claude/ankr/bin/ankr-doctor.sh"; rc=$?; echo "doctor exit=$rc"; test $rc -eq 3 || exit 1
+          bash "$HOME/.claude/ankr/bin/ankr-doctor.sh"; rc=$?; echo "doctor exit=$rc"
+          if [ "$(uname -s)" = Darwin ]; then test $rc -eq 0 -o $rc -eq 3 || exit 1; else test $rc -eq 3 || exit 1; fi
           printf '%s\n' "$TEST_KEY" | bash "$HOME/.claude/ankr/byok/byok.sh" --terminal --from-stdin --no-verify || exit 1
           bash "$HOME/.claude/ankr/bin/ankr-doctor.sh"; rc=$?; echo "doctor exit=$rc"; test $rc -eq 0 || exit 1
           bash "$HOME/.claude/ankr/byok/byok.sh" --status
