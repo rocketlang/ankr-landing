@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ANKR Install</title>
+<meta name="description" content="One line installs Claude Code, the ANKR harness (guard rails in plain English), a bring-your-own-key page and the IDE link — on Windows, Mac, Linux, Android; honest routes for iPhone.">
+<meta name="ankr-contrast-pairs" content="ink/paper,muted/paper,accent/paper,ink/box,muted/box,btn-ink/btn,ok/paper,bad/paper,warn/paper">
+<style>
+:root{--paper:#ffffff;--ink:#111827;--muted:#374151;--line:#9ca3af;--box:#f3f4f6;--accent:#0b4fa8;--btn:#0b4fa8;--btn-ink:#ffffff;--ok:#0f5132;--bad:#842029;--warn:#664d03}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--paper:#0b0f14;--ink:#f3f4f6;--muted:#cbd5e1;--line:#4b5563;--box:#161b22;--accent:#8ec5ff;--btn:#8ec5ff;--btn-ink:#0b0f14;--ok:#9ae6b4;--bad:#feb2b2;--warn:#fde68a}}
+:root[data-theme="dark"]{--paper:#0b0f14;--ink:#f3f4f6;--muted:#cbd5e1;--line:#4b5563;--box:#161b22;--accent:#8ec5ff;--btn:#8ec5ff;--btn-ink:#0b0f14;--ok:#9ae6b4;--bad:#feb2b2;--warn:#fde68a}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:0 16px 64px;max-width:760px;margin-inline:auto}
+header{padding:28px 0 8px}
+h1{font-size:2rem;line-height:1.15;margin:0 0 .4rem}
+h2{font-size:1.35rem;margin:2rem 0 .6rem;padding-top:.5rem;border-top:1px solid var(--line)}
+h3{font-size:1.1rem;margin:1.2rem 0 .4rem}
+p{margin:.5rem 0}
+.muted{color:var(--muted)}
+.lead{font-size:1.1rem}
+nav.tabs{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 6px}
+nav.tabs button{padding:10px 14px;border:1px solid var(--line);border-radius:999px;background:var(--box);color:var(--ink);font-weight:700;font-size:15px;cursor:pointer}
+nav.tabs button[aria-selected="true"]{background:var(--btn);color:var(--btn-ink);border-color:var(--btn)}
+.detect{font-size:.95rem;color:var(--muted);margin:.2rem 0 1rem}
+section.device{display:none}
+section.device.on{display:block}
+ol.steps{padding-left:1.3rem}
+ol.steps li{margin:.5rem 0}
+.cmdbox{display:flex;gap:8px;align-items:stretch;margin:.6rem 0}
+pre.cmd{flex:1;margin:0;background:var(--box);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font:15px/1.45 ui-monospace,Menlo,Consolas,monospace;white-space:pre-wrap;word-break:break-all;user-select:all}
+button.copy{padding:0 14px;border:0;border-radius:10px;background:var(--btn);color:var(--btn-ink);font-weight:700;font-size:15px;cursor:pointer;min-width:74px}
+.see{margin:.4rem 0 .2rem}
+.see b{display:inline-block;min-width:8.5em}
+.card{border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:12px 0}
+.tag{display:inline-block;font-size:.8rem;font-weight:700;padding:1px 8px;border-radius:999px;border:1px solid var(--line);color:var(--muted);vertical-align:middle;margin-left:.3rem}
+code{background:var(--box);padding:1px 5px;border-radius:4px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.93em}
+a{color:var(--accent)}
+ul.tight li{margin:.25rem 0}
+.legend{font-size:.95rem;background:var(--box);border-radius:10px;padding:10px 14px}
+.ok{color:var(--ok);font-weight:700}.bad{color:var(--bad);font-weight:700}.warn{color:var(--warn);font-weight:700}
+footer{margin-top:3rem;font-size:.9rem;color:var(--muted);border-top:1px solid var(--line);padding-top:1rem}
+[hidden]{display:none!important}
+@media (max-width:480px){h1{font-size:1.6rem}body{font-size:16px}}
+</style>
+</head>
+<body>
+<header>
+  <h1>One line. Every device.</h1>
+  <p class="lead">Installs <strong>Claude Code</strong>, the <strong>ANKR harness</strong> (guard rails that refuse the classic disasters, in plain English), a <strong>bring-your-own-key</strong> page and the <strong>IDE</strong> link. Made for a person who has never coded. Re-running the line updates; it never resets.</p>
+  <p class="muted">You pay Anthropic (or the provider you choose). ANKR receives nothing — not your key, not a bill, not a sign-up.</p>
+</header>
+
+<nav class="tabs" role="tablist" aria-label="Pick your device">
+  <button role="tab" data-dev="windows">Windows</button>
+  <button role="tab" data-dev="mac">Mac / Linux</button>
+  <button role="tab" data-dev="android">Android</button>
+  <button role="tab" data-dev="iphone">iPhone / iPad</button>
+</nav>
+<p class="detect" id="detect">Pick your device above.</p>
+
+<!-- ============================================================ WINDOWS -->
+<section class="device" id="dev-windows" role="tabpanel">
+  <h2>Windows</h2>
+  <ol class="steps">
+    <li>Press the <b>Windows key</b>, type <b>PowerShell</b>, press <b>Enter</b>. A blue or black window opens.</li>
+    <li>Press <b>Copy</b> below, then right-click inside the PowerShell window to paste, and press <b>Enter</b>.</li>
+    <li>Follow the lines that appear. A browser page called <em>Your key, your computer</em> opens near the end; choose the option that is true for you.</li>
+  </ol>
+  <div class="cmdbox"><pre class="cmd" data-cmd="irm https://ankr.in/install/install.ps1 | iex">irm https://ankr.in/install/install.ps1 | iex</pre><button class="copy" type="button">Copy</button></div>
+  <p class="see"><b>You should see</b> lines starting with <code>== 1/6 Git for Windows</code> … <code>== 6/6 doctor</code>, each with ✓ marks, a browser page for your sign-in, and finally <code>All checks passed.</code></p>
+  <p class="see"><b>If not</b> — <em>"irm is not recognized"</em>: this is an old Windows (7 or 8) without a modern PowerShell; the WSL route below will not work there either — ask for help. <em>Red text mentioning winget</em>: open the Microsoft Store, install <b>App Installer</b>, then paste the line again. <em>"running scripts is disabled"</em>: the line runs in memory and needs no policy change; close the window, open PowerShell again as yourself (not as administrator) and paste again. <em>Anything else</em>: the line prints the fix after each ✗ — read it, do it, paste the line again.</p>
+
+  <h3>Prefer Ubuntu inside Windows? <span class="tag">optional · what the founder uses with VS Code</span></h3>
+  <p>This installs Ubuntu (WSL), VS Code with its Remote-WSL extension, and then runs the Mac / Linux line inside Ubuntu.</p>
+  <div class="cmdbox"><pre class="cmd" data-cmd="&amp; ([scriptblock]::Create((irm https://ankr.in/install/install.ps1))) -WSL">&amp; ([scriptblock]::Create((irm https://ankr.in/install/install.ps1))) -WSL</pre><button class="copy" type="button">Copy</button></div>
+  <p class="see"><b>You should see</b> Windows installing Ubuntu and asking to restart. After the restart, open the <b>Ubuntu</b> app, choose a username and password when it asks, and paste the Mac / Linux line below there. Then in VS Code: bottom-left <code>&gt;&lt;</code> → <em>Connect to WSL</em> → Terminal → type <code>claude</code>.</p>
+  <p class="see"><b>If not</b> — if Ubuntu was already there, the line skips the restart and runs straight through; if the Ubuntu window asks for a password it does not show what you type — that is normal.</p>
+</section>
+
+<!-- ============================================================ MAC / LINUX -->
+<section class="device" id="dev-mac" role="tabpanel">
+  <h2>Mac / Linux</h2>
+  <ol class="steps">
+    <li>Open a terminal. <b>Mac:</b> press <b>⌘ Space</b>, type <b>Terminal</b>, Enter. <b>Ubuntu:</b> press <b>Ctrl Alt T</b>. <b>Inside Windows (WSL):</b> open the Ubuntu app.</li>
+    <li>Press <b>Copy</b> below, paste into the terminal, press <b>Enter</b>.</li>
+    <li>Follow the lines. A browser page called <em>Your key, your computer</em> opens near the end; choose the option that is true for you.</li>
+  </ol>
+  <div class="cmdbox"><pre class="cmd" data-cmd="curl -fsSL https://ankr.in/install/install.sh | bash">curl -fsSL https://ankr.in/install/install.sh | bash</pre><button class="copy" type="button">Copy</button></div>
+  <p class="see"><b>You should see</b> <code>ANKR install · linux</code> (or <code>macos</code> / <code>wsl</code>), then <code>== 1/6 prerequisites</code> … <code>== 6/6 doctor</code> with ✓ marks, the sign-in page, and finally <code>All checks passed.</code></p>
+  <p class="see"><b>If not</b> — <em>"curl: command not found"</em> (Ubuntu/Debian): run <code>sudo apt-get install -y curl</code> and paste the line again. <em>Mac shows a window about "command line developer tools"</em>: click <b>Install</b>, wait until it finishes, paste the line again. <em>It asks for a password</em>: that is your own Mac or Linux password; nothing shows while you type. <em>"claude is not on PATH"</em>: close the terminal, open a new one, paste the line again.</p>
+</section>
+
+<!-- ============================================================ ANDROID -->
+<section class="device" id="dev-android" role="tabpanel">
+  <h2>Android</h2>
+  <div class="card">
+    <h3>A · Run it on the phone (Termux) <span class="tag">how the founder works while being driven</span></h3>
+    <p class="muted">Anthropic's documentation does not list Android as a supported platform for the command-line tool <span class="tag">∅</span>. It runs on the founder's phone every day through Termux; if it fails on yours, use route B.</p>
+    <ol class="steps">
+      <li>Install <b>Termux</b> from F-Droid or from the Termux project's GitHub releases — the Termux project itself says the Google Play copy is not the maintained build <a href="https://github.com/termux/termux-app#installation" rel="noopener">❝ termux-app</a>. On Xiaomi/Redmi (MIUI) you may have to allow "install from this source" for your browser or F-Droid.</li>
+      <li>Open Termux. Paste the first line, Enter, wait; then the second line, Enter.</li>
+    </ol>
+    <div class="cmdbox"><pre class="cmd" data-cmd="pkg install -y curl">pkg install -y curl</pre><button class="copy" type="button">Copy</button></div>
+    <div class="cmdbox"><pre class="cmd" data-cmd="curl -fsSL https://ankr.in/install/install.sh | bash">curl -fsSL https://ankr.in/install/install.sh | bash</pre><button class="copy" type="button">Copy</button></div>
+    <p class="see"><b>You should see</b> <code>ANKR install · termux</code>, packages installing (this takes a few minutes on a phone), <code>== 2/6 Claude Code</code> installing through npm, the harness, and the sign-in page opening in your browser. Two short lines on purpose: long pasted lines get wrapped and mangled in Termux.</p>
+    <p class="see"><b>If not</b> — <em>"pkg: command not found"</em>: you are not inside Termux. <em>"Unable to locate package"</em>: run <code>pkg update</code> once, then the two lines again. <em>The page does not open</em>: copy the <code>BYOK page: http://127.0.0.1…</code> link that was printed into your phone's browser, or in Claude type <code>/ankr-byok</code> later.</p>
+  </div>
+  <div class="card">
+    <h3>B · Drive your laptop from the phone</h3>
+    <ol class="steps">
+      <li>Install the <b>Claude</b> app <a href="https://play.google.com/store/apps/details?id=com.anthropic.claude" rel="noopener">❝ Google Play</a> and sign in.</li>
+      <li>On the laptop where you ran the line above, in a project folder type <code>claude remote-control</code> — a code appears <a href="https://code.claude.com/docs/en/remote-control" rel="noopener">❝ docs</a>.</li>
+      <li>In the app, open the <b>Code</b> tab and scan it. The laptop does the work; the phone is the remote.</li>
+    </ol>
+  </div>
+  <div class="card">
+    <h3>C · No laptop at all</h3>
+    <p>The Claude app's <b>Code</b> tab can run sessions on Anthropic's own computers, working on a GitHub repository. That route needs a Claude subscription and does not take your own API key <a href="https://code.claude.com/docs/en/mobile" rel="noopener">❝ docs</a>. The ANKR harness does not travel there <span class="tag">∅</span>.</p>
+  </div>
+</section>
+
+<!-- ============================================================ IPHONE -->
+<section class="device" id="dev-iphone" role="tabpanel">
+  <h2>iPhone / iPad</h2>
+  <p><span class="tag">∅</span> The command-line tool and the harness cannot run on an iPhone: there is no route, and this page will not pretend there is. Two honest routes:</p>
+  <div class="card">
+    <h3>B · Drive your laptop from the phone</h3>
+    <ol class="steps">
+      <li>Install the <b>Claude</b> app <a href="https://apps.apple.com/us/app/claude-by-anthropic/id6473753684" rel="noopener">❝ App Store</a> and sign in.</li>
+      <li>On the laptop where you ran the line (Windows or Mac / Linux tab), in a project folder type <code>claude remote-control</code> — a code appears <a href="https://code.claude.com/docs/en/remote-control" rel="noopener">❝ docs</a>.</li>
+      <li>In the app, open the <b>Code</b> tab and scan it. The laptop does the work, with the harness; the phone is the remote.</li>
+    </ol>
+  </div>
+  <div class="card">
+    <h3>C · No laptop at all</h3>
+    <p>The Claude app's <b>Code</b> tab can run sessions on Anthropic's own computers, working on a GitHub repository. Needs a Claude subscription; your own API key is not accepted there <a href="https://code.claude.com/docs/en/mobile" rel="noopener">❝ docs</a>. The ANKR harness does not travel there <span class="tag">∅</span>.</p>
+  </div>
+</section>
+
+<!-- ============================================================ COMMON -->
+<h2>What the line does</h2>
+<ul class="tight">
+  <li><b>Claude Code</b> — installed by Anthropic's own installer (<code>claude.ai/install.sh</code> / <code>install.ps1</code>), which keeps itself up to date <a href="https://code.claude.com/docs/en/setup" rel="noopener">❝ docs</a>. On Termux, through npm. Nothing is mirrored or repackaged by ANKR.</li>
+  <li><b>Windows only:</b> Git for Windows first, because Claude Code runs its hooks through Git Bash there <a href="https://code.claude.com/docs/en/hooks-guide" rel="noopener">❝ docs</a>. If Git cannot be installed, the hooks are not registered and the line says so.</li>
+  <li><b>The ANKR harness</b> into <code>~/.claude</code>: a short rules file Claude reads in every project (compute / quote / null, add what you changed, verify before "done"), a <b>guard hook</b> that refuses <code>git add .</code>, <code>git stash</code>, <code>git clean</code>, <code>git reset --hard</code>, <code>git push --force</code>, <code>rm -rf /</code>, <code>prisma db push</code>, <code>DROP TABLE</code> and friends with the reason in plain English, a session brief, and two commands inside Claude: <code>/ankr-doctor</code> and <code>/ankr-byok</code>.</li>
+  <li><b>Your existing settings are kept.</b> The line backs up <code>settings.json</code> to a dated copy, merges by content, and adds one import line to <code>CLAUDE.md</code>. If your settings file is not valid JSON it refuses to touch it and tells you.</li>
+  <li><b>IDE:</b> if VS Code is on the machine, the <code>Anthropic.claude-code</code> extension is added (on Windows the line can install VS Code too) <a href="https://code.claude.com/docs/en/vs-code" rel="noopener">❝ docs</a>. JetBrains users: the plugin is "Claude Code" in the marketplace <a href="https://code.claude.com/docs/en/jetbrains" rel="noopener">❝ docs</a>.</li>
+  <li><b>The doctor</b> at the end prints one line per check — ✓, or ✗ with the fix beside it.</li>
+</ul>
+
+<h2>Your key stays with you</h2>
+<div class="card">
+  <p>The page that opens at the end lives on your own computer (<code>127.0.0.1</code>). Three choices:</p>
+  <ul class="tight">
+    <li><b>I pay Anthropic for Claude</b> (Pro or Max) — no key. You type <code>claude</code> and sign in on Anthropic's own page. A free claude.ai account does not include Claude Code <a href="https://code.claude.com/docs/en/setup" rel="noopener">❝ docs</a>.</li>
+    <li><b>I have an Anthropic API key</b> — pasted there, checked once against <code>api.anthropic.com</code> if you leave the tick on, then written to <code>~/.claude/settings.json</code> and nowhere else <a href="https://code.claude.com/docs/en/authentication" rel="noopener">❝ docs</a>.</li>
+    <li><b>Another provider that speaks Anthropic's API</b> — a URL and a token, saved as-is and marked unverified.</li>
+  </ul>
+  <p>One button removes it. ANKR never sees it. This is the whole model: ANKR built the guard rails once; you pay for what you use, directly, to the provider you chose.</p>
+</div>
+
+<h2>Later</h2>
+<ul class="tight">
+  <li><b>Update:</b> run the same line again. It replaces the harness files and keeps everything of yours.</li>
+  <li><b>Check:</b> inside Claude type <code>/ankr-doctor</code>. Change sign-in: <code>/ankr-byok</code>.</li>
+  <li><b>Opt out:</b> delete the one import line in <code>~/.claude/CLAUDE.md</code> and the two <code>ankr</code> hook entries in <code>settings.json</code>; the backups are beside the file.</li>
+  <li><b>From your phone:</b> on the laptop, <code>claude remote-control</code>; in the Claude app, the Code tab.</li>
+</ul>
+
+<h2>Facts on this page</h2>
+<div class="legend">
+  <p><b>⊕ compute</b> — read from this site's own build: harness <span id="ver">…</span>.</p>
+  <p><b>❝ quote</b> — a claim with its source beside it (Anthropic's documentation, the Termux project). Read the source if it matters to you.</p>
+  <p><b>∅ null</b> — no route, or no documented support. The page says so instead of promising.</p>
+  <p class="muted">The Windows scripts were written on a Linux machine and could not be run there; the first Windows run is the founder's own laptop. If a step fails for you, the line prints what it saw — send that text, not a description.</p>
+</div>
+
+<footer>
+  <p>ANKR · <a href="https://ankr.in/">ankr.in</a> · scripts served from this folder: <code>install.sh</code>, <code>install.ps1</code>, <code>harness.tar.gz</code>, <code>harness.zip</code>, <code>version.json</code>. No cookies, no tracking, no external scripts.</p>
+</footer>
+
+<script>
+(function(){
+  var tabs = document.querySelectorAll('nav.tabs button');
+  var panels = { windows: 'dev-windows', mac: 'dev-mac', android: 'dev-android', iphone: 'dev-iphone' };
+  function show(dev){
+    for (var k in panels) { document.getElementById(panels[k]).classList.toggle('on', k === dev); }
+    tabs.forEach(function(b){ b.setAttribute('aria-selected', b.getAttribute('data-dev') === dev ? 'true' : 'false'); });
+    try { history.replaceState(null, '', '#' + dev); } catch (e) {}
+  }
+  tabs.forEach(function(b){ b.addEventListener('click', function(){ show(b.getAttribute('data-dev')); }); });
+  var ua = navigator.userAgent || '', plat = (navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || '';
+  var guess = 'mac', name = 'a Mac or Linux computer';
+  if (/iPhone|iPad|iPod/.test(ua) || (/Mac/.test(plat) && navigator.maxTouchPoints > 1)) { guess = 'iphone'; name = 'an iPhone or iPad'; }
+  else if (/Android/.test(ua)) { guess = 'android'; name = 'an Android phone'; }
+  else if (/Windows/.test(ua) || /Win/.test(plat)) { guess = 'windows'; name = 'a Windows computer'; }
+  else if (/Linux/.test(plat) || /X11/.test(ua)) { guess = 'mac'; name = 'a Linux computer'; }
+  var fromHash = (location.hash || '').replace('#', '');
+  if (panels[fromHash]) { show(fromHash); document.getElementById('detect').textContent = 'Showing: ' + fromHash + '. Not right? Pick above.'; }
+  else { show(guess); document.getElementById('detect').textContent = 'This looks like ' + name + ' (⊕ read from your browser). Not right? Pick above.'; }
+  document.querySelectorAll('button.copy').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var pre = btn.parentNode.querySelector('pre.cmd'); var text = pre.getAttribute('data-cmd') || pre.textContent;
+      function done(ok){ btn.textContent = ok ? 'Copied' : 'Select & copy'; setTimeout(function(){ btn.textContent = 'Copy'; }, 1800); }
+      if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(text).then(function(){ done(true); }, function(){ fallback(); }); } else { fallback(); }
+      function fallback(){ try { var r = document.createRange(); r.selectNodeContents(pre); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); done(document.execCommand('copy')); } catch (e) { done(false); } }
+    });
+  });
+  fetch('version.json', { cache: 'no-store' }).then(function(r){ return r.json(); }).then(function(v){
+    var f = v.files || {}; var h = f['harness.tar.gz'] ? f['harness.tar.gz'].sha256.slice(0, 12) : '?';
+    document.getElementById('ver').textContent = 'v' + v.version + ' · harness.tar.gz sha256 ' + h + '… · ' + (v.harness_files || '?') + ' files';
+  }).catch(function(){ document.getElementById('ver').textContent = 'version.json not reachable (∅)'; });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+{
+  "schema": "ankr-install-version-v1",
+  "version": "0.1.0",
+  "base": "https://ankr.in/install",
+  "harness_files": 16,
+  "files": {
+    "index.html": {
+      "sha256": "c4bbfdfe7773836fe3a88b558b4fd90b8e815fcc76d88f2827cdf5cc6ab6e366",
+      "bytes": 20858
+    },
+    "install.sh": {
+      "sha256": "f30c139d41b2eae157c5d269c6be7821629825de2767253f666e39fb64beb242",
+      "bytes": 14650
+    },
+    "install.ps1": {
+      "sha256": "febccf5cb2dd09f8a9a9e73a69d1d3bfcf0817f2e4aad52f56b2da0cb48c96bf",
+      "bytes": 13291
+    },
+    "harness.tar.gz": {
+      "sha256": "879f848713f7a3d4aae5682f04f1a269db0480c08228c5f9947d67b1e9686ea1",
+      "bytes": 27225
+    },
+    "harness.zip": {
+      "sha256": "a00a02e6f36aeb50babb14c727db2aec74631064926d9575b85f9e06f5d48730",
+      "bytes": 34505
+    }
+  },
+  "commands": {
+    "windows": "irm https://ankr.in/install/install.ps1 | iex",
+    "windows_wsl": "& ([scriptblock]::Create((irm https://ankr.in/install/install.ps1))) -WSL",
+    "posix": "curl -fsSL https://ankr.in/install/install.sh | bash",
+    "termux_1": "pkg install -y curl",
+    "termux_2": "curl -fsSL https://ankr.in/install/install.sh | bash"
+  }
+}
