@@ -13,16 +13,16 @@
       "bytes": 14650
     },
     "install.ps1": {
-      "sha256": "febccf5cb2dd09f8a9a9e73a69d1d3bfcf0817f2e4aad52f56b2da0cb48c96bf",
-      "bytes": 13291
+      "sha256": "eb7b924c11ff082a9bf8aed0f2c06a3338322c754470e9f240b6a9f8e2d034a3",
+      "bytes": 13801
     },
     "harness.tar.gz": {
-      "sha256": "879f848713f7a3d4aae5682f04f1a269db0480c08228c5f9947d67b1e9686ea1",
-      "bytes": 27225
+      "sha256": "0a70a0125f2ebb673cedf5672bae83d82eae8b5187aadaf2fd6470f3eec768ff",
+      "bytes": 27267
     },
     "harness.zip": {
-      "sha256": "a00a02e6f36aeb50babb14c727db2aec74631064926d9575b85f9e06f5d48730",
-      "bytes": 34505
+      "sha256": "9dda72bf865dfb7afbab01828bf20b2c7b92ae84d703d04a0ce2b6d275664eda",
+      "bytes": 34570
     }
   },
   "commands": {

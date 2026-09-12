@@ -18,7 +18,8 @@ function Ok($t) { Write-Host "  ✓ $t" }
 function Warn($t) { Write-Host "  ! $t" }
 function Die($t, $fix) { Write-Host ""; Write-Host "  ✗ $t"; if ($fix) { Write-Host "    If not: $fix" }; exit 1 }
 function Have($c) { return [bool](Get-Command $c -ErrorAction SilentlyContinue) }
-function Refresh-Path { $env:Path = [Environment]::GetEnvironmentVariable('Path', 'Machine') + ';' + [Environment]::GetEnvironmentVariable('Path', 'User') + ';' + (Join-Path $HOME '.local\bin') }
+function Refresh-Path { if ($env:OS -eq 'Windows_NT') { $env:Path = [Environment]::GetEnvironmentVariable('Path', 'Machine') + ';' + [Environment]::GetEnvironmentVariable('Path', 'User') + ';' + (Join-Path $HOME '.local/bin') } }
+$Shell = (Get-Process -Id $PID).Path   # the PowerShell running this script (powershell.exe on Windows, pwsh elsewhere)
 function Write-Utf8NoBom([string]$Path, [string]$Text) { [IO.File]::WriteAllText($Path, $Text, (New-Object System.Text.UTF8Encoding($false))) }
 function Winget-Install($id, $what) {
   if (-not (Have 'winget')) { return $false }
@@ -32,9 +33,9 @@ Write-Host "ANKR install · windows · home $ClaudeHome"
 Write-Host "Official installers only. Your key stays on this computer. Re-running updates, never resets."
 
 if ($Check) {
-  $doc = Join-Path $ClaudeHome 'ankr\bin\ankr-doctor.ps1'
+  $doc = Join-Path $ClaudeHome 'ankr/bin/ankr-doctor.ps1'
   if (-not (Test-Path $doc)) { Die 'harness not installed yet' 'run the line without -Check' }
-  & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $doc; exit $LASTEXITCODE
+  & $Shell -NoProfile -ExecutionPolicy Bypass -File $doc; exit $LASTEXITCODE
 }
 
 # ---------------------------------------------------------------- WSL route (the founder's own path)
@@ -90,7 +91,7 @@ Say "3/6 ANKR harness → $ClaudeHome"
 $Tmp = $null
 if ($HarnessFrom) { $Payload = $HarnessFrom; if (-not (Test-Path (Join-Path $Payload 'harness.json'))) { Die "no harness.json in $Payload" } }
 else {
-  $Tmp = Join-Path $env:TEMP ("ankr-install-" + [guid]::NewGuid().ToString('N'))
+  $Tmp = Join-Path ([IO.Path]::GetTempPath()) ("ankr-install-" + [guid]::NewGuid().ToString('N'))
   New-Item -ItemType Directory -Force -Path $Tmp | Out-Null
   try { Invoke-WebRequest -Uri "$Base/harness.zip" -OutFile (Join-Path $Tmp 'harness.zip') -UseBasicParsing } catch { Die "could not download $Base/harness.zip" 'check your internet connection and run the line again' }
   try {
@@ -124,7 +125,7 @@ if (-not $Settings) { $Settings = New-Object PSObject }
 $Ankr = Join-Path $ClaudeHome 'ankr'
 if (Test-Path $Ankr) { Remove-Item -Recurse -Force $Ankr }
 Copy-Item -Recurse -Force $Payload $Ankr
-Copy-Item -Force (Join-Path $Ankr 'rules\*.md') (Join-Path $ClaudeHome 'rules')
+Copy-Item -Force (Join-Path $Ankr 'rules/*.md') (Join-Path $ClaudeHome 'rules')
 Get-ChildItem (Join-Path $Ankr 'skills') -Directory | ForEach-Object { $d = Join-Path (Join-Path $ClaudeHome 'skills') $_.Name; New-Item -ItemType Directory -Force -Path $d | Out-Null; Copy-Item -Force (Join-Path $_.FullName 'SKILL.md') (Join-Path $d 'SKILL.md') }
 Ok "harness v${Version}: rules, hooks, skills, byok, doctor"
 
@@ -176,14 +177,19 @@ else {
 Say '5/6 sign-in (your key stays on this computer)'
 if ($NoByok) { Ok 'skipped (-NoByok) — later: /ankr-byok inside Claude' }
 else {
-  & powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $Ankr 'byok\byok.ps1') -Serve
+  & $Shell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $Ankr 'byok/byok.ps1') -Serve
   if ($LASTEXITCODE -ne 0) { Warn 'the sign-in page did not finish — run /ankr-byok inside Claude any time, or just start claude and sign in' }
 }
 
 # ---------------------------------------------------------------- 6 doctor
 Say '6/6 doctor'
-& powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $Ankr 'bin\ankr-doctor.ps1'); $doc = $LASTEXITCODE
+& $Shell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $Ankr 'bin/ankr-doctor.ps1'); $doc = $LASTEXITCODE
 Write-Host ''
+switch ($doc) {
+  0 { Write-Host 'Installed and signed in.' }
+  3 { Write-Host 'Installed. Not signed in yet — that is the only open item: type   claude   and sign in when the browser opens, or run /ankr-byok inside Claude.' }
+  default { Write-Host 'Installed with problems — the fix is printed after each ✗ above. Run this line again after doing it.' }
+}
 Write-Host 'Next: open a new PowerShell window in a project folder and type   claude'
 Write-Host 'From your phone: on this computer run   claude remote-control   and scan the code with the Claude app.'
 Write-Host 'Update any time by running this same line again. Source and facts: https://ankr.in/install'

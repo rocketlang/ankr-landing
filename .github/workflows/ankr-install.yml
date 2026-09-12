@@ -1,0 +1,85 @@
+# ankr-install — remote proof on real machines (INST-010, INST-YK-005).
+# Runs the PUBLISHED one-liners from https://ankr.in/install on GitHub-hosted Windows, macOS and Ubuntu runners:
+# exactly the bytes a student pastes, against Anthropic's real installer. Each job proves:
+#   the line exits 3 (installed, sign-in open) · claude is on PATH · the guard hook refuses `git add .` and allows a
+#   scoped add · the session brief reads "auth: none" · the terminal BYOK floor writes a well-formed key · the doctor
+#   is then 0 · the line run a second time is still 3 (idempotent).
+# No key is real (a shaped test string, verification off); nothing is sent anywhere but Anthropic's installer download.
+name: ankr-install remote proof
+on:
+  workflow_dispatch:
+  push:
+    paths: ['install/**', '.github/workflows/ankr-install.yml']
+concurrency: { group: ankr-install-${{ github.ref }}, cancel-in-progress: true }
+env:
+  TEST_KEY: sk-ant-api03-runner-proof-ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - name: the Windows line (native), expect exit 3 = installed, sign-in open
+        shell: pwsh
+        run: |
+          & powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "& ([scriptblock]::Create((irm https://ankr.in/install/install.ps1))) -NoByok -NoIDE"
+          "line exit=$LASTEXITCODE"; if ($LASTEXITCODE -ne 3) { exit 1 }
+      - name: claude on PATH (Anthropic's installer, for real)
+        shell: pwsh
+        run: |
+          $env:Path = [Environment]::GetEnvironmentVariable('Path','Machine') + ';' + [Environment]::GetEnvironmentVariable('Path','User') + ';' + "$HOME\.local\bin"
+          claude --version; if ($LASTEXITCODE -ne 0) { exit 1 }
+      - name: guard hook through Git Bash — refuses `git add .`, allows a scoped add
+        shell: pwsh
+        run: |
+          $bash = "$env:ProgramFiles\Git\bin\bash.exe"
+          & $bash -c 'printf "%s" "{\"tool_input\":{\"command\":\"git add .\"}}" | bash "$HOME/.claude/ankr/hooks/ankr-guard.sh"; echo "block exit=$?"; [ $? -eq 0 ]'
+          & $bash -c 'printf "%s" "{\"tool_input\":{\"command\":\"git add .\"}}" | bash "$HOME/.claude/ankr/hooks/ankr-guard.sh" 2>/dev/null; test $? -eq 2'; if ($LASTEXITCODE -ne 0) { "guard did NOT refuse git add ."; exit 1 }
+          & $bash -c 'printf "%s" "{\"tool_input\":{\"command\":\"git add src/a.ts\"}}" | bash "$HOME/.claude/ankr/hooks/ankr-guard.sh"; test $? -eq 0'; if ($LASTEXITCODE -ne 0) { "guard refused a scoped add"; exit 1 }
+          & $bash -c 'bash "$HOME/.claude/ankr/hooks/ankr-session.sh"'
+      - name: doctor 3 → BYOK terminal floor → doctor 0 → line again still 3
+        shell: pwsh
+        run: |
+          $sh = (Get-Process -Id $PID).Path
+          & powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$HOME\.claude\ankr\bin\ankr-doctor.ps1"; "doctor exit=$LASTEXITCODE"; if ($LASTEXITCODE -ne 3) { exit 1 }
+          $env:TEST_KEY | & powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$HOME\.claude\ankr\byok\byok.ps1" -Terminal -FromStdin -NoVerify; if ($LASTEXITCODE -ne 0) { exit 1 }
+          & powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$HOME\.claude\ankr\bin\ankr-doctor.ps1"; "doctor exit=$LASTEXITCODE"; if ($LASTEXITCODE -ne 0) { exit 1 }
+          & powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$HOME\.claude\ankr\byok\byok.ps1" -Mode remove | Out-Null
+          & powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "& ([scriptblock]::Create((irm https://ankr.in/install/install.ps1))) -NoByok -NoIDE"
+          "second run exit=$LASTEXITCODE"; if ($LASTEXITCODE -ne 3) { exit 1 }
+          (Get-ChildItem "$HOME\.claude" -Filter 'settings.json.bak-*').Count
+  posix:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - name: the Mac / Linux line, expect exit 3 = installed, sign-in open
+        shell: bash
+        run: |
+          set +e
+          curl -fsSL https://ankr.in/install/install.sh | bash -s -- --no-byok --no-ide
+          rc=$?; echo "line exit=$rc"; test $rc -eq 3
+      - name: claude on PATH (Anthropic's installer, for real)
+        shell: bash
+        run: export PATH="$HOME/.local/bin:$PATH"; claude --version
+      - name: guard hook — refuses `git add .`, allows a scoped add; session brief
+        shell: bash
+        run: |
+          set +e
+          printf '%s' '{"tool_input":{"command":"git add ."}}' | bash "$HOME/.claude/ankr/hooks/ankr-guard.sh"; rc=$?; echo "block exit=$rc"; test $rc -eq 2 || exit 1
+          printf '%s' '{"tool_input":{"command":"git add src/a.ts"}}' | bash "$HOME/.claude/ankr/hooks/ankr-guard.sh"; rc=$?; echo "allow exit=$rc"; test $rc -eq 0 || exit 1
+          printf '%s' '{"tool_input":{"command":"git status && git stash"}}' | bash "$HOME/.claude/ankr/hooks/ankr-guard.sh"; rc=$?; test $rc -eq 2 || exit 1
+          bash "$HOME/.claude/ankr/hooks/ankr-session.sh" | tee /dev/stderr | grep -q 'auth: none'
+      - name: doctor 3 → BYOK terminal floor → doctor 0 → line again still 3
+        shell: bash
+        run: |
+          set +e
+          export PATH="$HOME/.local/bin:$PATH"
+          bash "$HOME/.claude/ankr/bin/ankr-doctor.sh"; rc=$?; echo "doctor exit=$rc"; test $rc -eq 3 || exit 1
+          printf '%s\n' "$TEST_KEY" | bash "$HOME/.claude/ankr/byok/byok.sh" --terminal --from-stdin --no-verify || exit 1
+          bash "$HOME/.claude/ankr/bin/ankr-doctor.sh"; rc=$?; echo "doctor exit=$rc"; test $rc -eq 0 || exit 1
+          bash "$HOME/.claude/ankr/byok/byok.sh" --status
+          curl -fsSL https://ankr.in/install/install.sh | bash -s -- --no-byok --no-ide; rc=$?; echo "second run exit=$rc"; test $rc -eq 0 || exit 1
+          ls "$HOME/.claude" | grep -c 'settings.json.bak-'
