@@ -10,7 +10,9 @@ on:
   workflow_dispatch:
   push:
     paths: ['install/**', '.github/workflows/ankr-install.yml']
-concurrency: { group: ankr-install-${{ github.ref }}, cancel-in-progress: true }
+concurrency:
+  group: "ankr-install-${{ github.ref }}"
+  cancel-in-progress: true
 env:
   TEST_KEY: sk-ant-api03-runner-proof-ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
 jobs:
