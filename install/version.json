@@ -5,24 +5,24 @@
   "harness_files": 16,
   "files": {
     "index.html": {
-      "sha256": "c4bbfdfe7773836fe3a88b558b4fd90b8e815fcc76d88f2827cdf5cc6ab6e366",
-      "bytes": 20858
+      "sha256": "0516e65c0f99ffc7af3d60a220568ebb142cb671f42cdc3e9905f34575a9d6f6",
+      "bytes": 21561
     },
     "install.sh": {
-      "sha256": "f30c139d41b2eae157c5d269c6be7821629825de2767253f666e39fb64beb242",
-      "bytes": 14650
+      "sha256": "2f85c49d8278cdc11e3fdfaeb489bbc67b105234835c9a4fe8c1668ad2077c1c",
+      "bytes": 19074
     },
     "install.ps1": {
       "sha256": "d38222df6c4370aec6391c8faab5e5a76aefbcfc4fa8f3345ad702de3ccd58fd",
       "bytes": 14077
     },
     "harness.tar.gz": {
-      "sha256": "bfa64cbb747b251ee93ef24855f6e71f812e7314c39f96244aeff363168c6aa7",
-      "bytes": 27644
+      "sha256": "1ad484eb092dadce1adfde38278b6c9d2d7ba085a67b427cf433c5285575153b",
+      "bytes": 27704
     },
     "harness.zip": {
-      "sha256": "e234ebe822f58b642349fa98edc5e29efe3fb5f655f66586c1268d5ba2a34a85",
-      "bytes": 34910
+      "sha256": "9018b71b46668e625ab0ea186aa00becf690902bcfdd9df0523ceeaec7c58e82",
+      "bytes": 34965
     }
   },
   "commands": {

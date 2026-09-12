@@ -41,6 +41,43 @@ S="$CLAUDE_HOME/settings.json"
 printf 'ANKR install · %s · home %s\n' "$PLATFORM" "$CLAUDE_HOME"
 printf 'Official installers only. Your key stays on this computer. Re-running updates, never resets.\n'
 
+# ---------------------------------------------------------------- Android / Termux → Ubuntu inside Termux, then the same line
+# Claude Code ships no Android build (the npm package carries linux/darwin/win32 binaries only — checked 2026-09-12), so on a
+# phone it runs inside Ubuntu under proot-distro, where Anthropic's own Linux installer works. This block sets that up, gives
+# Termux a `claude` command that hands over, and runs this very line inside Ubuntu (proven in a Termux container 2026-09-12).
+if [ "$PLATFORM" = termux ]; then
+  say "Android: Claude Code runs inside Ubuntu-in-Termux (proot-distro); setting that up"
+  PKGLOG="${TMPDIR:-$PREFIX/tmp}/ankr-install-pkg.log"
+  pkg update -y >"$PKGLOG" 2>&1 || warn "pkg update did not finish (see $PKGLOG); trying to install anyway"
+  if ! pkg install -y curl proot-distro >>"$PKGLOG" 2>&1; then
+    # a rotated mirror can be stale (404 on pool files — seen in a Termux container 2026-09-12): pin Termux's primary and retry once
+    warn "a package mirror failed; switching to the primary mirror (packages.termux.dev) and retrying"
+    if [ -f "$PREFIX/etc/termux/mirrors/default" ]; then rm -rf "$PREFIX/etc/termux/chosen_mirrors"; ln -s "$PREFIX/etc/termux/mirrors/default" "$PREFIX/etc/termux/chosen_mirrors"; fi
+    printf 'deb https://packages.termux.dev/apt/termux-main stable main\n' > "$PREFIX/etc/apt/sources.list"
+    TERMUX_PKG_NO_MIRROR_SELECT=1 pkg update -y >>"$PKGLOG" 2>&1
+    TERMUX_PKG_NO_MIRROR_SELECT=1 pkg install -y curl proot-distro >>"$PKGLOG" 2>&1 || { tail -5 "$PKGLOG" | sed 's/^/    | /'; die "pkg could not install curl and proot-distro (its last lines are above)" "in Termux run: termux-change-repo   (pick the main mirror), then: pkg update && pkg install -y curl proot-distro   and run the line again"; }
+  fi
+  ROOTFS="$PREFIX/var/lib/proot-distro/installed-rootfs/ubuntu"
+  if [ ! -d "$ROOTFS" ]; then
+    printf '  … downloading Ubuntu (a few minutes on a phone)\n'
+    proot-distro install ubuntu >>"$PKGLOG" 2>&1 || { tail -5 "$PKGLOG" | sed 's/^/    | /'; die "proot-distro could not install Ubuntu (its last lines are above)" "run: proot-distro install ubuntu   and read what it says; then run the line again"; }
+  fi
+  ok "Ubuntu present under proot-distro"
+  cat > "$PREFIX/bin/claude" <<'WRAP'
+#!/data/data/com.termux/files/usr/bin/bash
+# ankr-harness: Claude Code lives inside Ubuntu (proot-distro). This hands the command over; your projects live in Ubuntu's home.
+exec proot-distro login ubuntu --shared-tmp -- /usr/bin/env PATH=/root/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin HOME=/root TERM="${TERM:-xterm-256color}" claude "$@"
+WRAP
+  chmod +x "$PREFIX/bin/claude"
+  ok "Termux now has a 'claude' command that hands over to Ubuntu"
+  FLAGS=""; [ $NO_BYOK -eq 1 ] && FLAGS="$FLAGS --no-byok"; [ $NO_IDE -eq 1 ] && FLAGS="$FLAGS --no-ide"
+  [ $NO_CLAUDE -eq 1 ] && FLAGS="$FLAGS --no-claude"; [ $NO_PREREQS -eq 1 ] && FLAGS="$FLAGS --no-prereqs"; [ $CHECK -eq 1 ] && FLAGS="$FLAGS --check"
+  say "handing this line to Ubuntu (everything below runs inside it)"
+  # a clean PATH: the Termux binaries on PATH cannot execute inside Ubuntu ("required file not found")
+  exec proot-distro login ubuntu --shared-tmp -- /usr/bin/env PATH=/root/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin HOME=/root TERM="${TERM:-xterm-256color}" ANKR_INSTALL_BASE="$BASE" \
+    bash -c '{ command -v curl && command -v git && python3 -c "import json"; } >/dev/null 2>&1 || { apt-get update -qq; apt-get install -y -qq curl ca-certificates git python3; } >/tmp/ankr-install-apt.log 2>&1 || { tail -5 /tmp/ankr-install-apt.log; echo "apt inside Ubuntu failed (lines above); run: proot-distro login ubuntu   then   apt-get install -y curl git python3"; exit 1; }; curl -fsSL "$ANKR_INSTALL_BASE/install.sh" | bash -s -- '"$FLAGS"
+fi
+
 if [ $CHECK -eq 1 ]; then
   [ -x "$CLAUDE_HOME/ankr/bin/ankr-doctor.sh" ] || die "harness not installed yet" "run the line without --check"
   exec bash "$CLAUDE_HOME/ankr/bin/ankr-doctor.sh"
@@ -50,10 +87,6 @@ fi
 if [ $NO_PREREQS -eq 0 ]; then
   say "1/6 prerequisites ($PLATFORM)"
   case "$PLATFORM" in
-    termux)
-      pkg update -y >/dev/null 2>&1 || warn "pkg update did not finish; trying to install anyway"
-      pkg install -y curl git nodejs-lts >/dev/null 2>&1 || die "pkg could not install curl, git and nodejs-lts" "in Termux run: pkg install -y curl git nodejs-lts   and read what it says; then run the line again"
-      ok "curl, git, node present";;
     macos)
       if ! xcode-select -p >/dev/null 2>&1; then
         xcode-select --install >/dev/null 2>&1 || true
@@ -62,17 +95,25 @@ if [ $NO_PREREQS -eq 0 ]; then
       ok "Command Line Tools present (git, python3)";;
     linux|wsl)
       need=""; have curl || need="$need curl"; have git || need="$need git"
+      # the settings merge and the BYOK page need python3 or node that actually runs (a proot Ubuntu starts with neither)
+      python3 -c 'import json' >/dev/null 2>&1 || node -e '1' >/dev/null 2>&1 || need="$need python3"
       if [ -n "$need" ]; then
         SUDO=""; [ "$(id -u)" -ne 0 ] && { have sudo && SUDO="sudo" || die "need to install:$need, but there is no sudo here" "ask an administrator to install:$need, then run the line again"; }
-        if have apt-get; then $SUDO apt-get update -y >/dev/null 2>&1; $SUDO apt-get install -y $need ca-certificates >/dev/null 2>&1
-        elif have dnf; then $SUDO dnf install -y $need >/dev/null 2>&1
-        elif have apk; then $SUDO apk add --no-cache $need bash >/dev/null 2>&1
-        elif have pacman; then $SUDO pacman -Sy --noconfirm $need >/dev/null 2>&1
-        elif have zypper; then $SUDO zypper install -y $need >/dev/null 2>&1
+        APTLOG="${TMPDIR:-/tmp}/ankr-install-pkg.log"   # a hidden package-manager error is a defect: keep the log, print its tail on failure
+        printf '  … installing%s\n' "$need"
+        if have apt-get; then { $SUDO apt-get update -y; $SUDO apt-get install -y $need ca-certificates; } >"$APTLOG" 2>&1
+        elif have dnf; then $SUDO dnf install -y $need >"$APTLOG" 2>&1
+        elif have apk; then $SUDO apk add --no-cache $need bash >"$APTLOG" 2>&1
+        elif have pacman; then $SUDO pacman -Sy --noconfirm $need >"$APTLOG" 2>&1
+        elif have zypper; then $SUDO zypper install -y $need >"$APTLOG" 2>&1
         else die "no known package manager to install:$need" "install$need with your distribution's tool, then run the line again"; fi
-        have curl && have git || die "could not install:$need" "run your package manager by hand for:$need, then run the line again"
+        have curl && have git || { tail -5 "$APTLOG" 2>/dev/null | sed 's/^/    | /'; die "could not install:$need (the package manager's last lines are above)" "run your package manager by hand for:$need, then run the line again"; }
+        if ! python3 -c 'import json' >/dev/null 2>&1 && ! node -e '1' >/dev/null 2>&1; then
+          tail -5 "$APTLOG" 2>/dev/null | sed 's/^/    | /'
+          warn "python3 did not install (lines above): settings.json can be created but not merged, and the sign-in page falls back to the terminal — install python3 by hand and run the line again"
+        fi
       fi
-      ok "curl, git present";;
+      ok "curl, git present$(python3 -c 'import json' >/dev/null 2>&1 && printf ', python3 runs' || { node -e 1 >/dev/null 2>&1 && printf ', node runs'; })";;
   esac
 fi
 
@@ -81,11 +122,7 @@ if [ $NO_CLAUDE -eq 0 ]; then
   say "2/6 Claude Code"
   if have claude || [ -x "$HOME/.local/bin/claude" ]; then ok "already installed: $(claude --version 2>/dev/null || "$HOME/.local/bin/claude" --version 2>/dev/null | head -1)"
   else
-    if [ "$PLATFORM" = termux ]; then
-      npm install -g @anthropic-ai/claude-code >/dev/null 2>&1 || die "npm could not install Claude Code" "run: npm install -g @anthropic-ai/claude-code   and read the error"
-    else
-      curl -fsSL https://claude.ai/install.sh | bash || die "Anthropic's installer did not finish" "read its message above; the line to retry is: curl -fsSL https://claude.ai/install.sh | bash"
-    fi
+    curl -fsSL https://claude.ai/install.sh | bash || die "Anthropic's installer did not finish" "read its message above; the line to retry is: curl -fsSL https://claude.ai/install.sh | bash"
   fi
   if ! have claude && [ -x "$HOME/.local/bin/claude" ]; then
     export PATH="$HOME/.local/bin:$PATH"
@@ -116,7 +153,11 @@ else
 fi
 VERSION=$(sed -n 's/.*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' "$PAYLOAD/harness.json" | head -1)
 
-JSON_TOOL=""; have python3 && JSON_TOOL=python3; [ -z "$JSON_TOOL" ] && have node && JSON_TOOL=node
+# A tool must RUN, not merely exist on PATH: inside Ubuntu-under-Termux (proot) the Termux python3 is still on PATH and
+# cannot execute ("required file not found") — proven in a Termux container 2026-09-12.
+JSON_TOOL=""
+if python3 -c 'import json' >/dev/null 2>&1; then JSON_TOOL=python3
+elif node -e '1' >/dev/null 2>&1; then JSON_TOOL=node; fi
 mkdir -p "$CLAUDE_HOME/rules" "$CLAUDE_HOME/skills"
 
 # 3a back up + validate settings.json before touching anything
@@ -211,7 +252,6 @@ if [ $NO_IDE -eq 1 ]; then ok "skipped (--no-ide)"
 elif have code; then
   if code --install-extension Anthropic.claude-code --force >/dev/null 2>&1; then ok "VS Code: Claude Code extension installed (Anthropic.claude-code)"
   else warn "VS Code is here but the extension did not install; inside VS Code search Extensions for 'Claude Code' by Anthropic"; fi
-elif [ "$PLATFORM" = termux ]; then ok "no desktop IDE on a phone — Claude Code runs in Termux itself"
 else ok "VS Code not found (optional). Get it at https://code.visualstudio.com and run this line again to add the extension"; fi
 
 # ---------------------------------------------------------------- 5 BYOK

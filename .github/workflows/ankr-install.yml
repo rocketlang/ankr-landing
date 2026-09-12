@@ -23,21 +23,23 @@ jobs:
       - name: the Windows line (native), expect exit 3 = installed, sign-in open
         shell: pwsh
         run: |
+          # GitHub's pwsh shell ends every step with `exit $LASTEXITCODE`, so each step must finish with an explicit exit 0
           & powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "& ([scriptblock]::Create((irm https://ankr.in/install/install.ps1))) -NoByok -NoIDE"
-          "line exit=$LASTEXITCODE"; if ($LASTEXITCODE -ne 3) { exit 1 }
+          "line exit=$LASTEXITCODE"; if ($LASTEXITCODE -ne 3) { exit 1 }; exit 0
       - name: claude on PATH (Anthropic's installer, for real)
         shell: pwsh
         run: |
           $env:Path = [Environment]::GetEnvironmentVariable('Path','Machine') + ';' + [Environment]::GetEnvironmentVariable('Path','User') + ';' + "$HOME\.local\bin"
-          claude --version; if ($LASTEXITCODE -ne 0) { exit 1 }
+          claude --version; if ($LASTEXITCODE -ne 0) { exit 1 }; exit 0
       - name: guard hook through Git Bash — refuses `git add .`, allows a scoped add
         shell: pwsh
         run: |
           $bash = "$env:ProgramFiles\Git\bin\bash.exe"
-          & $bash -c 'printf "%s" "{\"tool_input\":{\"command\":\"git add .\"}}" | bash "$HOME/.claude/ankr/hooks/ankr-guard.sh"; echo "block exit=$?"; [ $? -eq 0 ]'
-          & $bash -c 'printf "%s" "{\"tool_input\":{\"command\":\"git add .\"}}" | bash "$HOME/.claude/ankr/hooks/ankr-guard.sh" 2>/dev/null; test $? -eq 2'; if ($LASTEXITCODE -ne 0) { "guard did NOT refuse git add ."; exit 1 }
-          & $bash -c 'printf "%s" "{\"tool_input\":{\"command\":\"git add src/a.ts\"}}" | bash "$HOME/.claude/ankr/hooks/ankr-guard.sh"; test $? -eq 0'; if ($LASTEXITCODE -ne 0) { "guard refused a scoped add"; exit 1 }
-          & $bash -c 'bash "$HOME/.claude/ankr/hooks/ankr-session.sh"'
+          & $bash -c 'printf "%s" "{\"tool_input\":{\"command\":\"git add .\"}}" | bash "$HOME/.claude/ankr/hooks/ankr-guard.sh"; rc=$?; echo "block exit=$rc"; test $rc -eq 2'; if ($LASTEXITCODE -ne 0) { "guard did NOT refuse git add ."; exit 1 }
+          & $bash -c 'printf "%s" "{\"tool_input\":{\"command\":\"git add src/a.ts\"}}" | bash "$HOME/.claude/ankr/hooks/ankr-guard.sh"; rc=$?; echo "allow exit=$rc"; test $rc -eq 0'; if ($LASTEXITCODE -ne 0) { "guard refused a scoped add"; exit 1 }
+          & $bash -c 'printf "%s" "{\"tool_input\":{\"command\":\"git status && git stash\"}}" | bash "$HOME/.claude/ankr/hooks/ankr-guard.sh" 2>/dev/null; test $? -eq 2'; if ($LASTEXITCODE -ne 0) { "guard did NOT refuse a compound stash"; exit 1 }
+          & $bash -c 'bash "$HOME/.claude/ankr/hooks/ankr-session.sh" | tee /dev/stderr | grep -q "auth: none"'; if ($LASTEXITCODE -ne 0) { "session brief did not read auth: none"; exit 1 }
+          exit 0
       - name: doctor 3 → BYOK terminal floor → doctor 0 → line again still 3
         shell: pwsh
         run: |
@@ -48,7 +50,8 @@ jobs:
           & powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$HOME\.claude\ankr\byok\byok.ps1" -Mode remove | Out-Null
           & powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "& ([scriptblock]::Create((irm https://ankr.in/install/install.ps1))) -NoByok -NoIDE"
           "second run exit=$LASTEXITCODE"; if ($LASTEXITCODE -ne 3) { exit 1 }
-          (Get-ChildItem "$HOME\.claude" -Filter 'settings.json.bak-*').Count
+          "backups: " + (Get-ChildItem "$HOME\.claude" -Filter 'settings.json.bak-*').Count
+          exit 0
   posix:
     strategy:
       fail-fast: false
@@ -74,7 +77,8 @@ jobs:
           printf '%s' '{"tool_input":{"command":"git add ."}}' | bash "$HOME/.claude/ankr/hooks/ankr-guard.sh"; rc=$?; echo "block exit=$rc"; test $rc -eq 2 || exit 1
           printf '%s' '{"tool_input":{"command":"git add src/a.ts"}}' | bash "$HOME/.claude/ankr/hooks/ankr-guard.sh"; rc=$?; echo "allow exit=$rc"; test $rc -eq 0 || exit 1
           printf '%s' '{"tool_input":{"command":"git status && git stash"}}' | bash "$HOME/.claude/ankr/hooks/ankr-guard.sh"; rc=$?; test $rc -eq 2 || exit 1
-          bash "$HOME/.claude/ankr/hooks/ankr-session.sh" | tee /dev/stderr | grep -q 'auth: none'
+          # macOS keeps a subscription sign-in in the Keychain, so the brief honestly says "unknown" there
+          bash "$HOME/.claude/ankr/hooks/ankr-session.sh" | tee /dev/stderr | grep -q -E 'auth: (none|unknown)'
       - name: doctor 3 → BYOK terminal floor → doctor 0 → line again still 3
         shell: bash
         run: |
