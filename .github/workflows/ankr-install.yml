@@ -43,7 +43,8 @@ jobs:
       - name: doctor 3 → BYOK terminal floor → doctor 0 → line again still 3
         shell: pwsh
         run: |
-          $sh = (Get-Process -Id $PID).Path
+          # each step is a fresh shell: put Anthropic's install dir on PATH so the doctor finds claude
+          $env:Path = [Environment]::GetEnvironmentVariable('Path','Machine') + ';' + [Environment]::GetEnvironmentVariable('Path','User') + ';' + "$HOME\.local\bin"
           & powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$HOME\.claude\ankr\bin\ankr-doctor.ps1"; "doctor exit=$LASTEXITCODE"; if ($LASTEXITCODE -ne 3) { exit 1 }
           $env:TEST_KEY | & powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$HOME\.claude\ankr\byok\byok.ps1" -Terminal -FromStdin -NoVerify; if ($LASTEXITCODE -ne 0) { exit 1 }
           & powershell.exe -NoProfile -ExecutionPolicy Bypass -File "$HOME\.claude\ankr\bin\ankr-doctor.ps1"; "doctor exit=$LASTEXITCODE"; if ($LASTEXITCODE -ne 0) { exit 1 }
