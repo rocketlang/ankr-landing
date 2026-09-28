@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Independent verification — TactiQ OS releases</title>
+<meta name="description" content="Two independent verifiers for TactiQ OS release artefacts, and what they establish.">
+<style>
+  :root{
+    --paper:#F2F4F3; --surface:#FFFFFF; --ink:#111917; --body:#33403D; --muted:#5F6E6A;
+    --accent:#0E6355; --accent-soft:#DCEAE6; --rule:#CFD8D5; --hair:#E1E7E5;
+    color-scheme:light;
+  }
+  @media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+    --paper:#0B1110; --surface:#141D1B; --ink:#E9EFED; --body:#C2CDCA; --muted:#8A9995;
+    --accent:#52BCA5; --accent-soft:#16302B; --rule:#25322F; --hair:#1C2726;
+    color-scheme:dark; } }
+  :root[data-theme="dark"]{
+    --paper:#0B1110; --surface:#141D1B; --ink:#E9EFED; --body:#C2CDCA; --muted:#8A9995;
+    --accent:#52BCA5; --accent-soft:#16302B; --rule:#25322F; --hair:#1C2726;
+    color-scheme:dark; }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--body);
+    font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:760px;margin:0 auto;padding:48px 20px 72px}
+  h1,h2{color:var(--ink);margin:0;line-height:1.2;text-wrap:balance;
+    font-family:Georgia,"Times New Roman",serif}
+  h1{font-size:clamp(28px,6vw,40px);font-weight:600;letter-spacing:-.015em}
+  h2{font-size:20px;font-weight:600;margin-top:40px;padding-bottom:8px;
+    border-bottom:2px solid var(--ink)}
+  p{margin:14px 0;max-width:66ch}
+  .lede{font-family:Georgia,serif;font-style:italic;font-size:18px;color:var(--muted);
+    margin-top:14px;max-width:60ch}
+  a{color:var(--accent)}
+  code{font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:.9em;
+    background:var(--accent-soft);padding:1.5px 5px;border-radius:3px;color:var(--ink)}
+  .dl{display:flex;flex-wrap:wrap;gap:12px;margin:22px 0}
+  .card{flex:1 1 300px;background:var(--surface);border:1px solid var(--rule);
+    border-radius:5px;padding:16px 18px}
+  .card .n{font-family:ui-monospace,monospace;font-size:13.5px;color:var(--accent);
+    font-weight:600;display:block;margin-bottom:4px;word-break:break-all}
+  .card .d{font-size:14px;color:var(--muted)}
+  .res{background:var(--surface);border:1px solid var(--rule);border-left:3px solid var(--accent);
+    border-radius:4px;padding:14px 18px;margin:18px 0;font-family:ui-monospace,monospace;
+    font-size:14px;color:var(--ink)}
+  ul{max-width:66ch;padding-left:20px}
+  li{margin:7px 0}
+  .limit{background:var(--surface);border:1px solid var(--rule);border-radius:5px;
+    padding:18px 20px;margin-top:20px}
+  .limit h3{margin:0 0 8px;color:var(--ink);font-size:16px}
+  footer{margin-top:56px;padding-top:18px;border-top:1px solid var(--rule);
+    font-size:13.5px;color:var(--muted);max-width:66ch}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Independent verification of TactiQ OS releases</h1>
+<p class="lede">Two scripts, written from the published artefacts and the specifications —
+not by running the vendor's own tooling.</p>
+
+<div class="dl" style="margin-top:26px">
+  <div class="card">
+    <span class="n"><a href="/verify-tactiq-release.py">⬇ verify-tactiq-release.py</a></span>
+    <span class="d">Release artefacts: the signed sums, the signature and its certificate,
+      the Rekor inclusion proof, and the boot PCR reference recomputed from the images
+      themselves. Python 3, standard library and <code>openssl</code>. No network.</span>
+  </div>
+  <div class="card">
+    <span class="n"><a href="/verify-tactiq-l3.py">⬇ verify-tactiq-l3.py</a></span>
+    <span class="d">The attestation evidence: certificate chains, the registration record,
+      and the TPM quotes — parsed and verified from the TPM specification in Python,
+      because <code>tpm2-tools</code> was not available. No network.</span>
+  </div>
+</div>
+
+<div class="res">python3 verify-tactiq-release.py /path/to/release-dir<br>
+python3 verify-tactiq-l3.py /path/to/rc13-dir</div>
+
+<p>TactiQ OS publishes, in advance, the values a correctly built and correctly booted unit
+should present. That design invites a stranger to check it. These are the checks one
+stranger wrote, and what they established.</p>
+
+<p>The operating system is public and MIT licensed at
+<a href="https://github.com/revenue7-eng/tactiq-os">github.com/revenue7-eng/tactiq-os</a>.
+Nothing here is affiliated with that project.</p>
+
+
+
+<h2>What they reported</h2>
+
+<div class="res">
+v2.1.0-rc11 &nbsp;— 10 checks passed, 0 failed<br>
+v2.1.0-rc12 &nbsp;— 12 checks passed, 0 failed<br>
+v2.1.0-rc13 &nbsp;— 12 checks passed, 0 failed &nbsp;(release artefacts)<br>
+v2.1.0-rc13 &nbsp;— 22 checks passed, 0 failed &nbsp;(L3 attestation evidence)
+</div>
+
+<p>The release checker was written against rc11 and run unmodified against rc12 and rc13.
+A verifier adjusted until it passes is not a verifier.</p>
+
+<p>Two observations were raised against rc11: the release set carried no transparency-log
+evidence, so a signature checked after its ten-minute certificate expired said nothing
+about when it had been made; and only the leaf certificate was present. Both were closed
+in rc12, which carries a Sigstore bundle with the certificate, the Rekor inclusion proof
+and its timestamp. The proof recomputes offline, and the entry was logged one second after
+the certificate became valid — so the signature is shown to have been made while it was
+live, by the log rather than by assumption.</p>
+
+<p>For rc13, both TPM quotes are genuine attestation structures, both signatures verify
+under the registered key, both bind to their own message through <code>extraData</code>,
+and both attested boot states match the reference recomputed independently from the signed
+manifest.</p>
+
+<h2>The vendor broke this script, and was right to</h2>
+
+<p><strong>29 September.</strong> Handed the L3 checker, TactiQ did the thing worth doing with
+someone else's verifier: they tried to make it pass something it should not.</p>
+
+<p>It trusted <code>signing-ca.pem</code> and <code>infineon-root.crt</code> <em>from inside
+the evidence archive</em>, using openssl's <code>-partial_chain</code> — which means "treat
+this supplied CA as a trust anchor". The archive's own <code>SHA256SUMS</code> is unsigned. So
+they altered a field in the registration record, re-signed it under a CA of their own,
+replaced the three files and recomputed the sums. <strong>The script reported 15 passed, 0
+failed on a forged set.</strong> Reproduced here before fixing it, and the old script does
+indeed pass the forgery.</p>
+
+<p>A verifier that takes its trust anchors from the thing it is verifying is not a verifier.
+Three changes, all theirs:</p>
+
+<ul>
+  <li>the registration record is now anchored at <code>release-root-r2.pem</code>, a published
+    <em>release</em> asset from outside the archive, with <code>signing-ca.pem</code> passed as
+    an <strong>untrusted intermediate</strong> rather than a trust anchor;</li>
+  <li>the Infineon root is <strong>pinned by SHA-256 fingerprint</strong> in the script, and the
+    archive's copy is compared against it before being used for anything;</li>
+  <li>the Registration Signer's <strong>extended key usage</strong> is checked, since
+    <code>-purpose any</code> does not look at it at all.</li>
+</ul>
+
+<div class="res">
+genuine rc13 &nbsp;— 22 checks passed, 0 failed &nbsp;(was 15)<br>
+the forged set &nbsp;— <strong>REJECTED</strong>: the record does not chain to the release root<br>
+swapped Infineon root — <strong>REJECTED</strong> by the pin<br>
+substituted EK certificate — <strong>REJECTED</strong>: does not match the signed record<br>
+signer swapped for another valid leaf — <strong>REJECTED</strong>: not the Registration Signer<br>
+any required file deleted — <strong>REJECTED</strong>: absent evidence is not a passed check<br>
+no external release root — <strong>REJECTED</strong>: nothing to anchor to
+</div>
+
+<p><strong>A second finding, ours rather than theirs, and worse.</strong> Attacking the fixed
+script from the other direction showed it could be beaten with no cryptography at all: delete
+the evidence you cannot forge. Removing <code>ak.pub</code> left both quote signatures
+unverified and still reported zero failures; removing the registration signature skipped that
+check entirely. The script noted each absence and carried on. Required evidence is now
+required — a missing file is a failure, not a note — and every deletion above is rejected.</p>
+
+<p>Two smaller gaps closed with it: the EK certificate and the manufacturer intermediate are
+now compared against the copies named in the <em>signed</em> record, since the archive's own
+checksums are unsigned and could otherwise carry a substitute; and the attested boot state is
+matched against <em>both</em> boot slots in the reference, because hardcoding slot A would have
+reported a genuine slot-B boot as drift.</p>
+
+<p>The script also refuses to use a release root found inside the archive at all: an anchor that
+travels with the thing it anchors is not an anchor.</p>
+
+<p>One limit remains and is stated in the script: the pinned Infineon fingerprint was first
+observed in the rc13 set, so it detects a <em>changed</em> root, not one forged before anyone
+looked. Comparing it against Infineon's own published root would close that, and is not done
+here.</p>
+
+<h2>Two fields in the registration record</h2>
+
+<p>Both read <code>false</code> and neither is a fault. Recorded here because a reviewer
+meeting them cold would reasonably misread the first, and the vendor asked that this page
+say so until the record itself is changed.</p>
+
+<div class="limit">
+  <h3><code>signed: false</code> — a naming artefact, not a missing signature</h3>
+  <p>Per the vendor: the registrar writes the record unsigned, and the Registration Signer
+  leaf signs the file afterwards as a <em>detached</em> signature, so the field stays false
+  because a signature is never a field. Read literally it says the opposite of what a
+  reviewer holding the <code>.p7s</code> sees. <strong>The detached signature exists and
+  verifies</strong> — it is check three in <code>verify-tactiq-l3.py</code>. The field is to
+  be renamed or dropped in a future record.</p>
+</div>
+
+<div class="limit">
+  <h3><code>revocation_checked: false</code> — accurate as written</h3>
+  <p>It means what it says: nobody fetched the CRL. The EK chain still verifies to the
+  pinned Infineon root, which is the part that matters. The vendor has said capturing the
+  CRL at registration time, with its own timestamp, goes into the next registration.</p>
+</div>
+
+<h2>Where the checks stop</h2>
+
+<div class="limit">
+  <h3>Credential activation cannot be replayed by a third party</h3>
+  <p>It requires the TPM's private endorsement key. The link between the attestation key
+  and the physical TPM therefore rests on the registrar's signed statement. These scripts
+  verify that the statement is properly signed. They do not, and cannot, verify that it is
+  true. The vendor states this limit himself.</p>
+</div>
+
+<div class="limit">
+  <h3>A signature binding is not a reproducible build</h3>
+  <p>The certificate binds the signature to a commit, workflow and tag. It does not
+  establish that the published binaries follow from that source. In the vendor's own
+  words, the commit tells you which code signed the list, not which code produced the
+  files.</p>
+</div>
+
+<div class="limit">
+  <h3>The transparency-log checkpoint signature is not verified</h3>
+  <p>That needs the log's public key. The scripts recompute the root implied by the
+  inclusion proof and compare it to the root the bundle states. Agreement proves the entry
+  is consistent with that root; it does not prove the root is the live log's. Each script
+  says so in its own output.</p>
+</div>
+
+<h2>What would let a stranger check more</h2>
+
+<p>Five observations from actually running the checks. None is a fault, and two the
+vendor has already stated himself — recorded because an outsider arriving at the same
+place independently is worth more than the suggestion. All five were put to the vendor
+directly as well. Nothing on this page reaches him from this page.</p>
+
+<div class="limit">
+  <h3>1. Sign the evidence archive's <code>SHA256SUMS</code></h3>
+  <p>This one is the root of both problems found this week, and it is the only suggestion
+  here that would have prevented either. The archive's checksum list binds its files to
+  each other and to nothing outside itself. That is what let a re-signed set pass the
+  checker — carrying its own trust anchor — and what let deleted evidence pass it, because
+  nothing stated which files should have been present. Every fix since has been a way of
+  reaching around that gap: anchoring the record outside the archive, pinning the
+  manufacturer root in the script, enumerating the required files by hand. One detached
+  signature over the archive's own sums, under the release hierarchy already in use, would
+  collapse all of it into a single check a reader cannot forget to make — and a signed
+  manifest names what should be there, which closes the deletion route outright.</p>
+</div>
+
+<div class="limit">
+  <h3>2. Ship the transparency log's public key with the release <span style="font-weight:400;color:var(--muted)">— on the vendor's list</span></h3>
+  <p>The smallest change of the five. The inclusion proof recomputes offline
+  and agrees with the root the bundle states, but the checkpoint signature cannot be
+  verified without the log's key — so the entry is provably consistent with that root,
+  and the root is not provably the live log's. One file closes it; everything else needed
+  is already in the bundle.</p>
+</div>
+
+<div class="limit">
+  <h3>3. <code>revocation_checked</code> is false</h3>
+  <p>The EK chain verifies to the pinned root, which is the hard part. Fetching the CRL at
+  registration time and recording the result with the CRL's own timestamp would carry that
+  evidence forward, so a check a year later gets it without a live lookup. <strong>Accepted
+  by the vendor</strong> — it goes into the next registration. See the note above.</p>
+</div>
+
+<div class="limit">
+  <h3>4. Build the images inside the workflow <span style="font-weight:400;color:var(--muted)">— acknowledged as the largest rung still open</span></h3>
+  <p>The vendor's own point: images are built on their machine and only the sums file is
+  signed by CI, so the commit binds the signature rather than the build. Building in the
+  workflow would extend provenance from the list to the artefacts. The largest rung still
+  open.</p>
+</div>
+
+<div class="limit">
+  <h3>5. A machine-readable verdict per release <span style="font-weight:400;color:var(--muted)">— on the vendor's list</span></h3>
+  <p>The expected values live in prose today — the PCR selection, the digest, the
+  power-cycle condition. A small <code>verify.json</code> carrying those and the list of
+  checks would let any CI consume them, and would let the power-cycle condition be
+  enforced by a verifier rather than remembered by a reader. A condition that lives only
+  in prose cannot be enforced.</p>
+</div>
+
+<h2>Why bother</h2>
+
+<p>A published reference turns checking from a request for assurance into arithmetic. The
+party being checked publishes what a correct instance should present; anyone can compare,
+later, offline, without asking. What makes that worth anything is that somebody actually
+does it — and says where it stops.</p>
+
+<footer>
+Written September 2026 by ANKR. Independent of TactiQ AI; published because a check nobody
+can repeat is not much of a check. The scripts are offered as-is, under no warranty, and
+are more useful to argue with than to trust.
+</footer>
+
+</div>
+</body>
+</html>
