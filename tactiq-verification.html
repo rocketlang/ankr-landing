@@ -49,6 +49,8 @@
   .limit{background:var(--surface);border:1px solid var(--rule);border-radius:5px;
     padding:18px 20px;margin-top:20px}
   .limit h3{margin:0 0 8px;color:var(--ink);font-size:16px}
+  /* measured 7.16:1 light, 7.45:1 dark on --surface — AAA both themes */
+  .done{color:var(--accent);font-weight:600;white-space:nowrap}
   footer{margin-top:56px;padding-top:18px;border-top:1px solid var(--rule);
     font-size:13.5px;color:var(--muted);max-width:66ch}
 </style>
@@ -116,13 +118,25 @@ A verifier adjusted until it passes is not a verifier.</p>
 
 <div class="limit">
   <h3>Changed on 29 September, after this page was linked</h3>
-  <p>Readers arriving from elsewhere should know the page has moved since. Two changes,
-  one in each direction. The pinned Infineon root <strong>is now corroborated</strong>
-  against the copy Infineon itself publishes — byte-identical — so that limit is closed.
-  And a new limit is stated, which is <strong>ours and not the vendor's</strong>: the
-  release root this verification anchors at is not covered by the signed
-  <code>SHA256SUMS</code>, so it rests on one channel. Both are described in full below. A
-  sixth suggestion was added because of the second.</p>
+  <p>Readers arriving from elsewhere should know the page has moved since. The pinned
+  Infineon root <strong>is now corroborated</strong> against the copy Infineon itself
+  publishes — byte-identical — so that limit is closed. A sixth suggestion was added
+  because of the release root.</p>
+
+  <p><strong>This block previously said the release root "rests on one channel". That was
+  our own overstatement, and it is corrected here.</strong> The root is not itself listed
+  in the signed <code>SHA256SUMS</code> — but the reference manifest that carries its
+  key hash <em>is</em>, so a root substituted on the release page after the tag was signed
+  does not survive the run. Measured rather than argued: substituting a self-signed root
+  under the same filename fails three checks and exits 1. What remains is narrower and
+  real — control of the repository from the start, which nothing inside the repository
+  can answer. The full account is below.</p>
+
+  <p>Since then the vendor has <strong>published the root fingerprint outside the release
+  archive</strong>, on the public catalog. Checked here rather than taken on trust: the
+  value he publishes is byte-identical to the one computed independently from the release
+  asset. He notes himself that the catalog sits on the same account, so it corroborates
+  the value without yet being an independent channel.</p>
 </div>
 
 <p>Two observations were raised against rc11: the release set carried no transparency-log
@@ -324,17 +338,28 @@ directly as well. Nothing on this page reaches him from this page.</p>
   signature over the archive's own sums, under the release hierarchy already in use, would
   collapse all of it into a single check a reader cannot forget to make — and a signed
   manifest names what should be there, which closes the deletion route outright.</p>
+  <p><strong>Measured on rc13.</strong> Of the release files this verification touches,
+  three sit outside the Sigstore-signed <code>SHA256SUMS</code>: the evidence archive, the
+  verification instructions that tell a reviewer what to check, and the release root. The
+  reference manifest and its CMS signature are inside — which is precisely why the
+  root-substitution check above holds. <strong>The vendor has accepted this suggestion</strong>
+  and reports the archive and the instructions will be carried in the signed sums at the
+  next release; he raised the archive gap himself before it was put to him.</p>
 </div>
 
 <div class="limit">
-  <h3>2. Publish the release root's fingerprint on a second surface</h3>
+  <h3>2. Publish the release root's fingerprint on a second surface <span class="done">— done</span></h3>
   <p>The verification procedure already tells a reviewer to confirm the release root through
-  a channel independent of the release page. Today there is nowhere to do that: the root
-  arrives with the release, and it is not inside the signed <code>SHA256SUMS</code>. Printing
-  the fingerprint on a different host — the public catalog is one that already exists — would
-  turn a correct instruction into one a stranger can actually follow. Small, and it is the
-  other half of suggestion 1: signing the sums anchors the archive, publishing the root
-  anchors the anchor.</p>
+  a channel independent of the release page. When this was written there was nowhere to do
+  that: the root arrived with the release, and it is not inside the signed
+  <code>SHA256SUMS</code>. Printing the fingerprint on a different host would turn a correct
+  instruction into one a stranger can actually follow. It is the other half of suggestion 1:
+  signing the sums anchors the archive, publishing the root anchors the anchor.</p>
+  <p><strong>The vendor has done this.</strong> The fingerprint now appears on the public
+  catalog page, and the value published there is byte-identical to the one computed here
+  from the release asset — checked, not assumed. He notes the catalog shares the release
+  account, so a reviewer gains corroboration rather than independence; he states he has
+  also put it in the accompanying article.</p>
 </div>
 
 <div class="limit">
