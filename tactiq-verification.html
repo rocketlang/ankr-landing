@@ -90,15 +90,40 @@ Nothing here is affiliated with that project.</p>
 
 <h2>What they reported</h2>
 
+<div class="limit">
+  <h3>Re-run backwards, 29 September, with the hardened checker</h3>
+  <p>A verifier that gets stronger should be re-pointed at everything it previously
+  passed. After the corrections and the attacks described below, both scripts were run
+  again from the oldest release forward:</p>
+  <p><strong>rc11 — 10 passed, 0 failed. rc12 — 12 passed, 0 failed. rc13 — 12 passed,
+  0 failed on artefacts and 24 passed, 0 failed on the L3 evidence.</strong> The same
+  numbers reported at the time, produced by a stricter script. Nothing previously passed
+  was retroactively invalidated.</p>
+  <p>rc11 and rc12 ship no L3 attestation evidence, and the L3 checker <em>refuses</em>
+  them — exit 2, nothing verified — rather than reporting a pass over absent evidence.</p>
+</div>
+
+
 <div class="res">
 v2.1.0-rc11 &nbsp;— 10 checks passed, 0 failed<br>
 v2.1.0-rc12 &nbsp;— 12 checks passed, 0 failed<br>
 v2.1.0-rc13 &nbsp;— 12 checks passed, 0 failed &nbsp;(release artefacts)<br>
-v2.1.0-rc13 &nbsp;— 22 checks passed, 0 failed &nbsp;(L3 attestation evidence)
+v2.1.0-rc13 &nbsp;— 24 checks passed, 0 failed &nbsp;(L3 attestation evidence)
 </div>
 
 <p>The release checker was written against rc11 and run unmodified against rc12 and rc13.
 A verifier adjusted until it passes is not a verifier.</p>
+
+<div class="limit">
+  <h3>Changed on 29 September, after this page was linked</h3>
+  <p>Readers arriving from elsewhere should know the page has moved since. Two changes,
+  one in each direction. The pinned Infineon root <strong>is now corroborated</strong>
+  against the copy Infineon itself publishes — byte-identical — so that limit is closed.
+  And a new limit is stated, which is <strong>ours and not the vendor's</strong>: the
+  release root this verification anchors at is not covered by the signed
+  <code>SHA256SUMS</code>, so it rests on one channel. Both are described in full below. A
+  sixth suggestion was added because of the second.</p>
+</div>
 
 <p>Two observations were raised against rc11: the release set carried no transparency-log
 evidence, so a signature checked after its ten-minute certificate expired said nothing
@@ -140,7 +165,7 @@ Three changes, all theirs:</p>
 </ul>
 
 <div class="res">
-genuine rc13 &nbsp;— 22 checks passed, 0 failed &nbsp;(was 15)<br>
+genuine rc13 &nbsp;— 24 checks passed, 0 failed &nbsp;(was 15)<br>
 the forged set &nbsp;— <strong>REJECTED</strong>: the record does not chain to the release root<br>
 swapped Infineon root — <strong>REJECTED</strong> by the pin<br>
 substituted EK certificate — <strong>REJECTED</strong>: does not match the signed record<br>
@@ -165,10 +190,17 @@ reported a genuine slot-B boot as drift.</p>
 <p>The script also refuses to use a release root found inside the archive at all: an anchor that
 travels with the thing it anchors is not an anchor.</p>
 
-<p>One limit remains and is stated in the script: the pinned Infineon fingerprint was first
-observed in the rc13 set, so it detects a <em>changed</em> root, not one forged before anyone
-looked. Comparing it against Infineon's own published root would close that, and is not done
-here.</p>
+<p>That pin was first observed in the rc13 set, which on its own would detect a
+<em>changed</em> root and not one forged before anyone looked. On 29 September it was
+compared against the copy Infineon itself publishes, at
+<code>pki.infineon.com/OptigaRsaRootCA/OptigaRsaRootCA.crt</code> — 1455 bytes DER, TLS
+chain verified, CN = Infineon OPTIGA(TM) RSA Root CA, serial 03, valid 2013 to 2043.
+<strong>Byte-identical to the copy in the evidence archive.</strong> The pin no longer
+rests on the vendor's own bundle.</p>
+
+<p>What that does not establish: that Infineon's own endpoint is uncompromised, and that
+the comparison was made in 2026 rather than in 2013. Independent, not absolute. The script
+itself stays offline — the fingerprint is hard-coded and nothing is fetched at run time.</p>
 
 <h2>Two fields in the registration record</h2>
 
@@ -212,6 +244,42 @@ say so until the record itself is changed.</p>
 </div>
 
 <div class="limit">
+  <h3>The release root — corrected 29 September, and now a check</h3>
+  <p><strong>This page previously said the release root was bound by nothing and that a run
+  trusted the release page alone. That was too broad, and the vendor corrected it.</strong>
+  The root is not listed in <code>SHA256SUMS</code> directly — but the signed reference
+  manifest carries its public-key hash at <code>keys.release_root.spki_sha256</code>, and
+  the manifest itself <em>is</em> covered by the Sigstore-signed sums.</p>
+
+  <p>Verified here rather than taken on his word: the root's SPKI SHA-256 is
+  <code>8ecf5465b921e80e…</code>, that exact value appears in
+  <code>rim-rock5a.json</code>, and the manifest's own digest
+  (<code>50bb82770fbf8655…</code>) matches the entry in the signed sums. <strong>So a root
+  swapped on the release page after the tag was signed is caught</strong> — and the checker
+  now catches it, rather than printing a caveat about it. A swapped root fails the run.</p>
+
+  <p><strong>A hole this correction opened, found by attacking it.</strong> The first
+  version of the check was circular: the manifest names the root, and the manifest's own
+  signature chains <em>to</em> that root, so an attacker who forged a root and re-signed
+  the manifest satisfied both. Demonstrated here before it was fixed. The property the
+  vendor described is a Sigstore one, and the checker now requires it: the manifest's
+  bytes must match the entry in the release <code>SHA256SUMS</code> — the file the
+  workflow signs with a Rekor inclusion proof — <em>before</em> anything it names is
+  used. Forged root plus re-signed manifest now fails.</p>
+
+  <p><strong>What still stands, narrower.</strong> The workflow and the release page are one
+  channel, so this establishes nothing against whoever controls the repository from the
+  start. For that, the fingerprint has to be confirmed somewhere the publisher does not
+  control. The vendor states he is putting it in the article and on the catalog, and notes
+  the catalog shares the same account — so that half is his to close, and he says so
+  himself.</p>
+
+  <p>He also reports a second binding, in the coverage file. <strong>That one is not
+  verified here</strong>: the file is not in the evidence archive we hold, so this page
+  records it as his statement and not as a check.</p>
+</div>
+
+<div class="limit">
   <h3>The transparency-log checkpoint signature is not verified</h3>
   <p>That needs the log's public key. The scripts recompute the root implied by the
   inclusion proof and compare it to the root the bundle states. Agreement proves the entry
@@ -221,7 +289,7 @@ say so until the record itself is changed.</p>
 
 <h2>What would let a stranger check more</h2>
 
-<p>Five observations from actually running the checks. None is a fault, and two the
+<p>Six observations from actually running the checks. None is a fault, and two the
 vendor has already stated himself — recorded because an outsider arriving at the same
 place independently is worth more than the suggestion. All five were put to the vendor
 directly as well. Nothing on this page reaches him from this page.</p>
@@ -241,7 +309,18 @@ directly as well. Nothing on this page reaches him from this page.</p>
 </div>
 
 <div class="limit">
-  <h3>2. Ship the transparency log's public key with the release <span style="font-weight:400;color:var(--muted)">— on the vendor's list</span></h3>
+  <h3>2. Publish the release root's fingerprint on a second surface</h3>
+  <p>The verification procedure already tells a reviewer to confirm the release root through
+  a channel independent of the release page. Today there is nowhere to do that: the root
+  arrives with the release, and it is not inside the signed <code>SHA256SUMS</code>. Printing
+  the fingerprint on a different host — the public catalog is one that already exists — would
+  turn a correct instruction into one a stranger can actually follow. Small, and it is the
+  other half of suggestion 1: signing the sums anchors the archive, publishing the root
+  anchors the anchor.</p>
+</div>
+
+<div class="limit">
+  <h3>3. Ship the transparency log's public key with the release <span style="font-weight:400;color:var(--muted)">— on the vendor's list</span></h3>
   <p>The smallest change of the five. The inclusion proof recomputes offline
   and agrees with the root the bundle states, but the checkpoint signature cannot be
   verified without the log's key — so the entry is provably consistent with that root,
@@ -250,7 +329,7 @@ directly as well. Nothing on this page reaches him from this page.</p>
 </div>
 
 <div class="limit">
-  <h3>3. <code>revocation_checked</code> is false</h3>
+  <h3>4. <code>revocation_checked</code> is false</h3>
   <p>The EK chain verifies to the pinned root, which is the hard part. Fetching the CRL at
   registration time and recording the result with the CRL's own timestamp would carry that
   evidence forward, so a check a year later gets it without a live lookup. <strong>Accepted
@@ -258,7 +337,7 @@ directly as well. Nothing on this page reaches him from this page.</p>
 </div>
 
 <div class="limit">
-  <h3>4. Build the images inside the workflow <span style="font-weight:400;color:var(--muted)">— acknowledged as the largest rung still open</span></h3>
+  <h3>5. Build the images inside the workflow <span style="font-weight:400;color:var(--muted)">— acknowledged as the largest rung still open</span></h3>
   <p>The vendor's own point: images are built on their machine and only the sums file is
   signed by CI, so the commit binds the signature rather than the build. Building in the
   workflow would extend provenance from the list to the artefacts. The largest rung still
@@ -266,7 +345,7 @@ directly as well. Nothing on this page reaches him from this page.</p>
 </div>
 
 <div class="limit">
-  <h3>5. A machine-readable verdict per release <span style="font-weight:400;color:var(--muted)">— on the vendor's list</span></h3>
+  <h3>6. A machine-readable verdict per release <span style="font-weight:400;color:var(--muted)">— on the vendor's list</span></h3>
   <p>The expected values live in prose today — the PCR selection, the digest, the
   power-cycle condition. A small <code>verify.json</code> carrying those and the list of
   checks would let any CI consume them, and would let the power-cycle condition be

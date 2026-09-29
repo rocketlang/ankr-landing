@@ -54,10 +54,22 @@ import sys
 # verifier. The anchor must be pinned here or supplied from outside the archive.
 
 # The Infineon OPTIGA(TM) RSA Root CA, by fingerprint of its DER encoding.
-# HONEST LIMIT: this value was first observed in the rc13 evidence set, so it
-# detects a CHANGED root, not a forged one that was forged before we ever looked.
-# Comparing it against Infineon's own published root is the step that would close
-# that, and it is not done here.
+#
+# PROVENANCE: this value was first observed in the rc13 evidence set, which on its own
+# would only detect a CHANGED root and not one forged before anyone looked. On
+# 2026-09-29 it was compared against the copy Infineon itself publishes:
+#
+#     https://pki.infineon.com/OptigaRsaRootCA/OptigaRsaRootCA.crt
+#     1455 bytes DER, TLS chain verified, CN = Infineon OPTIGA(TM) RSA Root CA,
+#     serial 03, valid 2013-07-26 to 2043-07-25 — BYTE-IDENTICAL to the archived copy.
+#
+# What that establishes: the root in the evidence archive is the one the manufacturer
+# publishes today, so the pin no longer rests on the vendor's own bundle alone.
+# What it does NOT establish: that Infineon's endpoint was not itself compromised, and
+# the comparison was made in 2026, not in 2013. Independent, not absolute.
+#
+# The check below stays OFFLINE by design — the fingerprint is hard-coded, nothing is
+# fetched at run time. Re-confirm the URL by hand if this script is ever revised.
 INFINEON_ROOT_SHA256 = "899e35474c9807eb4c7f2f7a12da0028fb250cd02154d0009fca7d9c66574f3b"
 
 # The role-specific EKU the Registration Signer must carry. `-purpose any` does not
@@ -151,6 +163,8 @@ def check_chains(e):
                                             capture_output=True).stdout).hexdigest()
         if got == INFINEON_ROOT_SHA256:
             ok("the Infineon root in the archive matches the pinned fingerprint")
+            note("the pin itself was corroborated 2026-09-29 against the copy Infineon "
+                 "publishes at pki.infineon.com — byte-identical")
         else:
             bad("the Infineon root in the archive is NOT the pinned root",
                 f"pinned {INFINEON_ROOT_SHA256[:24]}… archive {got[:24]}…")
@@ -484,6 +498,84 @@ def main():
         root = None
     if root:
         note(f"release root: {os.path.relpath(root, d)} (outside the archive)")
+        # WHERE THE TRUST NOW SITS. Moving the anchor out of the archive fixed the
+        # forgery, but it relocated the trust rather than removing it: this root is
+        # NOT listed in the Sigstore-signed SHA256SUMS, so nothing independent binds
+        # it. The vendor's own procedure says to confirm its fingerprint through a
+        # second channel. This script cannot do that for you — it prints the value so
+        # you can. A check you have to perform yourself is still a check; a check
+        # nobody names is not.
+        rd = subprocess.run(["openssl", "x509", "-in", root, "-outform", "DER"],
+                            capture_output=True).stdout
+        if rd:
+            note(f"release root sha256: {hashlib.sha256(rd).hexdigest()}")
+
+            # The vendor corrected an earlier, broader claim of ours (2026-09-29) and the
+            # correction is verified here rather than taken on his word. The root is not
+            # listed in SHA256SUMS directly — but the SIGNED RIM carries its SPKI hash at
+            # keys.release_root.spki_sha256, and the RIM itself IS in the signed sums.
+            # So a root swapped on the release page AFTER the tag was signed is caught.
+            # That turns what we published as an open limit into an actual check.
+            spki = subprocess.run(["openssl", "x509", "-in", root, "-pubkey", "-noout"],
+                                  capture_output=True).stdout
+            der = subprocess.run(["openssl", "pkey", "-pubin", "-outform", "DER"],
+                                 input=spki, capture_output=True).stdout
+            spki_sha = hashlib.sha256(der).hexdigest() if der else None
+            rim_path = os.path.join(d, "rim-rock5a.json")
+
+            # CIRCULARITY GUARD. The RIM names the release root, and the RIM's own CMS
+            # signature chains TO that root — so on its own the pair proves nothing: an
+            # attacker who forges a root and re-signs the RIM satisfies both. Found by
+            # attacking this file on 2026-09-29, after adding the spki check.
+            #
+            # The property the vendor actually described is a Sigstore one: the RIM is
+            # listed in the RELEASE SHA256SUMS, and that file is signed by the workflow
+            # with a Rekor inclusion proof. So the RIM's bytes must be pinned to the
+            # release sums BEFORE anything it says is used. Without this the spki check
+            # is decoration.
+            rim_pinned = False
+            rel_sums = os.path.join(d, "SHA256SUMS")
+            if os.path.exists(rim_path) and os.path.exists(rel_sums):
+                want = None
+                for line in open(rel_sums):
+                    parts = line.split()
+                    if len(parts) == 2 and parts[1] == "rim-rock5a.json":
+                        want = parts[0].lower()
+                got = hashlib.sha256(open(rim_path, "rb").read()).hexdigest()
+                if want is None:
+                    bad("rim-rock5a.json is not listed in the release SHA256SUMS",
+                        "nothing signed binds the RIM, so what it names cannot be trusted")
+                elif want != got:
+                    bad("rim-rock5a.json does NOT match the release SHA256SUMS",
+                        f"sums say {want[:24]}… file is {got[:24]}…")
+                else:
+                    ok("the RIM is pinned to the release SHA256SUMS (Sigstore-signed; "
+                       "the release checker verifies that signature)")
+                    rim_pinned = True
+            else:
+                bad("cannot pin the RIM to the release SHA256SUMS",
+                    "rim-rock5a.json or the release SHA256SUMS is absent")
+
+            declared = None
+            if rim_pinned:
+                try:
+                    declared = json.load(open(rim_path)).get("keys", {}).get("release_root", {}).get("spki_sha256")
+                except Exception:
+                    declared = None
+            if declared and spki_sha:
+                if declared == spki_sha:
+                    ok("the release root is bound INSIDE the signed RIM (spki_sha256 matches)")
+                else:
+                    bad("the release root does NOT match the one named in the signed RIM",
+                        f"RIM says {declared[:24]}… root is {spki_sha[:24]}…")
+            else:
+                # Absent is a FAILED check, never a skipped one.
+                bad("the signed RIM does not name a release_root spki_sha256",
+                    "cannot confirm the root against the signed set")
+
+            note("WHAT REMAINS: the workflow and the release page are ONE channel, so this "
+                 "catches a post-signing swap, not whoever controls the repository from the "
+                 "start. Confirm the fingerprint elsewhere for that.")
     else:
         note("no release-root-r2.pem found beside the release assets — anchored checks will FAIL")
 
