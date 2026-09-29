@@ -611,4 +611,23 @@ def main():
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    # A CRASH IS NOT A VERDICT. Malformed or truncated evidence used to raise, print a
+    # traceback and exit 1 — the same code as "checks failed", so a reader or a CI job
+    # could not tell a refusal from a result, and every check after the exception never
+    # ran. Found 2026-09-29 by feeding the published script garbage.
+    #
+    # Exit codes are now distinct and documented:
+    #   0  all checks passed
+    #   1  checks ran and at least one FAILED
+    #   2  refused to start (no evidence, bad arguments)
+    #   3  the checker itself broke — NOTHING was established, and this is not a pass
+    try:
+        sys.exit(main())
+    except SystemExit:
+        raise
+    except BaseException as e:
+        print(f"\n  THE CHECKER COULD NOT COMPLETE: {type(e).__name__}: {e}", file=sys.stderr)
+        print("  This is NOT a pass and NOT a failed check — the run was abandoned part way,", file=sys.stderr)
+        print("  so any check after this point never ran. Treat the evidence as unverified.", file=sys.stderr)
+        print("  (exit 3 = checker broke; 0 = passed, 1 = a check failed, 2 = refused to start)", file=sys.stderr)
+        sys.exit(3)

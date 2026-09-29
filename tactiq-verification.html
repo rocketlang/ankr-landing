@@ -225,6 +225,24 @@ say so until the record itself is changed.</p>
   CRL at registration time, with its own timestamp, goes into the next registration.</p>
 </div>
 
+<div class="limit">
+  <h3>A crash is not a verdict — exit codes, and a correction to something said elsewhere</h3>
+  <p>Fed malformed or truncated evidence, this checker used to raise, print a traceback and
+  <strong>exit 1 — the same code as "a check failed"</strong>. So a reader could not tell a
+  broken run from a result, and every check after the exception never ran. Found on
+  29 September by feeding the published script garbage, and fixed.</p>
+  <table>
+    <tr><td><code>0</code></td><td>all checks passed</td></tr>
+    <tr><td><code>1</code></td><td>checks ran and at least one <strong>failed</strong></td></tr>
+    <tr><td><code>2</code></td><td><strong>refused to start</strong> — no evidence present, or bad arguments. Nothing was verified</td></tr>
+    <tr><td><code>3</code></td><td><strong>the checker itself broke</strong> — the run was abandoned part way. Not a pass, not a failed check</td></tr>
+  </table>
+  <p>A note for anyone arriving from a message of mine that mentioned a crash: <strong>three
+  other defects found that day were in unrelated code of ours, not in either script on this
+  page.</strong> The one that belongs here is the one above, and it is fixed. Both scripts now
+  refuse rather than crash, and say which of the four things happened.</p>
+</div>
+
 <h2>Where the checks stop</h2>
 
 <div class="limit">
