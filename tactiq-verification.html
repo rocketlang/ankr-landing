@@ -146,6 +146,14 @@ Nothing here is affiliated with that project.</p>
   gives 23 and 5, both quotes failing, and names the exit code and the reason. The six
   altered copies are rejected again, with his archive hash pin in place and with it
   lifted in a test copy.</p>
+  <p><strong>One small thing of the same grade remains in the third revision, and it was
+  put to him directly on 2 October.</strong> Its fourth step fetches two Infineon
+  certificates with <code>curl</code> and without <code>-f</code>, so an HTTP error page
+  counts as a download. Given a stand-in <code>curl</code> that writes an HTML page and
+  exits 0, the script prints PASS for "Infineon CAs downloaded from Infineon", then fails
+  the EK chain and the root fingerprint and exits 1. The verdict is right; one line above
+  it is not. This case was built here. Infineon has not been seen to serve such a
+  page.</p>
   <p>The script is a release asset and is not among the files the signed
   <code>SHA256SUMS</code> lists, so the hash above is a second statement of it and not a
   signature over it. The two implementations still agree on everything we could
