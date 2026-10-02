@@ -93,23 +93,45 @@ Nothing here is affiliated with that project.</p>
 <h2>What they reported</h2>
 
 <div class="limit">
+  <h3>Corrected on 2 October: the artefact counts were each one short</h3>
+  <p>Until 2 October this page gave the release checker's results as 10, 12 and 12 checks
+  passed for rc11, rc12 and rc13. <strong>Run against a complete download of each release,
+  the same unmodified script reports 11, 13 and 13, with 0 failed.</strong> Those are the
+  numbers below.</p>
+  <p>Nothing that was checked was wrong, and no verdict changes. The earlier runs were made
+  on downloads that lacked one of the four boot input files, and the release checker
+  treats a file that is not there as a note — <code>not downloaded, not checked</code> —
+  and still exits 0. Measured rather than assumed: removing one input from the complete
+  rc13 set gives 12 again.</p>
+  <p><strong>That is a limit of the release checker as it stands, and it is ours.</strong>
+  It is the same fault we found in the L3 checker and removed on 29 September, where
+  absent evidence is now a failure; the release checker was not hardened with it. Until it is, download the whole release before running it. If the
+  output contains the words <code>not checked</code>, the count is short and the run is
+  not the one reported here.</p>
+  <p>It was found on 2 October while running the vendor's own newly published L3 script
+  beside ours, on fresh downloads. On the genuine rc13 evidence, and on six altered
+  copies of it, the two reached the same verdict.</p>
+</div>
+
+<div class="limit">
   <h3>Re-run backwards, 29 September, with the hardened checker</h3>
   <p>A verifier that gets stronger should be re-pointed at everything it previously
   passed. After the corrections and the attacks described below, both scripts were run
   again from the oldest release forward:</p>
-  <p><strong>rc11 — 10 passed, 0 failed. rc12 — 12 passed, 0 failed. rc13 — 12 passed,
-  0 failed on artefacts and 24 passed, 0 failed on the L3 evidence.</strong> The same
-  numbers reported at the time, produced by a stricter script. Nothing previously passed
-  was retroactively invalidated.</p>
+  <p><strong>rc11, rc12 and rc13 passed on artefacts with 0 failed, and rc13 passed
+  24, 0 failed on the L3 evidence.</strong> The verdicts were the ones reported at the
+  time, produced by a stricter script. Nothing previously passed was retroactively
+  invalidated. The artefact counts printed that day were 10, 12 and 12, from incomplete
+  downloads; see the correction above.</p>
   <p>rc11 and rc12 ship no L3 attestation evidence, and the L3 checker <em>refuses</em>
   them — exit 2, nothing verified — rather than reporting a pass over absent evidence.</p>
 </div>
 
 
 <div class="res">
-v2.1.0-rc11 &nbsp;— 10 checks passed, 0 failed<br>
-v2.1.0-rc12 &nbsp;— 12 checks passed, 0 failed<br>
-v2.1.0-rc13 &nbsp;— 12 checks passed, 0 failed &nbsp;(release artefacts)<br>
+v2.1.0-rc11 &nbsp;— 11 checks passed, 0 failed<br>
+v2.1.0-rc12 &nbsp;— 13 checks passed, 0 failed<br>
+v2.1.0-rc13 &nbsp;— 13 checks passed, 0 failed &nbsp;(release artefacts)<br>
 v2.1.0-rc13 &nbsp;— 24 checks passed, 0 failed &nbsp;(L3 attestation evidence)
 </div>
 
