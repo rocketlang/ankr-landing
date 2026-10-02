@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Inferred from what — a reader's check</title>
+<meta name="description" content="The longer form of two comments on refusal-removed models: one source read directly, the ship rules in their own words, and five things that would answer the question.">
+<style>
+  :root{
+    --paper:#F2F4F3; --surface:#FFFFFF; --ink:#111917; --body:#33403D; --muted:#5F6E6A;
+    --accent:#0E6355; --accent-soft:#DCEAE6; --rule:#CFD8D5; --hair:#E1E7E5;
+    color-scheme:light;
+  }
+  @media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+    --paper:#0B1110; --surface:#141D1B; --ink:#E9EFED; --body:#C2CDCA; --muted:#8A9995;
+    --accent:#52BCA5; --accent-soft:#16302B; --rule:#25322F; --hair:#1C2726;
+    color-scheme:dark; } }
+  :root[data-theme="dark"]{
+    --paper:#0B1110; --surface:#141D1B; --ink:#E9EFED; --body:#C2CDCA; --muted:#8A9995;
+    --accent:#52BCA5; --accent-soft:#16302B; --rule:#25322F; --hair:#1C2726;
+    color-scheme:dark; }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--body);
+    font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:760px;margin:0 auto;padding:48px 20px 72px}
+  h1,h2{color:var(--ink);margin:0;line-height:1.2;text-wrap:balance;
+    font-family:Georgia,"Times New Roman",serif}
+  h1{font-size:clamp(28px,6vw,40px);font-weight:600;letter-spacing:-.015em}
+  h2{font-size:20px;font-weight:600;margin-top:40px;padding-bottom:8px;
+    border-bottom:2px solid var(--ink)}
+  p{margin:14px 0;max-width:66ch}
+  .lede{font-family:Georgia,serif;font-style:italic;font-size:18px;color:var(--muted);
+    margin-top:14px;max-width:60ch}
+  a{color:var(--accent)}
+  code{font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:.9em;
+    background:var(--accent-soft);padding:1.5px 5px;border-radius:3px;color:var(--ink);
+    overflow-wrap:anywhere}
+  .res{background:var(--surface);border:1px solid var(--rule);border-left:3px solid var(--accent);
+    border-radius:4px;padding:14px 18px;margin:18px 0;font-family:ui-monospace,monospace;
+    font-size:14px;color:var(--ink);overflow-wrap:anywhere}
+  blockquote{margin:16px 0;padding:2px 0 2px 16px;border-left:3px solid var(--rule);
+    color:var(--ink);max-width:64ch}
+  blockquote .src{display:block;font-size:13.5px;color:var(--muted);margin-top:6px}
+  ul,ol{max-width:66ch;padding-left:22px}
+  li{margin:7px 0}
+  .limit{background:var(--surface);border:1px solid var(--rule);border-radius:5px;
+    padding:18px 20px;margin-top:20px}
+  .limit h3{margin:0 0 8px;color:var(--ink);font-size:16px}
+  .tw{overflow-x:auto;margin:16px 0}
+  table{border-collapse:collapse;font-size:14.5px;min-width:320px}
+  th,td{text-align:left;padding:7px 14px 7px 0;border-bottom:1px solid var(--hair)}
+  th{color:var(--ink);font-weight:600}
+  footer{margin-top:56px;padding-top:18px;border-top:1px solid var(--rule);
+    font-size:13.5px;color:var(--muted);max-width:66ch}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Inferred from what: a reader's check</h1>
+<p class="lede">The longer form of two comments left under an article on models that have
+had their refusals edited out. A comment is short and cannot be corrected once posted.
+This page can, and every change to it is dated.</p>
+
+<div class="limit">
+  <h3>Changes to this page</h3>
+  <p><strong>2 October 2026.</strong> First published.</p>
+</div>
+
+<h2>What this page is</h2>
+
+<p>An article published on 15 September 2026, "Capability Was Preserved. Inferred From
+What?", looks at open models whose refusal behaviour has been removed by editing the
+weights. Sellers of such models say the refusals went and everything else stayed. The
+article asks what measurement that second claim rests on.</p>
+
+<p>Two comments were posted under it on 2 October 2026. This page carries what did not fit
+in them: one of the article's sources read directly, with the lines anyone can check; the
+ship rules the comments lean on, in the rules' own words; five things that would answer
+the article's question; and what none of this establishes.</p>
+
+<p>Nothing here is affiliated with the article's author, with the publisher of the model
+card below, or with anyone else mentioned.</p>
+
+<h2>One source, read directly</h2>
+
+<p>The article cites the model card for
+<a href="https://huggingface.co/junafinity/Qwen-3.8-27B-Uncensored">Qwen-3.8-27B-Uncensored</a>.
+The card is unusually open about its own method, and it is to its credit that what follows
+can be read off it at all. It says of itself:</p>
+
+<blockquote>"Not independently benchmarked. No MMLU/GSM8K/HumanEval or vision-benchmark
+comparison against the base model has been run. Capability preservation is inferred from
+the KL objective alone."</blockquote>
+
+<blockquote>"Re-measure rather than trusting this card. The figures here come from a
+100-trial optimization on one prompt set. Your domain, prompts, and scoring will
+differ."</blockquote>
+
+<p>Three more lines from the same card, read together:</p>
+
+<div class="res">kl_target = 0.01&nbsp;&nbsp;# below this KL, switch to a refusal-only objective</div>
+
+<blockquote>"Trial scoring used the held-out <code>test</code> splits of the same two
+datasets, kept strictly separate from the estimation sets."</blockquote>
+
+<blockquote>"The optimizer ran 100 trials and selected trial 38 from the Pareto
+front."</blockquote>
+
+<p>The KL the card then reports, on the harmless set, is <strong>0.00971</strong>.</p>
+
+<p><strong>What follows from that.</strong> 0.00971 is just under the configured target of
+0.01. The split the card calls held-out is separate from the prompts used to find the
+refusal direction, and it is the split each of the hundred trials was scored on. So the
+reported figure shows that the search reached its target on the data it was choosing
+against. That is evidence the search worked. It is not an independent measurement, because
+a number that was steered to cannot also be the witness for where it ended up.</p>
+
+<p><strong>What does not follow.</strong> That this model lost capability. Nothing was run
+here, and the card may well be right that the edit is narrow. The point is only about what
+that one figure can carry.</p>
+
+<p>To repeat the reading:</p>
+
+<div class="res">curl -sL https://huggingface.co/junafinity/Qwen-3.8-27B-Uncensored/raw/main/README.md | grep -n -E "kl_target|Trial scoring|100 trials|0\.00971"</div>
+
+<p>A model card can be edited. The file as fetched on 2 October 2026 was 21,880 bytes with
+SHA-256 <code>fc3799874edfa233e05cce8ddab3a3ea2d02be5e77ffd5578304c04eb5d704bf</code>. If
+yours differs, the card has changed since and the lines above may have moved.</p>
+
+<h2>The ship rules, in their own words</h2>
+
+<p>The comments compare an edited model to an altered ship. The rules are quoted here so
+the comparison can be checked and not taken on trust.</p>
+
+<div class="limit">
+  <h3>After an alteration: when calculation stops being enough</h3>
+  <blockquote>"Where any alterations are made to a ship so as to materially affect the
+  stability information supplied to the master, amended stability information shall be
+  provided. If necessary the ship shall be re-inclined. The ship shall be re-inclined if
+  anticipated deviations exceed one of the values specified in paragraph 5."
+  <span class="src">SOLAS chapter II-1, regulation 5, paragraph 4</span></blockquote>
+  <p>Paragraph 5 gives the values: a deviation from the lightship displacement exceeding
+  2%, or a deviation of the longitudinal centre of gravity exceeding 1% of L.</p>
+  <p>So re-inclining is not automatic. Amended information is always owed. A small change
+  is handled by calculation. Past a stated deviation, a measurement is required. The rule
+  names the point where calculation stops being enough.</p>
+</div>
+
+<div class="limit">
+  <h3>Lifting gear: tested above its working load, and again after repair</h3>
+  <blockquote>"Every lifting appliance and every item of loose gear shall be tested in
+  accordance with national laws or regulations by a competent person before being put into
+  use for the first time and after any substantial alteration or repair to any part liable
+  to affect its safety."
+  <span class="src">ILO Convention 152, article 22, paragraph 1</span></blockquote>
+  <blockquote>"Load test means a test in excess of the SWL, carried out in the presence of
+  a competent person in order to check the structural integrity of the lifting appliance
+  and its attachment to and adequacy of its supporting structure."
+  <span class="src">IMO MSC.1/Circ.1663, guidelines for lifting appliances</span></blockquote>
+  <div class="tw"><table>
+    <tr><th>Safe working load</th><th>Minimum test load</th></tr>
+    <tr><td>up to 20 t</td><td>1.25 × SWL</td></tr>
+    <tr><td>over 20 t, up to 50 t</td><td>SWL + 5 t</td></tr>
+    <tr><td>over 50 t</td><td>1.10 × SWL</td></tr>
+  </table></div>
+  <p>The test load is heavier than anything the gear will be asked to lift. A test made
+  with a lighter weight would pass the gear and establish less than its certificate says.</p>
+</div>
+
+<div class="limit">
+  <h3>The stability booklet: what it is expected to carry</h3>
+  <p>The 2008 Intact Stability Code, part B, section 3.6.7, lists among the contents to
+  consider: "standard operating conditions and examples for developing other acceptable
+  loading conditions using the information contained in the stability booklet". Part B is
+  recommendation, not mandate.</p>
+</div>
+
+<p>These texts were read on a rules mirror
+(<a href="https://www.imorules.com/GUID-FD984AF7-304F-44E7-B7B5-6E9C23F7541A.html">regulation 5</a>,
+<a href="https://www.imorules.com/GUID-F110E663-2062-42ED-8FB3-3296D75149F4.html">article 22</a>,
+<a href="https://www.imorules.com/MSCCIRC_1663.html">Circ.1663</a>), not on the sites of
+the IMO or the ILO. Check them against a consolidated edition before relying on the
+wording.</p>
+
+<h2>What would answer the question</h2>
+
+<p>Five things, the first four owed by whoever ships the edited weights and the fifth by
+whoever uses them.</p>
+
+<ol>
+  <li><strong>Both models, side by side.</strong> The same questions, the same harness, the
+  same precision and settings, and both scores published. The card above already asks for
+  this: "Always report the base model alongside it."</li>
+  <li><strong>Tested on data the edit was not chosen against.</strong> A split that was
+  used to pick the winning trial is not available as evidence for it.</li>
+  <li><strong>Tested where care is the right answer.</strong> Law, compliance, and
+  questions whose honest answer is "I do not know", reported by subject and with the number
+  of questions under each figure. An average can stay nearly still while a few subjects
+  move a great deal.</li>
+  <li><strong>A list of what was not tested.</strong> A sheet that says "not tested:
+  multi-turn, non-English, tool use" is worth more than one that says nothing was lost.</li>
+  <li><strong>The user calibrates before signing.</strong> A firm that tests a client's
+  defences with an edited model should score that model against its base, on its own kind
+  of work, before it puts the client's name on a report. If the instrument is weaker than
+  assumed, a clean result overstates the defence.</li>
+</ol>
+
+<p>What ships have and edited models do not is the second sentence of the regulation: a
+stated deviation past which calculation is no longer accepted and a measurement is
+required. This page does not know what that threshold should be for a model. It only notes
+that none is written down.</p>
+
+<h2>What this page does not establish</h2>
+
+<ul>
+  <li><strong>Nothing was run.</strong> No model was loaded and no benchmark was
+  repeated. Everything above is a reading of published text.</li>
+  <li><strong>One model card was read, not all of them.</strong> The article cites three
+  cards from the same publisher. Only the 27B card was read for this page.</li>
+  <li><strong>The benchmark run mentioned in the second comment is one run.</strong> It was
+  made by one practitioner, who describes it as an observation and not a conclusion and
+  lists its own confounds. It is better read
+  <a href="https://ai-muninn.com/zh-TW/blog/tmmluplus-qwen-abliterated-cost">in his own words</a>
+  than through anyone's summary, including the comment's.</li>
+  <li><strong>The research papers the article cites were not read for this page.</strong></li>
+  <li><strong>The ship is an analogy.</strong> A ship's lightship weight is one number with
+  an agreed method for measuring it. A model's capability is neither. The comparison shows
+  what a rule with a threshold looks like, and proves nothing about models.</li>
+</ul>
+
+<footer>
+Written October 2026 by ANKR. Independent of the article's author and of the model's
+publisher. Offered as-is, and more useful to argue with than to trust.
+</footer>
+
+</div>
+</body>
+</html>
