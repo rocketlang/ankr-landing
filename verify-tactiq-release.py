@@ -16,7 +16,19 @@ It checks four things and says which one failed:
      components block
 
 Usage:  python3 verify-tactiq-release.py /path/to/release-dir
-Exit:   0 all checks passed · 1 something did not · 2 could not run the check
+Exit:   0 all checks passed · 1 a check failed · 2 refused to start, nothing verified
+        3 the checker itself broke, which is not a verdict
+
+Changed 2 October 2026. Until then a file that was not in the directory was a note and
+the run still exited 0, so an incomplete download passed with a shorter count. An absent
+file is now a failed check: every artefact SHA256SUMS lists, the signature material, the
+PCR reference and each of its inputs. The checks themselves are unchanged, and so is
+what a complete release reports.
+
+One absence is still a note and not a failure, on purpose: SHA256SUMS.sigstore.json.
+Releases before rc12 do not ship one, and the script reports that as an observation
+about the release. It follows that this script cannot tell a release that never had a
+bundle from a later one whose bundle was left out of the download.
 
 No dependencies beyond the standard library and `openssl` on PATH.
 """
@@ -79,18 +91,26 @@ def check_sums(d):
             bad(f"NOT covered by the signed sums: {tool}",
                 "the reference and the script that builds it should be inside the signature")
 
-    checked = 0
+    # An artefact the signed sums list and the directory lacks is NOT a note. A file
+    # that was never hashed has not been checked, and a count that is merely shorter
+    # reads as a pass.
+    agree = 0
+    wrong = 0
     for name, want in entries.items():
         f = os.path.join(d, name)
         if not os.path.exists(f):
+            bad(f"listed in SHA256SUMS but not present: {name}",
+                "absent evidence is not a passed check — download the whole release")
+            wrong += 1
             continue
         got = hashlib.sha256(open(f, "rb").read()).hexdigest()
-        checked += 1
         if got != want:
             bad(f"checksum mismatch: {name}", f"want {want}\n        got  {got}")
-    ok(f"{checked} present artefact(s) hash to their published value")
-    if checked < len(entries):
-        note(f"{len(entries) - checked} artefact(s) not downloaded — not checked")
+            wrong += 1
+        else:
+            agree += 1
+    if not wrong:
+        ok(f"{agree} present artefact(s) hash to their published value")
 
 
 # ── 2 + 3. signature and what the certificate attests ────────────────────────
@@ -99,8 +119,10 @@ def check_signature(d):
     sums = os.path.join(d, "SHA256SUMS")
     pem = os.path.join(d, "SHA256SUMS.workflow.pem")
     sig = os.path.join(d, "SHA256SUMS.workflow.sig")
-    if not all(os.path.exists(x) for x in (sums, pem, sig)):
-        note("signature material not present — skipping signature checks")
+    missing = [os.path.basename(x) for x in (sums, pem, sig) if not os.path.exists(x)]
+    if missing:
+        bad("signature material not present: " + ", ".join(missing),
+            "the signature over SHA256SUMS was NOT checked")
         return
 
     der = os.path.join(d, ".sig.der")
@@ -240,8 +262,8 @@ def check_transparency(d, cert_expired):
             bad("the signature was logged OUTSIDE the certificate's validity window",
                 f"logged {stamped:%Y-%m-%d %H:%M:%S}Z, valid {nb:%H:%M:%S}Z–{na:%H:%M:%S}Z")
     else:
-        note(f"logged at {stamped:%Y-%m-%d %H:%M:%S}Z — certificate window unreadable, "
-             f"so the two could not be compared")
+        bad(f"logged at {stamped:%Y-%m-%d %H:%M:%S}Z, but the certificate window is unreadable",
+            "the log time and the certificate's validity could NOT be compared")
 
     note("the checkpoint signature is NOT verified here — that needs Rekor's public key, "
          "so the root is recomputed but not proven to be the live log's")
@@ -289,7 +311,8 @@ def parse_fdt(buf):
 def check_reference(d):
     rp = os.path.join(d, "pcr-reference-rock5a.json")
     if not os.path.exists(rp):
-        note("no pcr-reference json present — skipping measurement checks")
+        bad("pcr-reference-rock5a.json not present",
+            "the boot measurements were NOT recomputed")
         return
     ref = json.load(open(rp))
     C = ref["components"]
@@ -299,7 +322,8 @@ def check_reference(d):
     for f, want in ref.get("inputs", {}).items():
         fp = os.path.join(d, f)
         if not os.path.exists(fp):
-            note(f"input not downloaded, not checked: {f}")
+            bad(f"published input not present: {f}",
+                "its hash was NOT compared with the reference")
             continue
         got = hashlib.sha256(open(fp, "rb").read()).hexdigest()
         (ok if got == want else bad)(f"published input hash: {f}")
@@ -325,7 +349,8 @@ def check_reference(d):
         except Exception as e:
             bad("could not parse u-boot.itb", str(e))
     else:
-        note("u-boot.itb not downloaded — image digests not independently read")
+        bad("u-boot-rock5a.itb not present",
+            "the measured image digests were NOT read out of the FIT")
 
     # Recompute every PCR. Algorithm per mk-pcr-reference.py: SPL S-CRTM into PCR0,
     # then the FIT images in load order, then U-Boot proper's S-CRTM and the FIT
@@ -375,11 +400,19 @@ def main():
         print(f"not a directory: {d}")
         sys.exit(2)
     print(f"\nverifying release artefacts in {d}\n")
-    check_sums(d)
-    print()
-    check_signature(d)
-    print()
-    check_reference(d)
+    # A crash is not a verdict. An exception used to leave through Python's own exit
+    # code 1 — the same code as a failed check — with every later check never run.
+    try:
+        check_sums(d)
+        print()
+        check_signature(d)
+        print()
+        check_reference(d)
+    except Exception as e:
+        print(f"\n  BROKE  the checker itself failed: {type(e).__name__}: {e}")
+        print(f"  {ok_count} check(s) had passed and {bad_count} had failed before it broke.")
+        print("  This is NOT a verdict on the release.\n")
+        sys.exit(3)
     print(f"\n  {ok_count} check(s) passed, {bad_count} failed\n")
     sys.exit(1 if bad_count else 0)
 
