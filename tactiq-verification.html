@@ -125,7 +125,7 @@ Nothing here is affiliated with that project.</p>
 </div>
 
 <div class="limit">
-  <h3>Added on 2 October: the vendor's third revision of his script, run beside ours</h3>
+  <h3>Added on 2 October: the vendor's third and fourth revisions of his script, run beside ours</h3>
   <p>The script run beside ours above was the vendor's second revision. Running it turned
   up one thing in its quote step, which was put to him directly: it read the output of
   <code>tpm2_checkquote</code> for the word <code>ERROR</code> instead of testing its exit
@@ -146,18 +146,42 @@ Nothing here is affiliated with that project.</p>
   gives 23 and 5, both quotes failing, and names the exit code and the reason. The six
   altered copies are rejected again, with his archive hash pin in place and with it
   lifted in a test copy.</p>
-  <p><strong>One small thing of the same grade remains in the third revision, and it was
-  put to him directly on 2 October.</strong> Its fourth step fetches two Infineon
+  <p><strong>One small thing of the same grade remained in the third revision, and it was
+  put to him directly on 2 October.</strong> Its fourth step fetched two Infineon
   certificates with <code>curl</code> and without <code>-f</code>, so an HTTP error page
-  counts as a download. Given a stand-in <code>curl</code> that writes an HTML page and
-  exits 0, the script prints PASS for "Infineon CAs downloaded from Infineon", then fails
-  the EK chain and the root fingerprint and exits 1. The verdict is right; one line above
-  it is not. This case was built here. Infineon has not been seen to serve such a
+  counted as a download. Given a stand-in <code>curl</code> that writes an HTML page and
+  exits 0, the script printed PASS for "Infineon CAs downloaded from Infineon", then
+  failed four checks and exited 1: the EK chain, the root fingerprint, the issuing CA
+  against the record, and the record's root hash. The verdict was right; one line above
+  it was not. This case was built here. Infineon has not been seen to serve such a
   page.</p>
-  <p>The script is a release asset and is not among the files the signed
-  <code>SHA256SUMS</code> lists, so the hash above is a second statement of it and not a
-  signature over it. The two implementations still agree on everything we could
-  construct. Our own scripts did not change for this; the numbers below stand.</p>
+  <p><strong>Corrected later on 2 October: four checks, not two.</strong> This paragraph
+  first said the run then failed "the EK chain and the root fingerprint". It failed four.
+  The vendor gave the right count; our own output had shown all four, and two were
+  reported. The count is corrected above.</p>
+  <p><strong>He fixed that one the same day as well.</strong>
+  <code>verify-l3-rc13-v4.sh</code> is in the rc13 release, SHA-256
+  <code>6d31566ebff649c5415190b835b7a9949958dae6178736c342bf1bbcaab12907</code>, the value
+  he gave. Against the third revision it differs in the fourth step and nowhere else: both
+  downloads use <code>-f</code> and both files must parse as certificates, or the script
+  takes the copies in the archive and reports the independence of the EK chain as not
+  established, as it does when Infineon cannot be reached. Checked here on a fresh
+  download: on the genuine rc13 evidence it exits 0 with 28 passed, 0 failed and 11 not
+  established offline, and 29, 0 and 10 with Infineon reachable, the same lines as the
+  third revision both ways. The stand-in <code>curl</code> above, and one that exits 22
+  as <code>-f</code> does on an error page, both fall back and pass the rest. A stand-in
+  that returns a well-formed certificate that is not Infineon's fails four checks and
+  exits 1, which is the right answer to a wrong certificate. Missing and broken tools,
+  and the six altered copies, are rejected as before.</p>
+  <p>He recorded both findings, and a withdrawn disclosure of his own, in an errata in
+  his repository:
+  <a href="https://github.com/revenue7-eng/tactiq-os/blob/main/docs/release-notes/v2.1.0-rc13-errata.md">v2.1.0-rc13-errata.md</a>.
+  It is his document and is not summarised here.</p>
+  <p>The scripts are release assets and are not among the files the signed
+  <code>SHA256SUMS</code> lists, so the hashes above are a second statement of them and
+  not a signature over them. His errata says the next release will list them. The two
+  implementations still agree on everything we could construct. Our own scripts did not
+  change for this; the numbers below stand.</p>
 </div>
 
 <div class="limit">
