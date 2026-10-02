@@ -125,6 +125,34 @@ Nothing here is affiliated with that project.</p>
 </div>
 
 <div class="limit">
+  <h3>Added on 2 October: the vendor's third revision of his script, run beside ours</h3>
+  <p>The script run beside ours above was the vendor's second revision. Running it turned
+  up one thing in its quote step, which was put to him directly: it read the output of
+  <code>tpm2_checkquote</code> for the word <code>ERROR</code> instead of testing its exit
+  status, so with <code>tpm2-tools</code> missing, or present and unable to load, the two
+  quote lines printed PASS. <strong>The verdict was never wrong</strong> — the run still
+  exited 1 on other checks — but two lines above it were. It is the same shape as our own
+  fault corrected above: a check that could not run, scored as one that passed.</p>
+  <p><strong>He fixed it the same day.</strong> <code>verify-l3-rc13-v3.sh</code> is in
+  the rc13 release, and its header says what changed and why. Checked here rather than
+  taken on trust, offline, on a fresh download:</p>
+  <p>The file's SHA-256 is
+  <code>a238cef33d0fc279ef141dd2045d824a414dfa12e9a456f842ef15ea99e7e981</code>, the value
+  he gave. Against the second revision it differs in the quote step, the tamper self-test
+  and the reading of the PCR digest, and nowhere else. On the genuine rc13 evidence it
+  exits 0 with 28 passed, 0 failed and 11 not established, the same lines as before; ours
+  reports 24 passed, 0 failed. With <code>tpm2-tools</code> missing, or unable to load,
+  the second revision gave 25 passed and 3 failed with both quotes passing; the third
+  gives 23 and 5, both quotes failing, and names the exit code and the reason. The six
+  altered copies are rejected again, with his archive hash pin in place and with it
+  lifted in a test copy.</p>
+  <p>The script is a release asset and is not among the files the signed
+  <code>SHA256SUMS</code> lists, so the hash above is a second statement of it and not a
+  signature over it. The two implementations still agree on everything we could
+  construct. Our own scripts did not change for this; the numbers below stand.</p>
+</div>
+
+<div class="limit">
   <h3>Re-run backwards, 29 September, with the hardened checker</h3>
   <p>A verifier that gets stronger should be re-pointed at everything it previously
   passed. After the corrections and the attacks described below, both scripts were run
