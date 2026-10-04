@@ -28,6 +28,11 @@ private EK. So the AK-to-TPM link here rests on the registrar's signed statement
 the vendor discloses himself. This script verifies that the statement is properly signed.
 It does not, and cannot, verify that the statement is true.
 
+THIS CHECK HAS AN END DATE. The signing CA expires on 23 September 2029. After that the
+chain checks fail, and they are printed as EXPIRED, apart from "does NOT chain": the chain
+and signature are sound and only the date is wrong. That is still a failure and still
+exit 1, because nothing in these files shows when the signature was made.
+
 Usage:  python3 verify-tactiq-l3.py /path/to/rc13-dir
 Exit:   0 all checks passed · 1 something did not · 2 could not run the check
 """
@@ -97,6 +102,8 @@ REQUIRED = [
 
 ok_count = 0
 bad_count = 0
+date_count = 0          # failures that are the date only; each is also in bad_count
+root_confirmed = False  # the release root matched the one named in the pinned RIM
 
 
 def ok(msg):
@@ -119,6 +126,37 @@ def note(msg):
 
 def sh(*args):
     return subprocess.run(args, capture_output=True, text=True)
+
+
+# An expired certificate and a forged one used to print the same line. The signing CA
+# for rc13 expires on 23 September 2029; from that day this script failed three checks
+# with "does NOT chain", the words it uses for a forgery, on files that had not changed.
+# Measured 2026-10-04 by running it with the verification date set either side.
+#
+# The two are now told apart by running the failed verification a second time with
+# validity dates ignored. If that passes, the chain and the signature are sound and only
+# the date is wrong. A forged or altered set fails both runs, so it can never be reported
+# as merely expired. It is STILL A FAILURE and the exit code is still 1: the files carry
+# no signing time, so nothing shows the signature was made while the certificate was valid.
+#
+# ONLY AN ANCHORED CHECK MAY SAY IT. "Sound except for the date" is a statement about
+# the trust anchor, so it is refused unless the anchor was itself confirmed in this run:
+# the pinned Infineon root, or a release root that matched the one named in the pinned
+# RIM. A substituted root with an expired chain of its own is a forgery, not an expiry.
+def only_the_date(args, r, anchored):
+    if r.returncode == 0 or not anchored:
+        return False
+    return sh(*args[:2], "-no_check_time", *args[2:]).returncode == 0
+
+
+def bad_date(what, r):
+    global date_count
+    date_count += 1
+    word = "NOT YET VALID" if "not yet valid" in (r.stdout + r.stderr) else "EXPIRED"
+    bad(f"{word}: {what} is sound except for the date",
+        "a certificate in the chain is outside its validity dates. This is not evidence "
+        "of alteration, and it is NOT a pass: nothing in these files shows the signature "
+        "was made while the certificate was valid")
 
 
 # ── 1. the archive's own sums ────────────────────────────────────────────────
@@ -171,16 +209,20 @@ def check_chains(e):
             return
 
     if all(os.path.exists(x) for x in (ek, inter, root)):
-        r = sh("openssl", "verify", "-partial_chain", "-trusted", root,
-               "-untrusted", inter, "-inform", "DER", ek)
+        a = ["openssl", "verify", "-partial_chain", "-trusted", root,
+             "-untrusted", inter, "-inform", "DER", ek]
+        r = sh(*a)
         # openssl wants PEM for -inform on verify in some builds; convert and retry
         if r.returncode != 0:
             pem = os.path.join(e, "_ek.pem")
             sh("openssl", "x509", "-inform", "DER", "-in", ek, "-out", pem)
-            r = sh("openssl", "verify", "-partial_chain", "-trusted", root,
-                   "-untrusted", inter, pem)
+            a = ["openssl", "verify", "-partial_chain", "-trusted", root,
+                 "-untrusted", inter, pem]
+            r = sh(*a)
         if r.returncode == 0:
             ok("EK certificate chains to the pinned Infineon root via the intermediate")
+        elif only_the_date(a, r, True):     # the root matched the pin, checked above
+            bad_date("the EK certificate's chain to the pinned Infineon root", r)
         else:
             bad("EK certificate does NOT chain to the pinned root",
                 (r.stdout + r.stderr).strip().splitlines()[-1] if (r.stdout + r.stderr).strip() else "")
@@ -189,6 +231,11 @@ def check_chains(e):
 
     signer, ca = os.path.join(e, "reg-signer.pem"), os.path.join(e, "signing-ca.pem")
     if os.path.exists(signer) and os.path.exists(ca):
+        # No EXPIRED verdict here, on purpose. This check trusts the archive's own CA, so
+        # "sound except for the date" would be said of a forged set too: the forgery kept
+        # as a test case has a CA of its own that has since expired, and the first version
+        # of the date check called it merely expired. Only checks anchored outside the
+        # archive may say that. openssl's own reason is still printed underneath.
         r = sh("openssl", "verify", "-partial_chain", "-trusted", ca, signer)
         if r.returncode == 0:
             ok("registration signer chains to the signing CA")
@@ -228,6 +275,10 @@ def check_registration_sig(e, root):
     r = sh(*args)
     if r.returncode == 0:
         ok("the registration record's signature chains to the RELEASE ROOT (not the archive's CA)")
+    elif only_the_date(args, r, root_confirmed):
+        bad_date("the registration record's signature, anchored at the release root,", r)
+        note("the signer-identity and key-usage checks that follow were NOT run")
+        return
     else:
         bad("the registration record does NOT chain to the release root",
             (r.stderr or r.stdout).strip().splitlines()[-1] if (r.stderr or r.stdout).strip() else "")
@@ -262,9 +313,12 @@ def check_registration_sig(e, root):
         else:
             bad("the Registration Signer does NOT carry the expected EKU",
                 f"expected {REG_SIGNER_EKU_OID}, cert says: {' '.join(eku.split())[:80]}")
-        chain = sh("openssl", "verify", "-CAfile", root, "-untrusted", inter, signer)
+        a = ["openssl", "verify", "-CAfile", root, "-untrusted", inter, signer]
+        chain = sh(*a)
         if chain.returncode == 0:
             ok("the Registration Signer chains to the release root")
+        elif only_the_date(a, chain, root_confirmed):
+            bad_date("the Registration Signer's chain to the release root", chain)
         else:
             bad("the Registration Signer does NOT chain to the release root",
                 (chain.stdout + chain.stderr).strip().splitlines()[-1])
@@ -444,10 +498,13 @@ def check_rim_sig(d, e, root):
         bad("no release root supplied — the RIM cannot be anchored",
             "release-root-r2.pem is a published RELEASE asset; it is not in the evidence archive")
         return
-    r = sh("openssl", "cms", "-verify", "-binary", "-inform", "DER", "-in", p7s,
-           "-content", rim, "-CAfile", root, "-purpose", "any", "-out", os.devnull)
+    a = ["openssl", "cms", "-verify", "-binary", "-inform", "DER", "-in", p7s,
+         "-content", rim, "-CAfile", root, "-purpose", "any", "-out", os.devnull]
+    r = sh(*a)
     if r.returncode == 0:
         ok("the RIM's signature chains to the release root")
+    elif only_the_date(a, r, root_confirmed):
+        bad_date("the RIM's signature, anchored at the release root,", r)
     else:
         bad("the RIM does NOT chain to the release root",
             (r.stderr or r.stdout).strip().splitlines()[-1] if (r.stderr or r.stdout).strip() else "")
@@ -565,6 +622,8 @@ def main():
             if declared and spki_sha:
                 if declared == spki_sha:
                     ok("the release root is bound INSIDE the signed RIM (spki_sha256 matches)")
+                    global root_confirmed
+                    root_confirmed = True
                 else:
                     bad("the release root does NOT match the one named in the signed RIM",
                         f"RIM says {declared[:24]}… root is {spki_sha[:24]}…")
@@ -606,6 +665,10 @@ def main():
             if k in r and r[k] is False:
                 note(f"the record itself declares {k} = false")
 
+    if date_count:
+        note(f"{date_count} of the {bad_count} failure(s) are the date only: the chain and "
+             "signature are sound but a certificate is outside its validity dates. They "
+             "count as failures and the exit code is 1.")
     print(f"\n  {ok_count} check(s) passed, {bad_count} failed\n")
     return 0 if bad_count == 0 else 1
 

@@ -388,6 +388,21 @@ say so until the record itself is changed.</p>
   script, and it holds for ours too. The signature on the registration record carries no
   signing time, so nothing in these files lets a later reader show that it was made while
   the certificate was valid.</p>
+  <p><strong>Changed later on 4 October: the script now says which it is.</strong> A failed
+  chain check is run a second time with validity dates ignored. If that passes, the line is
+  printed as <code>EXPIRED</code>, apart from <code>does NOT chain</code>. It is still a
+  failure and the exit code is still 1. Measured the same way, two seconds after the
+  expiry: 18 passed, 3 failed as before, with two of the three now printed as expired. The
+  third keeps its old wording, with OpenSSL's reason under it, because that check trusts
+  the certificate authority shipped inside the evidence archive, and an expired forgery
+  would read the same there.</p>
+  <p>We found that last point by attacking the change the hour it was written. Its first
+  version called a forged set kept from 29 September "expired", because the forger's own
+  certificates had since run out. The label is now refused unless the trust anchor was
+  itself confirmed in the same run. On seven kept attack sets and five fresh ones, today
+  and at a date in 2030, every altered or forged item still prints
+  <code>does NOT</code>, and the label appears only on items that were not touched. The
+  date was set through OpenSSL's own option, not by changing the machine's clock.</p>
 </div>
 
 <div class="limit">
