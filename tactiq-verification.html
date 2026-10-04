@@ -101,6 +101,12 @@ Nothing here is affiliated with that project.</p>
   checks themselves are listed under "Where the checks stop" below.</p>
 </div>
 
+<div class="limit">
+  <h3>Added on 4 October: a link in the footer</h3>
+  <p>The footer now links to the page that says who does this checking and how. Nothing
+  else on this page changed.</p>
+</div>
+
 
 
 <h2>What they reported</h2>
@@ -369,6 +375,22 @@ say so until the record itself is changed.</p>
 <h2>Where the checks stop</h2>
 
 <div class="limit">
+  <h3>Added on 4 October: this check has an end date</h3>
+  <p>The signing CA certificate, under which both the registration record and the reference
+  values are signed, expires on 23 September 2029. After that date
+  <code>verify-tactiq-l3.py</code> reports three failures on the same rc13 files that pass
+  today, and it words them as it would a forgery. <strong>It does not tell an expired
+  certificate from an altered record.</strong> Measured, not argued: the unmodified script
+  was run offline with OpenSSL's verification date set one second before the expiry
+  (24 passed, 0 failed) and two seconds after it (18 passed, 3 failed).</p>
+  <p>Why this is added now: the vendor said publicly that the record stops verifying in 2029
+  and carries no outside proof of when it was signed. We checked that against our own
+  script, and it holds for ours too. The signature on the registration record carries no
+  signing time, so nothing in these files lets a later reader show that it was made while
+  the certificate was valid.</p>
+</div>
+
+<div class="limit">
   <h3>Credential activation cannot be replayed by a third party</h3>
   <p>It requires the TPM's private endorsement key. The link between the attestation key
   and the physical TPM therefore rests on the registrar's signed statement. These scripts
@@ -518,7 +540,8 @@ does it — and says where it stops.</p>
 <footer>
 Written September 2026 by ANKR. Independent of TactiQ AI; published because a check nobody
 can repeat is not much of a check. The scripts are offered as-is, under no warranty, and
-are more useful to argue with than to trust.
+are more useful to argue with than to trust. Who is checking, and how:
+<a href="/how-i-verify.html">How I verify</a>.
 </footer>
 
 </div>
