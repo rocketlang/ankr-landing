@@ -107,6 +107,38 @@ Nothing here is affiliated with that project.</p>
   else on this page changed.</p>
 </div>
 
+<div class="limit">
+  <h3>Added on 5 October: a cold-start and a warm-reboot quote, checked</h3>
+  <p>Why this is added: on 5 October the vendor linked this page from a public post, beside
+  a pair of signed quotes it had published on 2 October. A reader arriving from that post
+  could take this page to cover them. Until today it did not.</p>
+  <p>The pair is two TPM quotes from the vendor's bench board running a development loader,
+  one taken after a cold start and one after a restart with the power kept on. <strong>They
+  are not part of rc11, rc12 or rc13, and nothing here speaks to the release
+  loader.</strong> We checked them with a fresh checker written from the file formats,
+  without the vendor's tools, offline. The vendor's own script was read to learn the layout
+  of one file and was not used for the result.</p>
+  <p><strong>32 checks passed, 0 failed.</strong> Both quotes verify under the same
+  attestation key as rc13. The signed reset counter is 242 in the first quote and 243 in the
+  second, so the TPM did reset across the warm restart, which is the vendor's finding. The
+  boot measurements, PCR 0 to 9, are identical in the two. The measurement logs replay to
+  the quoted values of PCR 10, 11 and 12.</p>
+  <p>Two things the files show beyond the vendor's note. The TPM's own clock, inside each
+  signed quote, is later in the second by 119,292 milliseconds, so the order of the two and
+  the gap between them rest on signed evidence. And the first entry of each log equals the
+  hash of the quoted PCR 0 to 9, which ties each log to its quote.</p>
+  <p>Not established: the date of either quote, since the qualifying data is a fixed label
+  and not a challenge, as the vendor says himself; why the TPM reset; who published the
+  files, which nothing signs but the quotes themselves; and anything about the rc13 release
+  loader.</p>
+  <p>Our checker had two gaps of its own, found by attacking it the same hour and closed. A
+  bit flipped in the unused space of one file still passed. And with no rc13 files to
+  compare against, the key came from the same folder as the quotes it verified. After that,
+  18 altered, swapped, cut-short and missing inputs each failed or were refused. The vendor
+  was sent the result privately before this was added. The checker itself is not published
+  here.</p>
+</div>
+
 
 
 <h2>What they reported</h2>
