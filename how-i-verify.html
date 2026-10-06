@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>How I verify — the terms of an independent check</title>
+<meta name="description" content="The terms under which I check other people's published work: from the specification and not their tooling, told to them first, published pass or fail, and never an endorsement.">
+<style>
+  :root{
+    --paper:#F2F4F3; --surface:#FFFFFF; --ink:#111917; --body:#33403D; --muted:#5F6E6A;
+    --accent:#0E6355; --accent-soft:#DCEAE6; --rule:#CFD8D5; --hair:#E1E7E5;
+    color-scheme:light;
+  }
+  @media (prefers-color-scheme:dark){ :root:not([data-theme="light"]){
+    --paper:#0B1110; --surface:#141D1B; --ink:#E9EFED; --body:#C2CDCA; --muted:#8A9995;
+    --accent:#52BCA5; --accent-soft:#16302B; --rule:#25322F; --hair:#1C2726;
+    color-scheme:dark; } }
+  :root[data-theme="dark"]{
+    --paper:#0B1110; --surface:#141D1B; --ink:#E9EFED; --body:#C2CDCA; --muted:#8A9995;
+    --accent:#52BCA5; --accent-soft:#16302B; --rule:#25322F; --hair:#1C2726;
+    color-scheme:dark; }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--body);
+    font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:760px;margin:0 auto;padding:48px 20px 72px}
+  h1,h2{color:var(--ink);margin:0;line-height:1.2;text-wrap:balance;
+    font-family:Georgia,"Times New Roman",serif}
+  h1{font-size:clamp(28px,6vw,40px);font-weight:600;letter-spacing:-.015em}
+  h2{font-size:20px;font-weight:600;margin-top:40px;padding-bottom:8px;
+    border-bottom:2px solid var(--ink)}
+  p{margin:14px 0;max-width:66ch}
+  .lede{font-family:Georgia,serif;font-style:italic;font-size:18px;color:var(--muted);
+    margin-top:14px;max-width:60ch}
+  a{color:var(--accent)}
+  code{font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:.9em;
+    background:var(--accent-soft);padding:1.5px 5px;border-radius:3px;color:var(--ink);
+    overflow-wrap:anywhere}
+  .res{background:var(--surface);border:1px solid var(--rule);border-left:3px solid var(--accent);
+    border-radius:4px;padding:14px 18px;margin:18px 0;font-family:ui-monospace,monospace;
+    font-size:14px;color:var(--ink);overflow-wrap:anywhere}
+  blockquote{margin:16px 0;padding:2px 0 2px 16px;border-left:3px solid var(--rule);
+    color:var(--ink);max-width:64ch}
+  blockquote .src{display:block;font-size:13.5px;color:var(--muted);margin-top:6px}
+  ul,ol{max-width:66ch;padding-left:22px}
+  li{margin:7px 0}
+  .limit{background:var(--surface);border:1px solid var(--rule);border-radius:5px;
+    padding:18px 20px;margin-top:20px}
+  .limit h3{margin:0 0 8px;color:var(--ink);font-size:16px}
+  .tw{overflow-x:auto;margin:16px 0}
+  table{border-collapse:collapse;font-size:14.5px;min-width:320px}
+  th,td{text-align:left;padding:7px 14px 7px 0;border-bottom:1px solid var(--hair)}
+  th{color:var(--ink);font-weight:600}
+  footer{margin-top:56px;padding-top:18px;border-top:1px solid var(--rule);
+    font-size:13.5px;color:var(--muted);max-width:66ch}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>How I verify</h1>
+<p class="lede">The terms under which I check other people's published work. They are
+written down so that anyone whose work I look at knows them beforehand, and so that a
+reader knows what a result from me does and does not mean.</p>
+
+<div class="limit">
+  <h3>Changes to this page</h3>
+  <p><strong>4 October 2026.</strong> First published.</p>
+  <p><strong>Later on 4 October.</strong> Added the section "Who is checking" and a fourth
+  worked example. Nothing else changed.</p>
+  <p><strong>Corrected later on 4 October.</strong> "Who is checking" first described
+  all the years ashore as spent building software for shipping. That was wrong. They were spent
+  in ports, container operations, logistics and advisory work, and about 17 of the 44
+  years have been in technology. The section now says so.</p>
+  <p><strong>Later again on 4 October.</strong> Added a fifth worked example, a maritime
+  one.</p>
+  <p><strong>Later again on 4 October, after the correction.</strong> Added a sixth worked
+  example, on an incident at a government statistics portal. Nothing else changed. (This
+  line first said "a fifth": two examples were added within minutes of each other, and it
+  was miscounted.)</p>
+  <p><strong>6 October 2026.</strong> Added a seventh worked example, a reading of eleven
+  investigation reports published under the name ANKR Research Desk. Nothing else
+  changed.</p>
+</div>
+
+<h2>The short version</h2>
+<ul>
+  <li>I work from the <strong>written specification and the published files</strong>, not
+  from the maker's own tooling.</li>
+  <li>The maker <strong>hears the result first</strong>, pass or fail.</li>
+  <li>A result is <strong>a result, not an endorsement</strong>.</li>
+  <li>Every result says <strong>what it does not establish</strong>.</li>
+  <li>When I am wrong, the correction is <strong>dated and left in view</strong>.</li>
+</ul>
+
+<h2>What I do</h2>
+<div class="limit">
+  <h3>1. A second implementation</h3>
+  <p>If a maker's own script agrees with the maker's own release, little has been learned.
+  I write a separate check from the specification and the file formats, and run that. I
+  read the maker's script when it is the only place a rule is written down, and I say so
+  when I have.</p>
+</div>
+<div class="limit">
+  <h3>2. Count the data, do not relay the summary</h3>
+  <p>Where raw data is public, I download it, check it against its published checksums and
+  count it. A figure on one of these pages marked "counted" was counted here. A figure I
+  am repeating from someone else is attributed to them.</p>
+</div>
+<div class="limit">
+  <h3>3. Compute it, quote it, or leave it out</h3>
+  <p>Each statement is one of three things: something I computed, something I am quoting
+  with its source, or something I leave unsaid. What I did not read is listed as not
+  read.</p>
+</div>
+<div class="limit">
+  <h3>4. The check is not adjusted until it passes</h3>
+  <p>A check written against one release is run unchanged against the next. If it stops
+  fitting, that is reported as a refusal. It is not quietly rewritten to agree.</p>
+</div>
+<div class="limit">
+  <h3>5. I attack my own check before anyone relies on it</h3>
+  <p>The same hour a check is written, I feed it altered files, missing files and
+  garbage. Missing evidence must count as a failure, not as a note. A check that crashes
+  must say that it crashed and not look like a verdict, so each outcome has its own exit
+  code: passed, failed, refused, broke.</p>
+</div>
+
+<h2>What a result means</h2>
+<p>It means that on a stated date, the files as published agreed with the specification
+as written, in the respects listed. Nothing more.</p>
+<ul>
+  <li>It is not a statement that the product is secure, safe or fit for any purpose.</li>
+  <li>It is not a statement about files published later, or about a unit in the field.</li>
+  <li>"I could not break it" is a different sentence from "it cannot be broken".</li>
+  <li>Each check prints its own limits on every run, next to the result, so the two travel
+  together.</li>
+</ul>
+
+<h2>Who hears first</h2>
+<p>The person whose work it is hears the result from me privately before anything is
+public, whether it passed or failed. I do not publish a result its owner has not heard.
+If the work reached me by a route other than its maker, I say so, and the same rule
+holds.</p>
+<p>What is published afterwards is what was found. A failure is not softened and a pass
+is not dressed up. Please ask before quoting a result.</p>
+
+<h2>When I am wrong</h2>
+<p>It has happened, and a maker has found faults in my check that I had missed. Those
+faults are described on the page where the check is published, with the date and with
+credit to whoever found them. A corrected page keeps a dated line saying what changed.
+Nothing is silently replaced.</p>
+<p>The dated claims on these pages are also rechecked every day against their outside
+sources: whether an identifier has since entered a list, whether a paper has a newer
+version, whether published checksums have changed, whether the page served is the page
+written. A claim that stops holding gets a dated correction.</p>
+
+<h2>Independence, and its limits</h2>
+<ul>
+  <li><strong>No one has paid for a check, and none is for sale.</strong> That is the
+  position as of October 2026.</li>
+  <li>I am not affiliated with any party whose work appears on these pages.</li>
+  <li>ANKR builds software of its own, some of it in neighbouring fields. That is a reason
+  to check my work, not a reason to trust it. The scripts and the steps are published so
+  that you can.</li>
+  <li>I do not rank makers against each other, and I do not publish a critique of a named
+  person.</li>
+</ul>
+
+<h2>How the work is done</h2>
+<p>The checks are commissioned and directed by me. The code is written with an AI
+assistant. The results are published including the failures of my own checks. I say this
+plainly because a method that is disclosed is a method, and one that is discovered later
+is something else.</p>
+
+<h2>If you would like your work checked</h2>
+<p>What makes a check possible:</p>
+<ol>
+  <li>The specification, in writing, at a fixed version.</li>
+  <li>The published files, with their checksums.</li>
+  <li>The values a correct result should produce, published before the check.</li>
+  <li>If records are chained, at least three linked ones, so the chain itself can be
+  tested and not only one link.</li>
+</ol>
+<p>I cannot promise a date, and I may decline. I will tell you when I start.</p>
+<p>To ask, message me on LinkedIn:
+<a href="https://www.linkedin.com/in/captanilsharma">linkedin.com/in/captanilsharma</a>.</p>
+
+<h2>A seaman's version</h2>
+<p>A surveyor signs for what he sighted, on the day he sighted it, and writes down what he
+could not reach. The certificate does not say the ship is sound for ever. It says what
+was seen, when, and by whom. That is all a check of this kind can honestly be.</p>
+<p>This is an analogy and proves nothing about software.</p>
+
+<h2>Who is checking</h2>
+<p>I am a master mariner. I spent 22 years at sea. The 22 years since have been ashore, on
+the other side of the same industry: ports, container operations and logistics, and then
+advising on shipping and logistics at TCS, one of the large IT companies.</p>
+<p>About 17 of those 44 years have been in technology, old and new, from the systems of
+the late 1990s to today's AI agents.</p>
+<p>At sea, a certificate, a survey and a log entry are how one stranger relies on another.
+Each says exactly what was sighted, by whom and on what day. I bring that habit to
+software.</p>
+<p>Today I build AI agent systems at ANKR, and I write independent checks of what such
+systems publish about themselves: signed releases, attestation evidence, evaluation claims
+and incident data. The worked examples below are that work.</p>
+
+<h2>Worked examples</h2>
+<ul>
+  <li><a href="/german-bight-collision.html">Where the minutes went</a>: a ship collision
+  counted from the official investigation report, with what was available to the
+  watchkeepers and when.</li>
+  <li><a href="/hand-set-states.html">Set by hand</a>: eleven investigation reports read
+  for one thread, a state set by hand that the next person to decide did not have. Three
+  Mile Island, the Herald of Free Enterprise, Piper Alpha, Phillips 66 at Pasadena,
+  Aeroperú flight 603, Formosa Plastics at Illiopolis, Buncefield, Williams Olefins at
+  Geismar, DuPont at La Porte, Marathon at Martinez, and an offshore platform operated by
+  Cox Operating. Each with the report's own words and a link to it.</li>
+  <li><a href="/dsewiki-incident.html">The record the wiki kept</a>: an incident counted
+  from the researchers' published data.</li>
+  <li><a href="/services-australia-incident.html">Who wrote down the no</a>: an incident
+  set out as three accounts, with the one published as data counted.</li>
+  <li><a href="/sap-overpass-incident.html">One flaw, four routes</a>: an incident read
+  from its public sources, with what each party said and when.</li>
+  <li><a href="/tactiq-verification.html">Independent verification of an edge operating
+  system's releases</a>: checks written from the specifications, including the faults
+  found in my own.</li>
+  <li><a href="/inferred-from-what.html">Inferred from what: a reader's check</a>: what a
+  published evaluation figure does and does not show about a model that has had its
+  refusals edited out.</li>
+</ul>
+
+<footer>
+Written October 2026 by Capt. Anil Sharma, ANKR. Offered as-is, and more useful to argue
+with than to trust.
+</footer>
+
+</div>
+</body>
+</html>
