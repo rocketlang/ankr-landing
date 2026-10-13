@@ -81,6 +81,10 @@ reader knows what a result from me does and does not mean.</p>
   <p><strong>6 October 2026.</strong> Added a seventh worked example, a reading of eleven
   investigation reports published under the name ANKR Research Desk. Nothing else
   changed.</p>
+  <p><strong>13 October 2026.</strong> Added four methods (sections 6 to 9) and dated notes
+  to sections 4 and 5, after a day in which my own checks failed four times under my own
+  attacks. The worked example on an edge operating system's releases carries the
+  account.</p>
 </div>
 
 <h2>The short version</h2>
@@ -91,6 +95,7 @@ reader knows what a result from me does and does not mean.</p>
   <li>A result is <strong>a result, not an endorsement</strong>.</li>
   <li>Every result says <strong>what it does not establish</strong>.</li>
   <li>When I am wrong, the correction is <strong>dated and left in view</strong>.</li>
+  <li>My own checks are <strong>attacked, by me</strong>, and the failures are published.</li>
 </ul>
 
 <h2>What I do</h2>
@@ -117,6 +122,11 @@ reader knows what a result from me does and does not mean.</p>
   <h3>4. The check is not adjusted until it passes</h3>
   <p>A check written against one release is run unchanged against the next. If it stops
   fitting, that is reported as a refusal. It is not quietly rewritten to agree.</p>
+  <p><strong>Added 13 October 2026.</strong> When a release changes its layout, an
+  unchanged check may have no verdict to give. That is reported as it is: refused, or
+  broke. A check may then be revised to read the new layout, in the open, with the date in
+  the script and on the page, and the revised check is run again on every release it
+  passed before. What it may never be is revised to turn a failure into a pass.</p>
 </div>
 <div class="limit">
   <h3>5. I attack my own check before anyone relies on it</h3>
@@ -124,6 +134,41 @@ reader knows what a result from me does and does not mean.</p>
   garbage. Missing evidence must count as a failure, not as a note. A check that crashes
   must say that it crashed and not look like a verdict, so each outcome has its own exit
   code: passed, failed, refused, broke.</p>
+  <p><strong>Added 13 October 2026.</strong> I did not hold to this well enough. One of my
+  checks had verified a signature for two weeks without asking whose certificate had made
+  it, and my own attacks found that only when I made them harder. The attacks are now kept
+  as a fixed set and run again whenever a check changes; see section 8.</p>
+</div>
+<div class="limit">
+  <h3>6. The fixed points are mine, not the file's</h3>
+  <p>A check must hold its own trust anchors: the root certificates and the keys
+  everything else is measured against. A check that takes them from the files under test
+  will verify anything, including a forgery signed by its forger. Each anchor is written
+  into the script, with where it came from and on what day. A pin shows that nothing has
+  changed since I first looked. It does not show that it was right then, and the script
+  says so.</p>
+</div>
+<div class="limit">
+  <h3>7. What should be there is not asked of the files</h3>
+  <p>If a file is missing, the files cannot tell me whether it was ever supposed to
+  exist. Remove a signature and the list that names it, and a check that asks the files
+  what to expect finds nothing wrong. So the expectation comes from a signed statement, or
+  it is written into the check and said to be.</p>
+</div>
+<div class="limit">
+  <h3>8. Altered copies, kept and reused</h3>
+  <p>I make copies of a genuine release, each wrong in one stated way: a bit changed, a
+  file removed, a list rewritten, a whole paper trail re-signed with keys of my own. The
+  genuine copy must pass and every other must not. A check that rejects everything has
+  passed nothing, so the genuine copy is always in the set. The maker is offered the same
+  copies and the tool that makes them, to run against the maker's own check.</p>
+</div>
+<div class="limit">
+  <h3>9. Going back, and running side by side</h3>
+  <p>When a check becomes stricter it is run again on everything it passed before. If the
+  count of checks changes, the page says so and says why. Where the maker publishes a
+  check of their own, I run it beside mine on the same files. When the two disagree, or
+  either passes something it should not, the maker hears first.</p>
 </div>
 
 <h2>What a result means</h2>
@@ -181,6 +226,7 @@ is something else.</p>
   <li>The values a correct result should produce, published before the check.</li>
   <li>If records are chained, at least three linked ones, so the chain itself can be
   tested and not only one link.</li>
+  <li>A check of your own, if you have one, so the two can be run side by side.</li>
 </ol>
 <p>I cannot promise a date, and I may decline. I will tell you when I start.</p>
 <p>To ask, message me on LinkedIn:
