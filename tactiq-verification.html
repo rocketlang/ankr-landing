@@ -75,6 +75,13 @@ not by running the vendor's own tooling.</p>
       and the TPM quotes — parsed and verified from the TPM specification in Python,
       because <code>tpm2-tools</code> was not available. No network.</span>
   </div>
+  <div class="card">
+    <span class="n"><a href="/tactiq-altered-sets.py">⬇ tactiq-altered-sets.py</a></span>
+    <span class="d">Since 13 October: builds altered and forged copies of a genuine release
+      and says which of them a checker lets through. With
+      <a href="/tactiq-altered-sets-rc14.pack.tar.gz">the exact rc14 sets</a> our results
+      came from. Python 3, standard library, <code>openssl</code> and <code>tar</code>.</span>
+  </div>
 </div>
 
 <div class="res">python3 verify-tactiq-release.py /path/to/release-dir<br>
@@ -138,6 +145,36 @@ Nothing here is affiliated with that project.</p>
   fetched), the vulnerability figures, and the contents of the update bundle and the disk
   image. The pins rest on what one fetch showed on one day; they show nothing has changed
   since, not that it was right then. The vendor was sent these results directly.</p>
+</div>
+
+<div class="limit">
+  <h3>Added later on 13 October: the altered copies, and the tool that makes them</h3>
+  <p>The attacks described above are now published, so that anyone can run them against
+  these two scripts or against a checker of their own.</p>
+  <p><a href="/tactiq-altered-sets.py">tactiq-altered-sets.py</a> takes one genuine,
+  complete download of rc14 and builds 30 copies of it: one unchanged, and 29 each wrong in
+  one stated way. A bit changed, a file or a quote removed, a list rewritten, the sums
+  signed with a home-made certificate, a whole paper trail re-signed with keys made on the
+  spot. It then runs a checker over them and reads only the exit status. The unchanged copy
+  must pass and every other must not. A checker that rejects everything is reported as
+  such, not as a success.</p>
+  <p><a href="/tactiq-altered-sets-rc14.pack.tar.gz">tactiq-altered-sets-rc14.pack.tar.gz</a>
+  (457 KB) holds the very sets our results came from, as differences from the genuine
+  release. The same script rebuilds them from your own download and refuses any set whose
+  files do not all hash to the list in the pack. It holds no private key: the keys that
+  signed the forged sets were deleted.</p>
+  <div class="res">python3 tactiq-altered-sets.py unpack tactiq-altered-sets-rc14.pack.tar.gz /path/to/rc14 sets<br>
+python3 tactiq-altered-sets.py run sets --kind release -- python3 verify-tactiq-release.py {}<br>
+python3 tactiq-altered-sets.py run sets --kind l3 -- python3 verify-tactiq-l3.py {}</div>
+  <p><strong>Against the two scripts on this page:</strong> the unchanged copy passes, and
+  all 29 altered copies are rejected, 10 by the release checker and 19 by the L3 checker.
+  Against the L3 checker as it stood before 13 October, 11 of the 19 got through.</p>
+  <p><strong>What this does not show.</strong> The sets are the ways our own checkers were
+  wrong. Rejecting all of them says nothing about attacks nobody has thought of. Only the
+  exit status is read, so a set can be turned away by an outer check before the inner one
+  it was built for is reached.</p>
+  <p>The sets were also run against the vendor's own L3 script. What that showed was put to
+  the vendor directly on 13 October, before this was added, and is his to state first.</p>
 </div>
 
 <div class="limit">
