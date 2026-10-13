@@ -25,10 +25,30 @@ file is now a failed check: every artefact SHA256SUMS lists, the signature mater
 PCR reference and each of its inputs. The checks themselves are unchanged, and so is
 what a complete release reports.
 
-One absence is still a note and not a failure, on purpose: SHA256SUMS.sigstore.json.
-Releases before rc12 do not ship one, and the script reports that as an observation
-about the release. It follows that this script cannot tell a release that never had a
-bundle from a later one whose bundle was left out of the download.
+Changed 13 October 2026, for rc14. That release moved to a new reference layout
+(format 2: one signed FIT configuration per slot, the devicetree measured into PCR 1).
+This script knew the older layout only and broke on rc14 with exit 3, which is no
+verdict. It now reads the layout from the file. The older path is untouched and rc11,
+rc12 and rc13 report what they did before. For format 2 the digests are computed from
+the payload bytes in u-boot.itb and in the FIT. A layout the script does not know is a
+failed check. Not checked on that path: the signature on each FIT configuration.
+
+Changed again 13 October 2026, the same day, after attacking the revision. THIS ONE
+CHANGES WHAT EVERY RELEASE REPORTS. The script used to verify the signature over
+SHA256SUMS against whatever certificate lay beside it. A release with a file altered,
+its line rewritten and the sums re-signed with a home-made certificate passed: 13 of 13
+on rc13. It now requires that the certificate was issued by Sigstore's CA to this
+repository's release workflow, that the log entry is about this very signature, and that
+the log's checkpoint and the entry's time are signed by the log's key. The CA
+certificates and the log key are pinned in this script; see the note at the pins.
+Complete releases now report: rc11 13, rc12 18, rc13 18, rc14 20 (before: 11, 13, 13).
+
+One absence is still a note and not a failure: SHA256SUMS.sigstore.json, and since
+13 October 2026 for rc11 only. rc11 never shipped one. Until that day the script could
+not tell a release that never had a bundle from a later one whose bundle was left out,
+so rc13 without its bundle passed with a shorter count. The release is now read from
+the signing certificate, which the CA signed, and any tag but v2.1.0-rc11 must have its
+bundle. That rc11 is the only such release is written into this script.
 
 No dependencies beyond the standard library and `openssl` on PATH.
 """
@@ -41,6 +61,70 @@ import os
 import struct
 import subprocess
 import sys
+import tempfile
+
+# ── PINNED: WHO MAY HAVE SIGNED, AND WHICH LOG ───────────────────────────────
+#
+# Until 13 October 2026 this script verified the signature over SHA256SUMS against the
+# certificate that sits beside it, and asked nothing about that certificate. Found by
+# attacking it that day: alter a file, rewrite its line in SHA256SUMS, sign the new
+# SHA256SUMS with a certificate made on your own machine and dated to cover the day of
+# the real log entry, and leave the real Sigstore bundle where it is. This script said
+# "13 passed, 0 failed" on rc13, exit 0. It took its trust anchor from the thing it was
+# verifying, the same fault the vendor found in the L3 checker on 28 September, and it
+# had been here since the first version.
+#
+# What is pinned now, and where each value comes from:
+#   the Fulcio root and intermediate: Sigstore's trusted_root.json
+#     (github.com/sigstore/root-signing, targets/trusted_root.json, fetched 13 October
+#     2026, sha256 6494e21e…e6bc0b66); DER sha256 3ba7b6cc…a54680c1 and 15d79534…087efe47
+#   the Rekor log key: the same file; sha256 of its DER is the log ID c0d23d6a…9591801d.
+#     The vendor ships the same key as rekor-sigstore.pub; it is not read from there
+#   the identity: this repository's release-sign workflow, at a tag, with a token from
+#     GitHub Actions
+# WHAT THE PINS REST ON: one fetch from GitHub over TLS on one day. They show a
+# certificate was issued by the CA Sigstore publishes; they do not make GitHub or
+# Sigstore honest. Nothing is fetched at run time.
+FULCIO_ROOT_PEM = """-----BEGIN CERTIFICATE-----
+MIIB9zCCAXygAwIBAgIUALZNAPFdxHPwjeDloDwyYChAO/4wCgYIKoZIzj0EAwMw
+KjEVMBMGA1UEChMMc2lnc3RvcmUuZGV2MREwDwYDVQQDEwhzaWdzdG9yZTAeFw0y
+MTEwMDcxMzU2NTlaFw0zMTEwMDUxMzU2NThaMCoxFTATBgNVBAoTDHNpZ3N0b3Jl
+LmRldjERMA8GA1UEAxMIc2lnc3RvcmUwdjAQBgcqhkjOPQIBBgUrgQQAIgNiAAT7
+XeFT4rb3PQGwS4IajtLk3/OlnpgangaBclYpsYBr5i+4ynB07ceb3LP0OIOZdxex
+X69c5iVuyJRQ+Hz05yi+UF3uBWAlHpiS5sh0+H2GHE7SXrk1EC5m1Tr19L9gg92j
+YzBhMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBRY
+wB5fkUWlZql6zJChkyLQKsXF+jAfBgNVHSMEGDAWgBRYwB5fkUWlZql6zJChkyLQ
+KsXF+jAKBggqhkjOPQQDAwNpADBmAjEAj1nHeXZp+13NWBNa+EDsDP8G1WWg1tCM
+WP/WHPqpaVo0jhsweNFZgSs0eE7wYI4qAjEA2WB9ot98sIkoF3vZYdd3/VtWB5b9
+TNMea7Ix/stJ5TfcLLeABLE4BNJOsQ4vnBHJ
+-----END CERTIFICATE-----
+"""
+FULCIO_INTERMEDIATE_PEM = """-----BEGIN CERTIFICATE-----
+MIICGjCCAaGgAwIBAgIUALnViVfnU0brJasmRkHrn/UnfaQwCgYIKoZIzj0EAwMw
+KjEVMBMGA1UEChMMc2lnc3RvcmUuZGV2MREwDwYDVQQDEwhzaWdzdG9yZTAeFw0y
+MjA0MTMyMDA2MTVaFw0zMTEwMDUxMzU2NThaMDcxFTATBgNVBAoTDHNpZ3N0b3Jl
+LmRldjEeMBwGA1UEAxMVc2lnc3RvcmUtaW50ZXJtZWRpYXRlMHYwEAYHKoZIzj0C
+AQYFK4EEACIDYgAE8RVS/ysH+NOvuDZyPIZtilgUF9NlarYpAd9HP1vBBH1U5CV7
+7LSS7s0ZiH4nE7Hv7ptS6LvvR/STk798LVgMzLlJ4HeIfF3tHSaexLcYpSASr1kS
+0N/RgBJz/9jWCiXno3sweTAOBgNVHQ8BAf8EBAMCAQYwEwYDVR0lBAwwCgYIKwYB
+BQUHAwMwEgYDVR0TAQH/BAgwBgEB/wIBADAdBgNVHQ4EFgQU39Ppz1YkEZb5qNjp
+KFWixi4YZD8wHwYDVR0jBBgwFoAUWMAeX5FFpWapesyQoZMi0CrFxfowCgYIKoZI
+zj0EAwMDZwAwZAIwPCsQK4DYiZYDPIaDi5HFKnfxXx6ASSVmERfsynYBiX2X6SJR
+nZU84/9DZdnFvvxmAjBOt6QpBlc4J/0DxvkTCqpclvziL6BCCPnjdlIB3Pu3BxsP
+mygUY7Ii2zbdCdliiow=
+-----END CERTIFICATE-----
+"""
+REKOR_PUB_PEM = """-----BEGIN PUBLIC KEY-----
+MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE2G2Y+2tabdTV5BcGiBIx0a9fAFwr
+kBbmLSGtks4L3qX6yYY0zufBnhC8Ur/iy55GhWP/9A/bY2LhC30M9+RYtw==
+-----END PUBLIC KEY-----
+"""
+REKOR_LOG_ID = "c0d23d6ad406973f9559f3ba2d1ca01f84147d8ffc5b8445c224f98b9591801d"
+SIGNER_SAN_PREFIX = ("URI:https://github.com/revenue7-eng/tactiq-os/.github/workflows/"
+                     "release-sign.yml@refs/tags/")
+SIGNER_TOKEN_ISSUER = "https://token.actions.githubusercontent.com"
+# The one release that shipped no Sigstore bundle. For every other tag its absence fails.
+NO_BUNDLE_TAGS = {"v2.1.0-rc11"}
 
 ZERO = bytes(32)
 SEP = hashlib.sha256(bytes.fromhex("ffffffff")).digest()
@@ -145,6 +229,8 @@ def check_signature(d):
             if os.path.exists(f):
                 os.remove(f)
 
+    tag = check_signer(pem)
+
     txt = subprocess.run(["openssl", "x509", "-in", pem, "-noout", "-text"],
                          capture_output=True, text=True).stdout
     oids = {
@@ -190,12 +276,136 @@ def check_signature(d):
     # bundle, and this script must keep reporting them honestly rather than assuming
     # the newer shape — so both paths are live and both are exercised.
     if not check_transparency(d, expired):
+        if tag not in NO_BUNDLE_TAGS:
+            bad("SHA256SUMS.sigstore.json is not present",
+                f"every release after rc11 ships its log bundle (this one: {tag or 'tag unknown'}); "
+                "without it nothing shows the signature was made while the certificate was valid")
         if expired:
             note("certificate has EXPIRED — `openssl dgst -verify` does not check this")
         if n_certs == 1:
             note("only the leaf certificate is present — the chain cannot be validated offline")
         note("no transparency-log entry or timestamp in the directory — nothing shows "
              "the signature was made while the certificate was valid")
+
+
+def check_signer(pem):
+    """
+    Whose certificate is it? Added 13 October 2026; see the note at the pins above.
+    A signature that verifies under a certificate says only that the holder of that
+    certificate's key signed. These two checks say the certificate came from Sigstore's
+    CA and was issued to this repository's release workflow.
+    """
+    with tempfile.TemporaryDirectory() as t:
+        rootp, interp = os.path.join(t, "root.pem"), os.path.join(t, "inter.pem")
+        open(rootp, "w").write(FULCIO_ROOT_PEM)
+        open(interp, "w").write(FULCIO_INTERMEDIATE_PEM)
+        # A Fulcio certificate lives ten minutes, so the chain is judged at a moment
+        # inside the certificate's own window. When the signature was made is a
+        # different question, answered from the log further down.
+        nb = _cert_time(pem, "-startdate")
+        if nb is None:
+            bad("the signing certificate could not be read",
+                "who signed SHA256SUMS is NOT established")
+            return
+        r = subprocess.run(["openssl", "verify", "-attime", str(int(nb.timestamp()) + 1),
+                            "-purpose", "any", "-CAfile", rootp, "-untrusted", interp, pem],
+                           capture_output=True, text=True)
+    if r.returncode == 0:
+        ok("the signing certificate was issued by Sigstore's CA (root and intermediate "
+           "pinned in this script)")
+    else:
+        bad("the signing certificate was NOT issued by Sigstore's CA",
+            "anyone can make a certificate and sign with it; the signature above then "
+            "says nothing about who signed")
+    san = subprocess.run(["openssl", "x509", "-in", pem, "-noout", "-ext", "subjectAltName"],
+                         capture_output=True, text=True).stdout
+    uris = [x.strip() for line in san.splitlines()[1:] for x in line.split(",") if x.strip()]
+    txt = subprocess.run(["openssl", "x509", "-in", pem, "-noout", "-text"],
+                         capture_output=True, text=True).stdout.split("\n")
+    issuer = ""
+    for i, l in enumerate(txt):
+        if "1.3.6.1.4.1.57264.1.1:" in l and i + 1 < len(txt):
+            issuer = txt[i + 1].strip()
+    if len(uris) == 1 and uris[0].startswith(SIGNER_SAN_PREFIX) and issuer == SIGNER_TOKEN_ISSUER:
+        ok("it was issued to this repository's release-sign workflow, at tag "
+           + uris[0][len(SIGNER_SAN_PREFIX):])
+        # the tag is believed only if the CA vouched for the certificate that states it
+        return uris[0][len(SIGNER_SAN_PREFIX):] if r.returncode == 0 else None
+    bad("the signing certificate was NOT issued to this repository's release workflow",
+        f"identity: {', '.join(uris) or 'none'} · token issuer: {issuer or 'none'}")
+    return None
+
+
+def check_log_binding(d, e):
+    """
+    Is the log entry about THIS signature, and is it the real log's? Added 13 October
+    2026. Until then the inclusion proof was recomputed and nothing tied it to the files:
+    any genuine entry from any signing would have recomputed just as well.
+    """
+    try:
+        spec = json.loads(base64.b64decode(e["canonicalizedBody"]))["spec"]
+        want_hash = spec["data"]["hash"]["value"].lower()
+        want_sig = base64.b64decode(spec["signature"]["content"])
+        want_cert = base64.b64decode(spec["signature"]["publicKey"]["content"])
+        der = lambda pem_bytes: subprocess.run(["openssl", "x509", "-outform", "DER"],
+                                               input=pem_bytes, capture_output=True).stdout
+        same = (hashlib.sha256(open(os.path.join(d, "SHA256SUMS"), "rb").read()).hexdigest() == want_hash
+                and base64.b64decode(open(os.path.join(d, "SHA256SUMS.workflow.sig"), "rb").read()) == want_sig
+                and der(want_cert) and der(want_cert) == der(open(os.path.join(d, "SHA256SUMS.workflow.pem"), "rb").read()))
+    except Exception:
+        same = False
+    if same:
+        ok("the log entry is about this SHA256SUMS, this signature and this certificate")
+    else:
+        bad("the log entry is NOT about this SHA256SUMS, signature and certificate",
+            "an entry for some other signing proves nothing about this one")
+
+    with tempfile.TemporaryDirectory() as t:
+        key = os.path.join(t, "rekor.pem")
+        open(key, "w").write(REKOR_PUB_PEM)
+
+        def signed_by_log(msg, sig):
+            mp, sp = os.path.join(t, "m"), os.path.join(t, "s")
+            open(mp, "wb").write(msg); open(sp, "wb").write(sig)
+            return subprocess.run(["openssl", "dgst", "-sha256", "-verify", key, "-signature", sp, mp],
+                                  capture_output=True).returncode == 0
+
+        good = False
+        try:
+            log_id = base64.b64decode(e["logId"]["keyId"]).hex()
+            ip = e["inclusionProof"]
+            body, _, sigs = ip["checkpoint"]["envelope"].partition("\n\n")
+            lines = body.split("\n")
+            raw = b""
+            for l in sigs.splitlines():
+                parts = l.split(" ")
+                if len(parts) == 3 and parts[1] == "rekor.sigstore.dev":
+                    raw = base64.b64decode(parts[2])
+            good = (log_id == REKOR_LOG_ID and raw[:4].hex() == REKOR_LOG_ID[:8]
+                    and lines[1] == str(ip["treeSize"]) and lines[2] == ip["rootHash"]
+                    and signed_by_log((body + "\n").encode(), raw[4:]))
+        except Exception:
+            good = False
+        if good:
+            ok("the log's checkpoint is signed by Rekor's key (pinned in this script) and "
+               "states the tree the proof leads to")
+        else:
+            bad("the log's checkpoint is NOT signed by Rekor's key, or states another tree",
+                "the inclusion proof then leads to a root nobody vouches for")
+
+        good = False
+        try:
+            payload = json.dumps({"body": e["canonicalizedBody"], "integratedTime": int(e["integratedTime"]),
+                                  "logID": REKOR_LOG_ID, "logIndex": int(e["logIndex"])},
+                                 sort_keys=True, separators=(",", ":")).encode()
+            good = signed_by_log(payload, base64.b64decode(e["inclusionPromise"]["signedEntryTimestamp"]))
+        except Exception:
+            good = False
+        if good:
+            ok("the time of the entry is signed by Rekor's key")
+        else:
+            bad("the time of the entry is NOT signed by Rekor's key",
+                "the comparison with the certificate's window below rests on an unsigned time")
 
 
 def check_transparency(d, cert_expired):
@@ -207,11 +417,12 @@ def check_transparency(d, cert_expired):
     and the inclusion proof shows the entry is in a tree with a given root — both
     checkable here with no network call, which is the whole claim being tested.
 
-    What is NOT checked, and must not be implied: the checkpoint signature. Verifying
-    that needs Rekor's public key, so this recomputes the root the proof implies and
-    compares it to the root the bundle states. Agreement proves the entry is consistent
-    with that root; it does not prove the root is the real log's. Saying which half is
-    done is the difference between evidence and a better-dressed claim.
+    Until 13 October 2026 the checkpoint signature was not checked, and this text said
+    so: the root was recomputed and compared with the root the bundle states, which shows
+    the entry is consistent with that root and not that the root is the real log's. Since
+    that day check_log_binding verifies the checkpoint and the entry's time under Rekor's
+    key, pinned in this script, and ties the entry to the files. Still not checked:
+    whether the log shows this entry today. Nothing is fetched.
     """
     bundle = os.path.join(d, "SHA256SUMS.sigstore.json")
     if not os.path.exists(bundle):
@@ -225,6 +436,8 @@ def check_transparency(d, cert_expired):
         return True
 
     dec = lambda x: base64.b64decode(x)
+
+    check_log_binding(d, e)
 
     # RFC 6962 §2.1.1 — recompute the root from the leaf and the audit path.
     leaf = hashlib.sha256(b"\x00" + dec(e["canonicalizedBody"])).digest()
@@ -265,8 +478,8 @@ def check_transparency(d, cert_expired):
         bad(f"logged at {stamped:%Y-%m-%d %H:%M:%S}Z, but the certificate window is unreadable",
             "the log time and the certificate's validity could NOT be compared")
 
-    note("the checkpoint signature is NOT verified here — that needs Rekor's public key, "
-         "so the root is recomputed but not proven to be the live log's")
+    note("the checkpoint is a statement the log signed once; whether the log still shows "
+         "this entry today is not checked here, since nothing is fetched")
     return True
 
 
@@ -352,6 +565,19 @@ def check_reference(d):
         bad("u-boot-rock5a.itb not present",
             "the measured image digests were NOT read out of the FIT")
 
+    # Which reference is this? Until 13 October 2026 this script knew one layout and
+    # broke on any other (rc14: KeyError, exit 3, no verdict). The layout is now read
+    # from the file, and one this script does not know is a FAILED check, not a crash.
+    fmt = ref.get("format")
+    if fmt == "tactiq-pcr-reference/2" and ref.get("boot_path") == "bootm":
+        check_reference_bootm(d, ref)
+        return
+    if "kernel_sha256" not in C or "cmdline" not in C or "fdt_sha256" not in C:
+        bad(f"the PCR reference is in a layout this script does not know (format: {fmt}, "
+            f"boot path: {ref.get('boot_path')})",
+            "the boot measurements were NOT recomputed")
+        return
+
     # Recompute every PCR. Algorithm per mk-pcr-reference.py: SPL S-CRTM into PCR0,
     # then the FIT images in load order, then U-Boot proper's S-CRTM and the FIT
     # device-tree hash into PCR0, kernel into 8, initrd into 9, separators on 0-7.
@@ -389,6 +615,155 @@ def check_reference(d):
             bad(f"PCR{i} does not recompute",
                 f"published {ref['pcr'][str(i)].lower()}\n        computed  {got}")
     ok(f"{agree} PCR value(s) recompute from a second implementation")
+
+
+def fit_payloads(buf):
+    """Image name -> payload bytes, whether the FIT keeps data inline or after the tree."""
+    total = struct.unpack_from(">I", buf, 4)[0]
+    base = (total + 3) & ~3
+    root = parse_fdt(buf)["nodes"][""]
+    out = {}
+    for nm, n in root["nodes"]["images"]["nodes"].items():
+        p = n["props"]
+        if "data" in p:
+            out[nm] = p["data"]
+        elif "data-size" in p and ("data-position" in p or "data-offset" in p):
+            size = int.from_bytes(p["data-size"], "big")
+            off = (int.from_bytes(p["data-position"], "big") if "data-position" in p
+                   else base + int.from_bytes(p["data-offset"], "big"))
+            if off + size <= len(buf):
+                out[nm] = buf[off:off + size]
+    return root, out
+
+
+def check_reference_bootm(d, ref):
+    """
+    The format-2 reference, new in rc14 (added 13 October 2026). The loader runs bootm
+    with one signed FIT configuration per slot. The kernel command line sits in /chosen
+    of that configuration's devicetree, and U-Boot 2026.10 measures the devicetree into
+    PCR 1, so PCR 1 has one value per slot and PCR 0 no longer takes the devicetree.
+
+    Recipe read from the header of the vendor's mk-pcr-reference.py; that script is not
+    run. Unlike the older path above, every digest used here is computed from the
+    payload bytes in u-boot.itb and in the FIT, not read from a hash node or from the
+    reference's own components block.
+
+    NOT CHECKED HERE: the signature on each FIT configuration (only that one is there),
+    and the reference's statements about the loader's compiled-in environment.
+    """
+    C = ref["components"]
+    need = {"u-boot-rock5a.itb": None, "fitImage-rock5a": None}
+    for f in need:
+        fp = os.path.join(d, f)
+        if not os.path.exists(fp):
+            bad(f"{f} not present", "the boot measurements were NOT recomputed")
+            return
+        need[f] = open(fp, "rb").read()
+    itb, fit = need["u-boot-rock5a.itb"], need["fitImage-rock5a"]
+
+    try:
+        _, uimgs = fit_payloads(itb)
+        froot, fimgs = fit_payloads(fit)
+    except Exception as e:
+        bad("could not parse u-boot.itb or the FIT image", f"{type(e).__name__}: {e} — "
+            "the boot measurements were NOT recomputed")
+        return
+    spl, agree = [], 0
+    for m in C["spl_measurements"]:
+        data = uimgs.get(m["image"])
+        if data is None:
+            bad(f"u-boot.itb holds no payload for {m['image']}")
+            continue
+        h = sha(data)
+        spl.append((m["pcr"], h))
+        if h.hex() == m["sha256"]:
+            agree += 1
+        else:
+            bad(f"the payload of {m['image']} in u-boot.itb does not hash to the reference")
+    if agree == len(C["spl_measurements"]) and agree:
+        ok(f"{agree} loader payload(s) hashed from u-boot.itb agree with the reference")
+
+    ver = C["uboot_version"].encode()
+    if ver in itb:
+        ok("the loader version string the reference names is in u-boot.itb")
+    else:
+        note("the loader version string was not found as plain bytes in u-boot.itb; "
+             "PCR 0 below still rests on it")
+
+    confs = froot["nodes"].get("configurations", {}).get("nodes", {})
+    slot_fdt, slot_kernel = {}, {}
+    for slot, s in sorted(C["slots"].items()):
+        c = confs.get(s["fit_configuration"])
+        if c is None:
+            bad(f"slot {slot}: the FIT has no configuration {s['fit_configuration']}")
+            continue
+        kn = c["props"].get("kernel", b"").rstrip(b"\0").decode()
+        fn = c["props"].get("fdt", b"").rstrip(b"\0").decode()
+        if kn not in fimgs or fn not in fimgs:
+            bad(f"slot {slot}: the configuration's kernel or devicetree payload is not in the FIT")
+            continue
+        kh, fh = sha(fimgs[kn]), sha(fimgs[fn])
+        good = True
+        if kh.hex() != s["kernel_sha256"]:
+            bad(f"slot {slot}: the kernel payload in the FIT does not hash to the reference"); good = False
+        if fh.hex() != s["fdt_sha256"]:
+            bad(f"slot {slot}: the devicetree payload in the FIT does not hash to the reference"); good = False
+        try:
+            chosen = parse_fdt(fimgs[fn])["nodes"][""]["nodes"]["chosen"]["props"]
+            ba = chosen.get("bootargs", b"").rstrip(b"\0").decode()
+        except Exception:
+            ba = ""
+        if not ba or ba != s["cmdline"]:
+            bad(f"slot {slot}: /chosen bootargs in the slot's devicetree is not the command "
+                "line the reference gives"); good = False
+        if not any(k.startswith("signature") for k in c["nodes"]):
+            bad(f"slot {slot}: the FIT configuration carries no signature node"); good = False
+        if good:
+            slot_kernel[slot], slot_fdt[slot] = kh, fh
+            ok(f"slot {slot}: kernel, devicetree and command line read from the FIT agree "
+               "with the reference (the configuration's signature is NOT verified here)")
+    if sorted(slot_fdt) != sorted(C["slots"]) or not slot_fdt:
+        bad("not every slot could be read from the FIT", "the PCR values were NOT recomputed")
+        return
+    if len(set(slot_kernel.values())) != 1:
+        bad("the slots boot different kernels; the reference gives one PCR 8")
+        return
+
+    def value(ds):
+        v = ZERO
+        for x in ds:
+            v = ext(v, x)
+        return v
+
+    crtm = sha(ver + b"\0")
+    chain = {i: [] for i in range(10)}
+    chain[0].append(crtm)
+    for p, h in spl:
+        chain[p].append(h)
+    chain[0].append(crtm)
+    chain[8].append(next(iter(slot_kernel.values())))
+    chain[9].append(sha(b"initrd\0"))
+    agree = total = 0
+    for i in range(10):
+        if i == 1:
+            for slot, fh in sorted(slot_fdt.items()):
+                total += 1
+                got = value([fh, sha(C.get("bootargs", "").encode() + b"\0"), SEP]).hex()
+                want = str(ref["pcr"]["1"].get(slot, "")).lower()
+                if got == want:
+                    agree += 1
+                else:
+                    bad(f"PCR1[{slot}] does not recompute", f"published {want}\n        computed  {got}")
+            continue
+        total += 1
+        got = value(chain[i] + ([SEP] if i < 8 else [])).hex()
+        want = str(ref["pcr"][str(i)]).lower()
+        if got == want:
+            agree += 1
+        else:
+            bad(f"PCR{i} does not recompute", f"published {want}\n        computed  {got}")
+    if agree == total:
+        ok(f"{agree} PCR value(s) recompute from a second implementation (PCR 1 once per slot)")
 
 
 def main():

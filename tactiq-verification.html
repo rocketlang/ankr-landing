@@ -78,7 +78,7 @@ not by running the vendor's own tooling.</p>
 </div>
 
 <div class="res">python3 verify-tactiq-release.py /path/to/release-dir<br>
-python3 verify-tactiq-l3.py /path/to/rc13-dir</div>
+python3 verify-tactiq-l3.py /path/to/release-dir</div>
 
 <p>TactiQ OS publishes, in advance, the values a correctly built and correctly booted unit
 should present. That design invites a stranger to check it. These are the checks one
@@ -87,6 +87,58 @@ stranger wrote, and what they established.</p>
 <p>The operating system is public and MIT licensed at
 <a href="https://github.com/revenue7-eng/tactiq-os">github.com/revenue7-eng/tactiq-os</a>.
 Nothing here is affiliated with that project.</p>
+
+<div class="limit">
+  <h3>Changed on 13 October: rc14 checked, and four faults in our own scripts found and closed</h3>
+  <p>v2.1.0-rc14 was published on 13 October. <strong>Until that day's revision, neither
+  script on this page gave a verdict on it.</strong> The release checker met a new layout
+  of the boot reference, broke and exited 3. The L3 checker looked for the rc13 evidence
+  folder by name and refused to start, exit 2. Neither is a pass or a fail.</p>
+  <p>Both scripts were revised that day and then attacked, with about fifty altered or
+  forged copies of the four releases. <strong>The release held and the vendor's own script
+  held. Ours did not.</strong> Four faults, all in the scripts served from this page or in
+  the first revision of them:</p>
+  <p><strong>1. The release checker did not ask whose certificate signed the sums.</strong>
+  It verified the signature over <code>SHA256SUMS</code> against whatever certificate lay
+  beside it. A copy of rc13 with one file altered, its line rewritten, the sums signed with
+  a certificate made on our own machine and the genuine log bundle left in place reported
+  13 passed, 0 failed. This had been so since the first version. It is the fault the vendor
+  found in the L3 checker in September: a verifier that takes its trust anchor from the
+  thing it verifies. The script now requires that the certificate was issued by Sigstore's
+  certificate authority to the repository's release workflow, that the log entry is about
+  that very signature, and that the log's checkpoint and the entry's time are signed by the
+  log's key. The authority's certificates and the log's key are pinned in the script, taken
+  from Sigstore's published trusted root on 13 October.</p>
+  <p><strong>2. The L3 checker passed evidence with no quote in it.</strong> With every
+  quote removed from a copy of rc13, together with its lines in the archive's unsigned
+  list, it reported 16 passed, 0 failed. No quote is now a failed check.</p>
+  <p><strong>3. The L3 checker left the release root to the reader.</strong> It printed the
+  root's fingerprint and said to confirm it. A set with a root, authority and signers of our
+  own making, the record and the reference re-signed and the release sums rewritten ran
+  clean in it; the vendor's script rejected the same set, because it carries the
+  fingerprint. Ours now pins it too.</p>
+  <p><strong>4. The first revision could be starved.</strong> Its new checks took their
+  expectation from the files that carry it: with the archive's line taken out of the release
+  sums, the archive's signed list deleted and a quote removed, they had nothing to look at
+  and the run was clean. The expectation now comes from signed statements, the release the
+  reference is for and the tag in the signing certificate. That only rc13 may be without a
+  signed evidence list, and only rc11 without a log bundle, is written into the scripts.</p>
+  <p><strong>What the scripts report now, on complete downloads, offline:</strong> the
+  release checker 13, 18, 18 and 20 checks passed for rc11, rc12, rc13 and rc14, and the
+  L3 checker 24 for rc13 and 103 for rc14 (19 quotes, boot slot B), each with 0 failed.
+  The release counts were 11, 13 and 13 until this change. <strong>They rose because the
+  checker asks more, not because the vendor's files changed</strong>; no verdict on a
+  genuine release changed. Every altered or forged copy now fails or is refused.</p>
+  <p>For rc14 the release checker recomputes all eleven boot values from payload bytes it
+  hashes out of the loader and kernel images itself. The L3 checker also compares the
+  unpacked evidence with the archive named in the signed sums, verifies the archive's own
+  signed list, and checks the two revocation lists the registration record carries.</p>
+  <p><strong>Not checked:</strong> the signature on each boot configuration inside the kernel
+  image (only that one is present), whether the log still shows the entry today (nothing is
+  fetched), the vulnerability figures, and the contents of the update bundle and the disk
+  image. The pins rest on what one fetch showed on one day; they show nothing has changed
+  since, not that it was right then. The vendor was sent these results directly.</p>
+</div>
 
 <div class="limit">
   <h3>Added on 2 October: what this page covers, for readers arriving from a conference announcement</h3>
@@ -259,17 +311,30 @@ Nothing here is affiliated with that project.</p>
 
 
 <div class="res">
-v2.1.0-rc11 &nbsp;— 11 checks passed, 0 failed<br>
-v2.1.0-rc12 &nbsp;— 13 checks passed, 0 failed<br>
-v2.1.0-rc13 &nbsp;— 13 checks passed, 0 failed &nbsp;(release artefacts)<br>
-v2.1.0-rc13 &nbsp;— 24 checks passed, 0 failed &nbsp;(L3 attestation evidence)
+v2.1.0-rc11 &nbsp;— 13 checks passed, 0 failed<br>
+v2.1.0-rc12 &nbsp;— 18 checks passed, 0 failed<br>
+v2.1.0-rc13 &nbsp;— 18 checks passed, 0 failed &nbsp;(release artefacts)<br>
+v2.1.0-rc13 &nbsp;— 24 checks passed, 0 failed &nbsp;(L3 attestation evidence)<br>
+v2.1.0-rc14 &nbsp;— 20 checks passed, 0 failed &nbsp;(release artefacts)<br>
+v2.1.0-rc14 &nbsp;— 103 checks passed, 0 failed &nbsp;(L3 attestation evidence)
 </div>
+
+<p><strong>These are the numbers since 13 October.</strong> Until then the first three
+lines read 11, 13 and 13: the release checker has since been made to ask who signed, and
+reports more checks on the same files. The note at the top of this page says what was
+wrong with it.</p>
 
 <p>The release checker was written against rc11 and run unmodified against rc12 and rc13.
 A verifier adjusted until it passes is not a verifier. <strong>It was changed once, on
 2 October, and only in the stricter direction:</strong> what it checks and how is as it
 was, and files it used to excuse as absent it now fails. All three releases were run
-again under the changed script, and the numbers above are from that run.</p>
+again under the changed script.</p>
+
+<p><strong>It was changed a second time on 13 October, and so was the L3 checker.</strong>
+This time what they check did change: they learned the rc14 layouts, and they were made
+stricter after we attacked them and they failed. Both are described at the top of this
+page. Neither change was made to turn a failing release into a passing one; every genuine
+release passed before and passes now.</p>
 
 <div class="limit">
   <h3>Changed on 29 September, after this page was linked</h3>
@@ -503,6 +568,10 @@ say so until the record itself is changed.</p>
   inclusion proof and compare it to the root the bundle states. Agreement proves the entry
   is consistent with that root; it does not prove the root is the live log's. Each script
   says so in its own output.</p>
+  <p><strong>Changed on 13 October: it is verified now.</strong> The release checker carries
+  the log's public key, taken from Sigstore's published trusted root, and verifies the
+  checkpoint and the time of the entry under it. What remains unchecked is whether the log
+  still shows the entry today, since the script fetches nothing.</p>
 </div>
 
 <h2>What would let a stranger check more</h2>

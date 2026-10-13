@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-An independent checker for the TactiQ OS rc13 L3 evidence.
+An independent checker for the TactiQ OS L3 evidence: rc13, and rc14 since 13 October 2026.
 
 Written from the artefacts and the wire formats, NOT by running VERIFY-L3-rc13.md's
 commands. tpm2-tools is not installed here, so the quote signature and the attestation
@@ -33,15 +33,43 @@ chain checks fail, and they are printed as EXPIRED, apart from "does NOT chain":
 and signature are sound and only the date is wrong. That is still a failure and still
 exit 1, because nothing in these files shows when the signature was made.
 
-Usage:  python3 verify-tactiq-l3.py /path/to/rc13-dir
-Exit:   0 all checks passed · 1 something did not · 2 could not run the check
+CHANGED 13 OCTOBER 2026, FOR rc14. Until that day this script named the rc13 evidence
+folder and the rc13 record file, so on rc14 it refused to start (exit 2): no verdict. It
+now finds the one l3-evidence-* folder and the one registration-*.json in it. The checks
+it made on rc13 are unchanged and rc13 reports what it did before. Three checks are new,
+and each runs only where the release gives it something to check:
+
+  10. the evidence folder must be named for the release the signed RIM is for; and for
+      every release but rc13 the release SHA256SUMS must list the evidence archive, the
+      .tar.gz must be beside the release files, hash to that line, and hold exactly the
+      files in the unpacked folder
+  11. for every release but rc13 the archive must carry a signed list (SHA256SUMS.p7s):
+      its signature must chain to the release root, its signer must carry the evidence
+      key usage and no other, and the list must name exactly the files present
+  12. where the record is format 2 (new in rc14), the two revocation lists it carries must
+      be signed by their issuers, must not list the EK certificate or its issuing CA, and
+      must have been current at the time the record says the chain was checked
+
+WHAT 10 TO 12 DO NOT REACH. On rc13 nothing signs the archive's list, so a file removed
+together with its line is not noticed there; the script says so in a note. That rc13 is
+the only such release is written into this script, not read from the files. Check 10
+rests on the release SHA256SUMS, whose own signature this script does not verify (the
+release checker does). Check 12 says nothing about a revocation after the record was made.
+
+Usage:  python3 verify-tactiq-l3.py /path/to/release-dir
+        (the release files, with the evidence archive unpacked under it, e.g. in l3/)
+Exit:   0 all checks passed · 1 something did not · 2 refused to start, nothing verified
+        3 the checker itself broke, which is not a verdict
 """
 
+import datetime as dt
 import hashlib
 import json
 import os
 import subprocess
 import sys
+import tarfile
+import tempfile
 
 # ── PINNED TRUST ANCHORS ─────────────────────────────────────────────────────
 #
@@ -92,13 +120,36 @@ REG_SIGNER_EKU_OID = "2.25.205994972697553183157730487844756597568"
 #
 # Missing required evidence is a FAILURE, not a note. Found 2026-09-29 by deleting
 # files one at a time and watching the script stay green.
-REQUIRED = [
-    "registration-TACTIQ-BENCH-001.json",
-    "registration-TACTIQ-BENCH-001.json.p7s",
+#
+# The record's file name carries the release from rc14 on, so it is found, not named
+# (13 October 2026). If none is found the rc13 name stands and is reported missing.
+REC_NAME = "registration-TACTIQ-BENCH-001.json"
+REQUIRED_FIXED = [
     "reg-signer.pem", "signing-ca.pem",
     "ek.der", "infineon-mfr034.crt", "infineon-root.crt",
     "ak.pub", "SHA256SUMS",
 ]
+
+# The only extended key usage the Evidence Signer may carry (new in rc14). Taken from the
+# rc14 release notes; the certificate in the rc14 archive carries this and nothing else.
+EVIDENCE_SIGNER_EKU_OID = "2.25.303991386130890852620485224389791976682"
+
+# The TactiQ release root r2, by SHA-256 of its DER encoding.
+#
+# PROVENANCE: computed from release-root-r2.pem in rc13 (28 September 2026) and again in
+# rc14 (13 October 2026): the same file. The vendor states the same value in the release
+# notes of both, in his article and on his catalogue page (compared 29 September 2026).
+# WHAT THAT IS WORTH: every one of those surfaces is the vendor's, and the catalogue is
+# on the same GitHub account as the repository. So the pin shows the root has not changed
+# since this script first saw it. It does not show that the root was the vendor's then.
+RELEASE_ROOT_R2_SHA256 = "8e10041ebbfccba036621b2e453687d29a50d71565f299cb4128b4ceb965ffe8"
+
+# The one release whose evidence archive is in no signed list and signs none of its own.
+# For every other release both are required, and their absence is a failed check.
+UNSIGNED_EVIDENCE = {"l3-evidence-rc13"}
+
+# Files this script writes into the evidence folder itself while it runs.
+OWN_TEMP = {"_ek.pem", "_cms-signer.pem"}
 
 ok_count = 0
 bad_count = 0
@@ -187,6 +238,212 @@ def check_archive_sums(e):
         note(f"{miss} listed file(s) absent from the archive")
 
 
+# ── 10 + 11. the archive in the release, and its signed list (13 October 2026) ──
+
+def _sums(path):
+    out = {}
+    for line in open(path):
+        parts = line.split(None, 1)
+        if len(parts) == 2:
+            out[parts[1].lstrip("*").strip()] = parts[0].lower()
+    return out
+
+
+def check_archive_binding(d, e, root):
+    """
+    Until rc14 nothing signed the archive's own SHA256SUMS, so this script could check
+    that the files agree with the list and nothing more: remove a quote together with its
+    line and the run stayed clean with a shorter count. rc14 gives two things to check,
+    and each is checked only where the release has it. Neither is skipped once it is
+    there: an archive the release sums name must be present, and a signed list that is
+    present must verify.
+    """
+    name = os.path.basename(e) + ".tar.gz"
+    rel_path = os.path.join(d, "SHA256SUMS")
+    rel = _sums(rel_path) if os.path.exists(rel_path) else {}
+    present = {f for f in os.listdir(e) if f not in OWN_TEMP}
+    p7s = os.path.join(e, "SHA256SUMS.p7s")
+
+    # WHICH RELEASE IS THIS, AND MAY ITS EVIDENCE BE UNSIGNED? Found by attacking this
+    # function the day it was written: take the archive's line out of the release
+    # SHA256SUMS, delete SHA256SUMS.p7s, remove a quote with its line, and every check
+    # below had nothing to look at; the run was clean with a shorter count. So the
+    # expectation cannot come from the files that carry it. It comes from the RIM, whose
+    # own signature is checked further down: the folder must be named for the release the
+    # RIM is for, and only rc13 may be without the archive line and the signed list.
+    legacy = os.path.basename(e) in UNSIGNED_EVIDENCE
+    tag = None
+    try:
+        tag = json.load(open(os.path.join(d, "rim-rock5a.json")))["identity"]["fields"]["TACTIQ_META_TACTIQ_GIT"]
+    except Exception:
+        pass
+    if tag is None:
+        bad("the RIM does not say which release it is for",
+            "so nothing signed says whether this evidence should carry a signed list")
+    elif os.path.basename(e) != "l3-evidence-" + str(tag).rsplit("-", 1)[-1]:
+        bad(f"the evidence folder is {os.path.basename(e)} and the RIM is for {tag}",
+            "evidence of one release beside the reference of another")
+    else:
+        note(f"the RIM is for {tag}, and the evidence folder is named for the same release")
+
+    bound = False
+    if name not in rel and not legacy:
+        bad(f"the release SHA256SUMS does not list {name}",
+            "every release after rc13 lists its evidence archive there")
+    if not os.path.exists(p7s) and not legacy:
+        bad("the archive carries no signed list (SHA256SUMS.p7s)",
+            "every release after rc13 signs the list of its evidence files; without it a "
+            "file removed together with its line is not noticed")
+    if name in rel:
+        tp = os.path.join(d, name)
+        if not os.path.exists(tp):
+            bad(f"{name} is listed in the release SHA256SUMS and is not here",
+                "the unpacked evidence was NOT compared with the archive the release names")
+        elif hashlib.sha256(open(tp, "rb").read()).hexdigest() != rel[name]:
+            bad(f"{name} does NOT match the release SHA256SUMS")
+        else:
+            ok(f"{name} matches the release SHA256SUMS (Sigstore-signed; the release "
+               "checker verifies that signature)")
+            inside = {}
+            with tarfile.open(tp, "r:gz") as tf:
+                for m in tf.getmembers():
+                    if m.isfile():
+                        inside[os.path.basename(m.name)] = hashlib.sha256(tf.extractfile(m).read()).hexdigest()
+            diff = sorted(f for f in present | set(inside)
+                          if f not in inside or f not in present or
+                          hashlib.sha256(open(os.path.join(e, f), "rb").read()).hexdigest() != inside[f])
+            if diff:
+                bad("the unpacked evidence is NOT the archive the release names",
+                    f"{len(diff)} file(s) added, removed or changed: " + ", ".join(diff[:6]))
+            else:
+                ok(f"the unpacked evidence is that archive, file for file ({len(inside)} files)")
+                bound = True
+    elif legacy:
+        note("rc13's release SHA256SUMS does not list its evidence archive: nothing "
+             "signed says which files the archive should hold")
+
+    if not os.path.exists(p7s):
+        if legacy:
+            note("rc13's archive list is NOT signed: a file removed together with its "
+                 "line would not be noticed by this script")
+        return
+
+    lst = os.path.join(e, "SHA256SUMS")
+    inter = os.path.join(e, "signing-ca.pem")
+    if not root or not os.path.exists(lst):
+        bad("the archive's signed list cannot be checked",
+            "no release root, or no SHA256SUMS beside the signature")
+        return
+    with tempfile.TemporaryDirectory() as t:
+        cap = os.path.join(t, "signer.pem")
+        args = ["openssl", "cms", "-verify", "-binary", "-inform", "DER", "-in", p7s,
+                "-content", lst, "-CAfile", root, "-purpose", "any", "-signer", cap,
+                "-out", os.devnull]
+        if os.path.exists(inter):
+            args += ["-certfile", inter]      # an untrusted intermediate, never an anchor
+        r = sh(*args)
+        if r.returncode == 0:
+            ok("the archive's SHA256SUMS is signed, and the signature chains to the release root")
+        elif only_the_date(args, r, root_confirmed):
+            bad_date("the signature over the archive's SHA256SUMS, anchored at the release root,", r)
+            return
+        else:
+            bad("the archive's SHA256SUMS signature does NOT chain to the release root",
+                (r.stderr or r.stdout).strip().splitlines()[-1] if (r.stderr or r.stdout).strip() else "")
+            return
+        # -purpose any ignores key usage, so the Registration Signer or the RIM Signer,
+        # both valid leaves under the same root, would otherwise do as well.
+        eku = sh("openssl", "x509", "-in", cap, "-noout", "-ext", "extendedKeyUsage").stdout
+        usages = [x.strip() for line in eku.splitlines()[1:] for x in line.split(",") if x.strip()]
+        if usages == [EVIDENCE_SIGNER_EKU_OID]:
+            ok("the list's signer carries the evidence key usage and no other")
+        else:
+            bad("the list's signer does NOT carry the evidence key usage alone",
+                f"expected {EVIDENCE_SIGNER_EKU_OID}, certificate says: {', '.join(usages) or 'none'}")
+    listed = set(_sums(lst))
+    there = present - {"SHA256SUMS", "SHA256SUMS.p7s"}
+    if listed == there:
+        ok(f"the signed list names exactly the files present ({len(listed)})")
+    else:
+        bad("the signed list and the files present are NOT the same set",
+            f"listed and absent: {sorted(listed - there)[:4]} · present and unlisted: {sorted(there - listed)[:4]}")
+
+
+# ── 12. the revocation lists a format-2 record carries (13 October 2026) ─────
+
+def _crl_time(path, flag):
+    out = sh("openssl", "crl", "-inform", "DER", "-in", path, "-noout", flag).stdout
+    return dt.datetime.strptime(out.strip().split("=", 1)[1], "%b %d %H:%M:%S %Y %Z").replace(
+        tzinfo=dt.timezone.utc).timestamp()
+
+
+def check_revocation_lists(e):
+    """
+    A format-2 record carries the two lists the registrar says it checked. They are signed
+    by Infineon's CAs, not by the vendor, so they can be checked here rather than taken on
+    the record's word. The certificates are read from the signed record itself. This shows
+    the state at the time of the chain check and nothing later.
+    """
+    rec = os.path.join(e, REC_NAME)
+    if not os.path.exists(rec):
+        return                                  # already a failure, reported above
+    r = json.load(open(rec))
+    fmt = r.get("format")
+    if fmt == "tactiq-ak-registration/1":
+        return                                  # carries no lists; it says so itself
+    if fmt != "tactiq-ak-registration/2":
+        bad(f"the registration record is in a format this script does not know: {fmt}",
+            "its revocation evidence, if any, was NOT checked")
+        return
+    need = ("ek_crl", "intermediate_crl", "ek_certificate", "intermediate_certificate", "chain_checked_unix")
+    gone = [k for k in need if k not in r]
+    root = os.path.join(e, "infineon-root.crt")
+    if gone or not os.path.exists(root):
+        bad("a format-2 record must carry its revocation lists and this one does not",
+            "absent: " + ", ".join(gone or ["infineon-root.crt"]))
+        return
+    with tempfile.TemporaryDirectory() as t:
+        def der(field):
+            p = os.path.join(t, field + ".der")
+            open(p, "wb").write(bytes.fromhex(r[field]))
+            return p
+        def pem(src, nm):
+            out = os.path.join(t, nm)
+            sh("openssl", "x509", "-inform", "DER", "-in", src, "-out", out)
+            if not os.path.exists(out) or not os.path.getsize(out):
+                sh("openssl", "x509", "-in", src, "-out", out)
+            return out
+        ek, inter = pem(der("ek_certificate"), "ek.pem"), pem(der("intermediate_certificate"), "inter.pem")
+        rootp = pem(root, "root.pem")         # compared with the pinned fingerprint in check_chains
+        cc = r["chain_checked_unix"]
+        for field, issuer, subject, what in (("ek_crl", inter, ek, "the EK certificate"),
+                                             ("intermediate_crl", rootp, inter, "the EK's issuing CA")):
+            crl = der(field)
+            v = sh("openssl", "crl", "-inform", "DER", "-in", crl, "-CAfile", issuer, "-noout")
+            if "verify OK" not in (v.stdout + v.stderr):
+                bad(f"the revocation list for {what} is NOT signed by its issuer",
+                    (v.stdout + v.stderr).strip().splitlines()[-1] if (v.stdout + v.stderr).strip() else "")
+                continue
+            ok(f"the revocation list for {what} is signed by its issuer")
+            serial = sh("openssl", "x509", "-in", subject, "-noout", "-serial").stdout.strip().split("=")[-1].upper()
+            text = sh("openssl", "crl", "-inform", "DER", "-in", crl, "-noout", "-text").stdout
+            revoked = {ln.split(":", 1)[1].strip().upper() for ln in text.splitlines()
+                       if ln.strip().startswith("Serial Number:")}
+            if not serial:
+                bad(f"could not read the serial number of {what}")
+            elif serial in revoked:
+                bad(f"{what} IS LISTED AS REVOKED (serial {serial})")
+            else:
+                ok(f"{what} is not on it ({len(revoked)} serial(s) listed)")
+            lu, nu = _crl_time(crl, "-lastupdate"), _crl_time(crl, "-nextupdate")
+            if lu <= cc <= nu:
+                ok(f"that list was current when the record says the chain was checked")
+            else:
+                bad(f"the revocation list for {what} was NOT current at the chain check time",
+                    f"list valid {int(lu)}..{int(nu)}, chain checked {cc}")
+    note("a revocation after the record was made is not covered by these files")
+
+
 # ── 2 + 3. the certificate chains ────────────────────────────────────────────
 
 def check_chains(e):
@@ -256,7 +513,7 @@ def check_registration_sig(e, root):
     is exactly the forgery the vendor demonstrated. Anchored at the release root,
     the same forged set is rejected because its CA chains to nothing we trust.
     """
-    rec = os.path.join(e, "registration-TACTIQ-BENCH-001.json")
+    rec = os.path.join(e, REC_NAME)
     p7s = rec + ".p7s"
     inter = os.path.join(e, "signing-ca.pem")
     if not all(os.path.exists(x) for x in (rec, p7s)):
@@ -327,7 +584,7 @@ def check_registration_sig(e, root):
 # ── 4. the AK is the one the record names ────────────────────────────────────
 
 def check_ak_name(e):
-    akp, rec = os.path.join(e, "ak.pub"), os.path.join(e, "registration-TACTIQ-BENCH-001.json")
+    akp, rec = os.path.join(e, "ak.pub"), os.path.join(e, REC_NAME)
     if not (os.path.exists(akp) and os.path.exists(rec)):
         bad("ak.pub or the registration record is absent",
             "without the AK the quotes cannot be attributed to a registered key")
@@ -412,9 +669,20 @@ def check_quotes(e, area, rim_digest):
     from cryptography.hazmat.primitives.asymmetric import ec
     from cryptography.exceptions import InvalidSignature
 
+    # NO QUOTE IS A FAILURE. Until 13 October 2026 an archive with every quote removed
+    # was a note, and the run ended "16 passed, 0 failed", exit 0: evidence of a boot
+    # state with no statement from the TPM in it. Found by removing them all from a copy
+    # of rc13. The same rule as everywhere else here: what is absent has not passed.
     ids = sorted({f.rsplit(".", 1)[0] for f in os.listdir(e) if f.endswith(".attest")})
+    orphans = sorted({f.rsplit(".", 1)[0] for f in os.listdir(e)
+                      if f.endswith((".sig", ".msg")) and f.rsplit(".", 1)[0] not in ids
+                      and not f.startswith("SHA256SUMS")})
+    for q in orphans:
+        bad(f"{q}: a signature or message with no .attest beside it",
+            "a quote whose attested structure is missing proves nothing")
     if not ids:
-        note("no .attest files — no quotes to check")
+        bad("the archive holds no quote",
+            "nothing from the TPM is here, so no boot state was attested")
         return
     key = ak_pubkey(area) if area else None
 
@@ -515,17 +783,30 @@ def main():
         print(__doc__)
         return 2
     d = sys.argv[1]
-    e = os.path.join(d, "l3", "l3-evidence-rc13")
-    if not os.path.isdir(e):
-        for root, dirs, _ in os.walk(d):
-            if "l3-evidence-rc13" in dirs:
-                e = os.path.join(root, "l3-evidence-rc13")
-                break
-    if not os.path.isdir(e):
-        print(f"no l3-evidence-rc13 directory under {d}", file=sys.stderr)
+    # The evidence folder is found, not named: one l3-evidence-* folder, no more.
+    found = sorted(os.path.join(root, x) for root, dirs, _ in os.walk(d)
+                   for x in dirs if x.startswith("l3-evidence-"))
+    if not found:
+        print(f"no l3-evidence-* directory under {d}", file=sys.stderr)
         return 2
+    if len(found) > 1:
+        print(f"{len(found)} l3-evidence-* directories under {d}; give a directory that "
+              "holds one release", file=sys.stderr)
+        return 2
+    e = found[0]
 
     print("\n  the evidence archive\n")
+    note(f"evidence folder: {os.path.relpath(e, d)}")
+
+    global REC_NAME
+    recs = sorted(f for f in os.listdir(e)
+                  if f.startswith("registration-") and f.endswith(".json"))
+    if len(recs) > 1:
+        bad(f"{len(recs)} registration records in the archive, expected one",
+            ", ".join(recs) + " — the first is used for the checks below")
+    if recs:
+        REC_NAME = recs[0]
+    REQUIRED = [REC_NAME, REC_NAME + ".p7s"] + REQUIRED_FIXED
 
     missing = [f for f in REQUIRED if not os.path.exists(os.path.join(e, f))]
     if missing:
@@ -564,8 +845,25 @@ def main():
         # nobody names is not.
         rd = subprocess.run(["openssl", "x509", "-in", root, "-outform", "DER"],
                             capture_output=True).stdout
+        pinned_ok = False
         if rd:
             note(f"release root sha256: {hashlib.sha256(rd).hexdigest()}")
+            # THE ROOT IS PINNED HERE since 13 October 2026. Until then this script
+            # printed the fingerprint and left the comparison to the reader. Red-teaming
+            # the rc14 revision showed what that costs: a set with its own root, its own
+            # CA and signers, the record altered and re-signed, the RIM re-signed to name
+            # the new root and the release SHA256SUMS rewritten ran "103 passed, 0
+            # failed" here. The release checker rejected it (the Sigstore signature) and
+            # so did the vendor's script (it carries this fingerprint). A check the
+            # reader must remember to make is one most readers will not make.
+            if hashlib.sha256(rd).hexdigest() == RELEASE_ROOT_R2_SHA256:
+                pinned_ok = True
+                note("it is the release root r2 this script pins")
+            else:
+                bad("the release root supplied is NOT the root r2 this script pins",
+                    f"pinned {RELEASE_ROOT_R2_SHA256[:24]}… — every check below that is "
+                    "anchored at this root says nothing. If the vendor has moved to a new "
+                    "root, this script must be revised by hand, not fed the new file")
 
             # The vendor corrected an earlier, broader claim of ours (2026-09-29) and the
             # correction is verified here rather than taken on his word. The root is not
@@ -623,7 +921,7 @@ def main():
                 if declared == spki_sha:
                     ok("the release root is bound INSIDE the signed RIM (spki_sha256 matches)")
                     global root_confirmed
-                    root_confirmed = True
+                    root_confirmed = pinned_ok
                 else:
                     bad("the release root does NOT match the one named in the signed RIM",
                         f"RIM says {declared[:24]}… root is {spki_sha[:24]}…")
@@ -638,9 +936,13 @@ def main():
     else:
         note("no release-root-r2.pem found beside the release assets — anchored checks will FAIL")
 
+    print("\n  the archive's place in the release\n")
+    check_archive_binding(d, e, root)
+
     print("\n  the chains of trust\n")
     check_chains(e)
     check_registration_sig(e, root)
+    check_revocation_lists(e)
 
     print("\n  the attestation key\n")
     area = check_ak_name(e)
@@ -658,7 +960,7 @@ def main():
     note("therefore rests on the registrar's signed statement, verified above as")
     note("properly signed. That the statement is TRUE is not checked and cannot be.")
 
-    rec = os.path.join(e, "registration-TACTIQ-BENCH-001.json")
+    rec = os.path.join(e, REC_NAME)
     if os.path.exists(rec):
         r = json.load(open(rec))
         for k in ("revocation_checked", "signed"):
