@@ -80,7 +80,8 @@ not by running the vendor's own tooling.</p>
     <span class="d">Since 13 October: builds altered and forged copies of a genuine release
       and says which of them a checker lets through. With
       <a href="/tactiq-altered-sets-rc14.pack.tar.gz">the exact rc14 sets</a> our results
-      came from. Python 3, standard library, <code>openssl</code> and <code>tar</code>.</span>
+      came from. Python 3, standard library, <code>openssl</code> and <code>tar</code>.
+      Sizes and SHA-256 of both are given below.</span>
   </div>
 </div>
 
@@ -166,6 +167,14 @@ Nothing here is affiliated with that project.</p>
   <div class="res">python3 tactiq-altered-sets.py unpack tactiq-altered-sets-rc14.pack.tar.gz /path/to/rc14 sets<br>
 python3 tactiq-altered-sets.py run sets --kind release -- python3 verify-tactiq-release.py {}<br>
 python3 tactiq-altered-sets.py run sets --kind l3 -- python3 verify-tactiq-l3.py {}</div>
+  <p><strong>Added on 14 October: the size and SHA-256 of both files.</strong> A reader's
+  first download of both came through short, with no error from the download tool. The pack
+  checks itself when it is unpacked, but a short script only fails with a syntax error that
+  does not say why. Compare before running:</p>
+  <div class="res" style="overflow-wrap:anywhere">31,386 bytes 5556fed2903defb1fbd997f741ab0c098ba5ad4886b0b88c68acffa9f1386547 tactiq-altered-sets.py<br>
+456,764 bytes 45e0150d528860bbc93e542575e8676ba7e187e35658075033662b81ff096086 tactiq-altered-sets-rc14.pack.tar.gz<br>
+<br>
+sha256sum tactiq-altered-sets.py tactiq-altered-sets-rc14.pack.tar.gz</div>
   <p><strong>Against the two scripts on this page:</strong> the unchanged copy passes, and
   all 29 altered copies are rejected, 10 by the release checker and 19 by the L3 checker.
   Against the L3 checker as it stood before 13 October, 11 of the 19 got through.</p>
